@@ -6,8 +6,8 @@ const navigation = [
     label: "Career",
     accent: "career",
     items: [
-      { href: "/dashboard", label: "Dashboard" },
-      { href: "/portfolio", label: "Portfolio" },
+      { href: "/dashboard", label: "Navigator" },
+      { href: "/portfolio", label: "Professional Folio" },
       { href: "/jobs", label: "Jobs" },
       { href: "/applications", label: "Applications" }
     ]
@@ -18,7 +18,7 @@ const navigation = [
     items: [
       { href: "/network", label: "Network" },
       { href: "/groups", label: "Groups" },
-      { href: "/messages", label: "Messages" }
+      { href: "/messages", label: "Communication Hub" }
     ]
   },
   {
