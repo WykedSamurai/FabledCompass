@@ -10,6 +10,11 @@
 .badgeButton { position: relative; width: 54px; height: 54px; border-radius: 50%; border: 4px double #6c4c1f; background: #b8893b; color: #10233d; font-size: 1.35rem; font-weight: 900; cursor: pointer; }
 .badgeButton:hover .tooltip, .badgeButton:focus .tooltip { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
 .tooltip { position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translate(-50%, 5px); width: 230px; padding: .75rem; border-radius: 10px; background: #10233d; color: #fff; font-size: .8rem; line-height: 1.35; opacity: 0; pointer-events: none; transition: .15s ease; z-index: 5; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+.scenarioBadgeStrip { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
+.scenarioBadgeButton { position: relative; width: 54px; height: 54px; border-radius: 50%; border: 4px double #6c4c1f; background: linear-gradient(145deg, #c79b50, #a7772e); color: #10233d; font-size: 1.55rem; font-weight: 900; cursor: pointer; box-shadow: 0 5px 12px rgba(16,35,61,.16); }
+.scenarioBadgeButton:hover .scenarioBadgeTooltip, .scenarioBadgeButton:focus .scenarioBadgeTooltip { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.scenarioBadgeTooltip { position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translate(-50%, 5px); width: min(320px, 75vw); padding: .85rem; border-radius: 10px; background: #10233d; color: #fff; font-size: .78rem; line-height: 1.4; opacity: 0; pointer-events: none; transition: .15s ease; z-index: 6; box-shadow: 0 10px 30px rgba(0,0,0,.22); text-align: left; }
+.scenarioBadgeTooltip span { display: block; margin-top: .35rem; font-weight: 400; }
 .grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, .75fr); gap: 1.25rem; align-items: start; }
 .stack { display: grid; gap: 1.25rem; }
 .card { background: #f2f0e9; border: 1px solid #c9cdc7; border-radius: 16px; padding: 1.5rem; box-shadow: 0 7px 22px rgba(16,35,61,.07); }
