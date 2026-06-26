@@ -6,6 +6,8 @@ import { createClient } from "../../utils/supabase/client";
 import { extractResumeText } from "../../utils/resume/extractText";
 import styles from "./profile-workspace.module.css";
 
+type ProfileVisibility = "private" | "employers" | "public";
+
 type ProfileForm = {
   display_name: string;
   headline: string;
@@ -21,6 +23,11 @@ type ProfileForm = {
   education: string;
   resume_text: string;
   resume_file_path: string;
+  profile_visibility: ProfileVisibility;
+  show_public_email: boolean;
+  show_phone: boolean;
+  show_location: boolean;
+  show_resume: boolean;
 };
 
 type Badge = {
@@ -52,7 +59,12 @@ const emptyProfile: ProfileForm = {
   experience: "",
   education: "",
   resume_text: "",
-  resume_file_path: ""
+  resume_file_path: "",
+  profile_visibility: "private",
+  show_public_email: false,
+  show_phone: false,
+  show_location: true,
+  show_resume: false
 };
 
 function parseResumeText(text: string, current: ProfileForm): ProfileForm {
@@ -109,7 +121,7 @@ export default function UnifiedProfileWorkspace() {
 
       setUserId(user.id);
       const [profileResult, badgeResult, attemptResult] = await Promise.all([
-        supabase.from("profiles").select("display_name, headline, location, about, email_public, phone, website, linkedin_url, portfolio_url, skills, experience, education, resume_text, resume_file_path").eq("id", user.id).maybeSingle(),
+        supabase.from("profiles").select("display_name, headline, location, about, email_public, phone, website, linkedin_url, portfolio_url, skills, experience, education, resume_text, resume_file_path, profile_visibility, show_public_email, show_phone, show_location, show_resume").eq("id", user.id).maybeSingle(),
         supabase.from("user_badges").select("id, badge_name, source_scenario, badge_version, earned_at").eq("user_id", user.id).order("earned_at", { ascending: false }),
         supabase.from("scenario_attempts").select("id, overall_score, passed, completed_at").eq("user_id", user.id).order("completed_at", { ascending: false }).limit(5)
       ]);
@@ -134,7 +146,7 @@ export default function UnifiedProfileWorkspace() {
     load();
   }, [router]);
 
-  function update(field: keyof ProfileForm, value: string) {
+  function update<K extends keyof ProfileForm>(field: K, value: ProfileForm[K]) {
     setProfile((current) => ({ ...current, [field]: value }));
   }
 
@@ -144,7 +156,7 @@ export default function UnifiedProfileWorkspace() {
     setSaving(true);
     const supabase = createClient();
     const { error } = await supabase.from("profiles").upsert({ id: userId, ...profile, updated_at: new Date().toISOString() });
-    setMessage(error ? error.message : "Profile saved.");
+    setMessage(error ? error.message : "Profile and privacy settings saved.");
     setSaving(false);
   }
 
@@ -234,6 +246,27 @@ export default function UnifiedProfileWorkspace() {
           </form>
 
           <aside className={styles.stack}>
+            <section className={styles.card}>
+              <p className="eyebrow">Privacy</p>
+              <h2>Profile visibility</h2>
+              <label className={styles.field}>
+                Who can view this profile?
+                <select className={styles.input} value={profile.profile_visibility} onChange={(event) => update("profile_visibility", event.target.value as ProfileVisibility)}>
+                  <option value="private">Only me</option>
+                  <option value="employers">Approved employers</option>
+                  <option value="public">Public profile</option>
+                </select>
+              </label>
+              <div className={styles.privacyList}>
+                <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_location} onChange={(event) => update("show_location", event.target.checked)} /><span>Show location</span></label>
+                <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_public_email} onChange={(event) => update("show_public_email", event.target.checked)} /><span>Show public email</span></label>
+                <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_phone} onChange={(event) => update("show_phone", event.target.checked)} /><span>Show phone number</span></label>
+                <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_resume} onChange={(event) => update("show_resume", event.target.checked)} /><span>Allow resume access</span></label>
+              </div>
+              <p className={styles.small}>Your private profile editor always shows all fields. These settings control what may appear in employer and public views.</p>
+              <button className="button button-dark" disabled={saving || !userId} type="button" onClick={() => save()}>{saving ? "Saving..." : "Save Privacy"}</button>
+            </section>
+
             <section className={styles.card}>
               <p className="eyebrow">Resume Import</p>
               <h2>Upload and autofill</h2>
