@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { createClient } from "../../utils/supabase/client";
 import { extractResumeText } from "../../utils/resume/extractText";
 import styles from "./profile-workspace.module.css";
@@ -45,6 +46,7 @@ function extractFields(text: string) {
 }
 
 export default function ResumeDocumentLibrary() {
+  const [target, setTarget] = useState<HTMLElement | null>(null);
   const [userId, setUserId] = useState("");
   const [documents, setDocuments] = useState<DocumentRecord[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,6 +97,9 @@ export default function ResumeDocumentLibrary() {
   }
 
   useEffect(() => {
+    const uploadBox = document.querySelector(`.${styles.uploadBox}`);
+    setTarget(uploadBox?.parentElement ?? null);
+
     async function start() {
       const supabase = createClient();
       const { data } = await supabase.auth.getUser();
@@ -174,44 +179,44 @@ export default function ResumeDocumentLibrary() {
     setBusyId(null);
   }
 
-  return (
-    <section className={styles.libraryShell}>
-      <div className={styles.card}>
-        <p className="eyebrow">Document Library</p>
-        <h2>Available resumes and portfolios</h2>
-        <p className={styles.small}>Choose which document should autofill the profile, rename it for clarity, or remove it from the account.</p>
-        {message && <p className={styles.message} role="status">{message}</p>}
-        {loading ? <p className={styles.small}>Loading documents...</p> : documents.length === 0 ? <p className={styles.small}>No uploaded documents yet.</p> : (
-          <div className={styles.documentList}>
-            {documents.map((document) => (
-              <article className={styles.documentItem} key={document.id}>
-                <div className={styles.documentMain}>
-                  {editingId === document.id ? (
-                    <div className={styles.renameRow}>
-                      <input className={styles.input} value={draftName} onChange={(event) => setDraftName(event.target.value)} />
-                      <button className="button button-dark" type="button" onClick={() => saveRename(document)}>Save</button>
-                      <button className="button" type="button" onClick={() => setEditingId(null)}>Cancel</button>
-                    </div>
-                  ) : (
-                    <>
-                      <div className={styles.documentTitleRow}><strong>{document.display_name}</strong>{document.is_active && <span className={styles.activePill}>Active</span>}</div>
-                      <p className={styles.small}>{document.file_name}</p>
-                      <p className={styles.small}>{formatSize(document.size_bytes)} · Uploaded {new Date(document.uploaded_at).toLocaleDateString()}</p>
-                    </>
-                  )}
-                </div>
-                {editingId !== document.id && (
-                  <div className={styles.documentActions}>
-                    <button className="button button-dark" type="button" disabled={busyId === document.id} onClick={() => useDocument(document)}>{busyId === document.id ? "Working..." : "Use"}</button>
-                    <button className="button" type="button" onClick={() => { setEditingId(document.id); setDraftName(document.display_name); }}>Rename</button>
-                    <button className={styles.dangerButton} type="button" disabled={busyId === document.id} onClick={() => deleteDocument(document)}>Delete</button>
+  if (!target) return null;
+
+  return createPortal(
+    <div className={styles.inlineLibrary}>
+      <h3>Available documents</h3>
+      <p className={styles.small}>Choose which document should autofill the profile, rename it, or delete it.</p>
+      {message && <p className={styles.message} role="status">{message}</p>}
+      {loading ? <p className={styles.small}>Loading documents...</p> : documents.length === 0 ? <p className={styles.small}>No uploaded documents yet.</p> : (
+        <div className={styles.documentList}>
+          {documents.map((document) => (
+            <article className={styles.documentItem} key={document.id}>
+              <div className={styles.documentMain}>
+                {editingId === document.id ? (
+                  <div className={styles.renameRow}>
+                    <input className={styles.input} value={draftName} onChange={(event) => setDraftName(event.target.value)} />
+                    <button className="button button-dark" type="button" onClick={() => saveRename(document)}>Save</button>
+                    <button className="button" type="button" onClick={() => setEditingId(null)}>Cancel</button>
                   </div>
+                ) : (
+                  <>
+                    <div className={styles.documentTitleRow}><strong>{document.display_name}</strong>{document.is_active && <span className={styles.activePill}>Active</span>}</div>
+                    <p className={styles.small}>{document.file_name}</p>
+                    <p className={styles.small}>{formatSize(document.size_bytes)} · Uploaded {new Date(document.uploaded_at).toLocaleDateString()}</p>
+                  </>
                 )}
-              </article>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
+              </div>
+              {editingId !== document.id && (
+                <div className={styles.documentActions}>
+                  <button className="button button-dark" type="button" disabled={busyId === document.id} onClick={() => useDocument(document)}>{busyId === document.id ? "Working..." : "Use"}</button>
+                  <button className="button" type="button" onClick={() => { setEditingId(document.id); setDraftName(document.display_name); }}>Rename</button>
+                  <button className={styles.dangerButton} type="button" disabled={busyId === document.id} onClick={() => deleteDocument(document)}>Delete</button>
+                </div>
+              )}
+            </article>
+          ))}
+        </div>
+      )}
+    </div>,
+    target
   );
 }
