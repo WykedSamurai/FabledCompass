@@ -10,7 +10,9 @@
   "dependencies": {
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
+    "mammoth": "^1.8.0",
     "next": "latest",
+    "pdfjs-dist": "^4.10.38",
     "react": "latest",
     "react-dom": "latest"
   },
