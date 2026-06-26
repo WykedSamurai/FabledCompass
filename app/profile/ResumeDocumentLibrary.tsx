@@ -163,18 +163,46 @@ export default function ResumeDocumentLibrary() {
   async function deleteDocument(document: DocumentRecord) {
     if (!window.confirm(`Delete ${document.display_name}? This cannot be undone.`)) return;
     setBusyId(document.id);
+    setMessage("Deleting document...");
     const supabase = createClient();
+
     const { error: storageError } = await supabase.storage.from("resumes").remove([document.file_path]);
     if (storageError) {
-      setMessage(storageError.message);
+      setMessage(`The stored file could not be deleted: ${storageError.message}`);
       setBusyId(null);
       return;
     }
-    const { error } = await supabase.from("profile_documents").delete().eq("id", document.id).eq("user_id", userId);
-    if (error) setMessage(error.message);
-    else {
+
+    const folder = document.file_path.split("/")[0];
+    const filename = document.file_path.split("/").slice(1).join("/");
+    const { data: remainingFiles, error: listError } = await supabase.storage.from("resumes").list(folder, {
+      search: filename,
+      limit: 10
+    });
+
+    if (listError) {
+      setMessage(`The delete could not be verified: ${listError.message}`);
+      setBusyId(null);
+      return;
+    }
+
+    if ((remainingFiles ?? []).some((file) => file.name === filename)) {
+      setMessage("The file is still in storage. Add the Supabase delete policy, then try again.");
+      setBusyId(null);
+      return;
+    }
+
+    const { error: recordError } = await supabase
+      .from("profile_documents")
+      .delete()
+      .eq("id", document.id)
+      .eq("user_id", userId);
+
+    if (recordError) {
+      setMessage(recordError.message);
+    } else {
+      setDocuments((current) => current.filter((item) => item.id !== document.id));
       setMessage("Document deleted.");
-      await loadDocuments();
     }
     setBusyId(null);
   }
@@ -209,7 +237,7 @@ export default function ResumeDocumentLibrary() {
                 <div className={styles.documentActions}>
                   <button className="button button-dark" type="button" disabled={busyId === document.id} onClick={() => useDocument(document)}>{busyId === document.id ? "Working..." : "Use"}</button>
                   <button className="button" type="button" onClick={() => { setEditingId(document.id); setDraftName(document.display_name); }}>Rename</button>
-                  <button className={styles.dangerButton} type="button" disabled={busyId === document.id} onClick={() => deleteDocument(document)}>Delete</button>
+                  <button className={styles.dangerButton} type="button" disabled={busyId === document.id} onClick={() => deleteDocument(document)}>{busyId === document.id ? "Deleting..." : "Delete"}</button>
                 </div>
               )}
             </article>
