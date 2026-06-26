@@ -1,10 +1,10 @@
 export default function ProfilePage() {
   return (
     <>
-      <section className="page-hero">
+      <section className="profile-hero">
         <p className="eyebrow">Navigator Profile</p>
-        <h1>Your experience, skills, and earned recognition.</h1>
-        <p>The prototype profile demonstrates how traditional career information and scenario evidence can appear together.</p>
+        <h1>Profile and earned recognition</h1>
+        <p>Career information and demonstrated workplace skills in one place.</p>
       </section>
 
       <section className="section section-narrow">
