@@ -1,5 +1,5 @@
-import EditProfileView from "./EditProfileView";
+import { redirect } from "next/navigation";
 
 export default function AccountProfilePage() {
-  return <EditProfileView />;
+  redirect("/profile");
 }

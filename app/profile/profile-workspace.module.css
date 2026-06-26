@@ -1,0 +1,30 @@
+.page { min-height: calc(100vh - 72px); }
+.header { padding: 2rem 6vw; background: linear-gradient(135deg, #10233d, #183454); color: #fff; }
+.header h1 { margin: 0 0 .4rem; font-size: clamp(2rem, 4vw, 3rem); }
+.header p { margin: 0; color: #d8e0e7; max-width: 760px; }
+.shell { max-width: 1120px; margin: 0 auto; padding: 2.5rem 6vw 5rem; display: grid; gap: 1.25rem; }
+.summary { display: grid; grid-template-columns: auto 1fr auto; gap: 1.25rem; align-items: center; }
+.summaryText h2 { margin-bottom: .35rem; }
+.summaryText p { margin: .2rem 0; }
+.badgeStrip { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
+.badgeButton { position: relative; width: 54px; height: 54px; border-radius: 50%; border: 4px double #6c4c1f; background: #b8893b; color: #10233d; font-size: 1.35rem; font-weight: 900; cursor: pointer; }
+.badgeButton:hover .tooltip, .badgeButton:focus .tooltip { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.tooltip { position: absolute; left: 50%; bottom: calc(100% + 10px); transform: translate(-50%, 5px); width: 230px; padding: .75rem; border-radius: 10px; background: #10233d; color: #fff; font-size: .8rem; line-height: 1.35; opacity: 0; pointer-events: none; transition: .15s ease; z-index: 5; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+.grid { display: grid; grid-template-columns: 1.4fr .8fr; gap: 1.25rem; align-items: start; }
+.stack { display: grid; gap: 1.25rem; }
+.card { background: #fff; border: 1px solid #dfe3e6; border-radius: 18px; padding: 1.5rem; box-shadow: 0 8px 28px rgba(16,35,61,.06); }
+.card h2 { font-size: 1.65rem; margin-bottom: 1rem; }
+.form { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.field { display: grid; gap: .4rem; font-weight: 700; }
+.full { grid-column: 1 / -1; }
+.input, .textarea { width: 100%; border: 1px solid #cfd5da; border-radius: 10px; padding: .75rem .85rem; font: inherit; color: #18212b; background: #fff; }
+.textarea { min-height: 120px; resize: vertical; }
+.input:focus, .textarea:focus { outline: 3px solid rgba(184,137,59,.2); border-color: #b8893b; }
+.actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+.uploadBox { border: 2px dashed #cfd5da; border-radius: 14px; padding: 1.25rem; background: #fbfaf6; }
+.uploadBox input { width: 100%; }
+.small { color: #66717d; font-size: .9rem; }
+.message { color: #2f5c4b; font-weight: 700; }
+.history { display: grid; gap: .7rem; }
+.historyItem { display: flex; justify-content: space-between; gap: 1rem; padding: .85rem 0; border-bottom: 1px solid #e5e8ea; }
+@media (max-width: 850px) { .summary, .grid { grid-template-columns: 1fr; } .form { grid-template-columns: 1fr; } .full, .actions { grid-column: auto; } }

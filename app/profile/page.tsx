@@ -1,5 +1,5 @@
-import ProfileView from "./ProfileView";
+import UnifiedProfileWorkspace from "./UnifiedProfileWorkspace";
 
 export default function ProfilePage() {
-  return <ProfileView />;
+  return <UnifiedProfileWorkspace />;
 }
