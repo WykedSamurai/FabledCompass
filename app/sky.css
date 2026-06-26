@@ -2,9 +2,9 @@
 
 body {
   background:
-    radial-gradient(circle at 28% 18%, rgba(45, 212, 243, .16) 0 1px, transparent 2px),
-    radial-gradient(circle at 72% 24%, rgba(139, 92, 246, .18) 0 1px, transparent 2px),
-    radial-gradient(circle at 84% 72%, rgba(45, 212, 243, .1) 0 1px, transparent 2px),
+    radial-gradient(circle at 28% 18%, rgba(45, 212, 243, .12) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 24%, rgba(139, 92, 246, .12) 0 1px, transparent 2px),
+    radial-gradient(circle at 84% 72%, rgba(45, 212, 243, .08) 0 1px, transparent 2px),
     linear-gradient(135deg, #050914 0%, #081220 46%, #0d1827 100%);
 }
 
@@ -15,16 +15,16 @@ body::before {
   pointer-events: none;
   z-index: -2;
   background-image:
-    radial-gradient(circle at 8% 12%, rgba(255,255,255,.72) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 18% 72%, rgba(45,212,243,.45) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 31% 35%, rgba(255,255,255,.56) 0 1px, transparent 1.4px),
-    radial-gradient(circle at 44% 18%, rgba(139,92,246,.68) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 59% 66%, rgba(255,255,255,.48) 0 1px, transparent 1.6px),
-    radial-gradient(circle at 72% 28%, rgba(45,212,243,.62) 0 1px, transparent 1.8px),
-    radial-gradient(circle at 88% 14%, rgba(255,255,255,.58) 0 1px, transparent 1.4px),
-    radial-gradient(circle at 94% 82%, rgba(139,92,246,.52) 0 1px, transparent 1.5px);
+    radial-gradient(circle at 8% 12%, rgba(255,255,255,.62) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 18% 72%, rgba(45,212,243,.36) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 31% 35%, rgba(255,255,255,.44) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 44% 18%, rgba(139,92,246,.48) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 59% 66%, rgba(255,255,255,.38) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 72% 28%, rgba(45,212,243,.48) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 88% 14%, rgba(255,255,255,.44) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 94% 82%, rgba(139,92,246,.38) 0 1px, transparent 1.5px);
   background-size: 320px 220px, 420px 310px, 520px 360px, 380px 280px, 600px 420px, 460px 300px, 700px 480px, 540px 400px;
-  opacity: .72;
+  opacity: .58;
 }
 
 body::after {
@@ -34,11 +34,11 @@ body::after {
   pointer-events: none;
   z-index: -1;
   background:
-    linear-gradient(115deg, transparent 0 55%, rgba(45,212,243,.08) 55.1% 55.4%, transparent 55.5%),
-    linear-gradient(22deg, transparent 0 68%, rgba(139,92,246,.09) 68.1% 68.35%, transparent 68.5%),
-    radial-gradient(circle at 62% 14%, rgba(45,212,243,.22), transparent 11rem),
-    radial-gradient(circle at 74% 35%, rgba(139,92,246,.18), transparent 10rem);
-  opacity: .82;
+    linear-gradient(115deg, transparent 0 55%, rgba(45,212,243,.025) 55.1% 55.28%, transparent 55.38%),
+    linear-gradient(22deg, transparent 0 68%, rgba(139,92,246,.032) 68.1% 68.26%, transparent 68.38%),
+    radial-gradient(circle at 62% 14%, rgba(45,212,243,.13), transparent 13rem),
+    radial-gradient(circle at 74% 35%, rgba(139,92,246,.11), transparent 12rem);
+  opacity: .62;
 }
 
 .fc-shell {
@@ -84,15 +84,15 @@ body::after {
   height: 180px;
   pointer-events: none;
   background:
-    radial-gradient(circle at 18% 32%, #7dd3fc 0 2px, transparent 3px),
-    radial-gradient(circle at 28% 62%, #ffffff 0 1.5px, transparent 2.5px),
-    radial-gradient(circle at 42% 38%, #60a5fa 0 2px, transparent 3px),
-    radial-gradient(circle at 56% 70%, #a78bfa 0 2px, transparent 3px),
-    radial-gradient(circle at 72% 42%, #ffffff 0 1.5px, transparent 2.5px),
-    linear-gradient(30deg, transparent 17%, rgba(125,211,252,.55) 17.2% 17.7%, transparent 18%),
-    linear-gradient(150deg, transparent 40%, rgba(167,139,250,.5) 40.2% 40.7%, transparent 41%);
-  opacity: .82;
-  filter: drop-shadow(0 0 10px rgba(45,212,243,.4));
+    radial-gradient(circle at 18% 32%, rgba(125,211,252,.72) 0 1.35px, transparent 2.5px),
+    radial-gradient(circle at 28% 62%, rgba(255,255,255,.6) 0 1px, transparent 2px),
+    radial-gradient(circle at 42% 38%, rgba(96,165,250,.7) 0 1.35px, transparent 2.5px),
+    radial-gradient(circle at 56% 70%, rgba(167,139,250,.62) 0 1.35px, transparent 2.5px),
+    radial-gradient(circle at 72% 42%, rgba(255,255,255,.56) 0 1px, transparent 2px),
+    linear-gradient(30deg, transparent 17%, rgba(125,211,252,.12) 17.2% 17.36%, transparent 17.58%),
+    linear-gradient(150deg, transparent 40%, rgba(167,139,250,.11) 40.2% 40.36%, transparent 40.58%);
+  opacity: .42;
+  filter: blur(.25px) drop-shadow(0 0 7px rgba(45,212,243,.16));
 }
 
 .fc-card,
