@@ -3,6 +3,7 @@
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../utils/supabase/client";
+import { extractResumeText } from "../../utils/resume/extractText";
 import styles from "./profile-workspace.module.css";
 
 type ProfileForm = {
@@ -152,7 +153,7 @@ export default function UnifiedProfileWorkspace() {
     if (!file || !userId) return;
 
     setUploading(true);
-    setMessage("");
+    setMessage("Uploading and reading resume...");
     const supabase = createClient();
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
     const path = `${userId}/${Date.now()}-${safeName}`;
@@ -164,17 +165,18 @@ export default function UnifiedProfileWorkspace() {
       return;
     }
 
-    let nextProfile = { ...profile, resume_file_path: path };
-    if (file.type.startsWith("text/") || file.name.endsWith(".txt") || file.name.endsWith(".md")) {
-      const text = await file.text();
-      nextProfile = parseResumeText(text, nextProfile);
-      setMessage("Resume uploaded and available information was added to the profile. Review before saving.");
-    } else {
-      setMessage("Resume uploaded. PDF and DOCX autofill will be connected in the document-parsing step.");
+    try {
+      const text = await extractResumeText(file);
+      const nextProfile = parseResumeText(text, { ...profile, resume_file_path: path });
+      setProfile(nextProfile);
+      setMessage("Resume uploaded and parsed. Review the autofilled information, then save the profile.");
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : "The resume could not be parsed.";
+      setProfile((current) => ({ ...current, resume_file_path: path }));
+      setMessage(`Resume uploaded, but autofill was not completed: ${detail}`);
+    } finally {
+      setUploading(false);
     }
-
-    setProfile(nextProfile);
-    setUploading(false);
   }
 
   const initials = profile.display_name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase() || "FC";
@@ -236,8 +238,8 @@ export default function UnifiedProfileWorkspace() {
               <p className="eyebrow">Resume Import</p>
               <h2>Upload and autofill</h2>
               <div className={styles.uploadBox}>
-                <input type="file" accept=".txt,.md,.pdf,.doc,.docx" disabled={uploading} onChange={uploadResume} />
-                <p className={styles.small}>Text and Markdown files autofill immediately. PDF and DOCX files are stored securely and will use the document parser in the next step.</p>
+                <input type="file" accept=".txt,.md,.pdf,.docx" disabled={uploading} onChange={uploadResume} />
+                <p className={styles.small}>PDF, DOCX, text, and Markdown resumes are read in the browser and used to prefill available profile fields. Review all imported information before saving.</p>
               </div>
               {profile.resume_file_path && <p className={styles.small}>A resume is stored with this profile.</p>}
             </section>
