@@ -13,7 +13,7 @@ export default function AccountPage() {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data }) => {
       if (!data.user) {
-        router.replace("/auth");
+        router.replace("/login");
         return;
       }
       setEmail(data.user.email ?? "");
@@ -33,7 +33,7 @@ export default function AccountPage() {
       <section className="page-hero">
         <p className="eyebrow">Navigator Account</p>
         <h1>Your account is connected.</h1>
-        <p>Signed-in users can now be linked to saved profile and scenario data.</p>
+        <p>Manage your profile, saved scenario attempts, and earned badges.</p>
       </section>
       <section className="section section-narrow">
         <article className="card auth-card">
@@ -41,6 +41,7 @@ export default function AccountPage() {
           <p>{message || email}</p>
           <div className="actions">
             <a className="button button-dark" href="/account/profile">Edit Profile</a>
+            <a className="button button-dark" href="/account/badges">Badges & Attempts</a>
             <button className="button" type="button" onClick={signOut}>Sign Out</button>
           </div>
         </article>
