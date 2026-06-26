@@ -30,13 +30,16 @@
 .history { display: grid; gap: .7rem; }
 .historyItem { display: flex; justify-content: space-between; gap: 1rem; padding: .85rem 0; border-bottom: 1px solid #e5e8ea; }
 .libraryShell { max-width: 1120px; margin: -3.5rem auto 0; padding: 0 6vw 5rem; }
-.documentList { display: grid; gap: .85rem; margin-top: 1.25rem; }
-.documentItem { display: grid; grid-template-columns: 1fr; gap: .85rem; align-items: center; padding: 1rem; border: 1px solid #e0e4e8; border-radius: 14px; background: #fbfaf6; }
-.documentMain p { margin: .2rem 0; }
-.documentTitleRow { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
-.activePill { display: inline-flex; padding: .18rem .55rem; border-radius: 999px; background: #e8f0eb; color: #2f5c4b; font-size: .76rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
-.documentActions { display: flex; flex-wrap: wrap; gap: .55rem; justify-content: flex-start; }
-.renameRow { display: grid; grid-template-columns: 1fr; gap: .55rem; align-items: center; }
-.dangerButton { min-height: 48px; padding: .8rem 1.1rem; border-radius: 10px; border: 1px solid #b84b4b; background: #fff; color: #8f2929; font: inherit; font-weight: 750; cursor: pointer; }
+.documentList { display: grid; gap: 0; margin-top: 1rem; border-top: 1px solid #e0e4e8; }
+.documentItem { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .75rem; align-items: center; padding: .75rem 0; border-bottom: 1px solid #e0e4e8; background: transparent; }
+.documentMain { min-width: 0; }
+.documentMain p { display: inline; margin: 0 0 0 .45rem; }
+.documentMain p::before { content: "· "; }
+.documentTitleRow { display: inline-flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.activePill { display: inline-flex; padding: .14rem .48rem; border-radius: 999px; background: #e8f0eb; color: #2f5c4b; font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
+.documentActions { display: flex; flex-wrap: nowrap; gap: .4rem; justify-content: flex-end; }
+.documentActions :global(.button), .dangerButton { min-height: 36px; padding: .45rem .7rem; font-size: .84rem; }
+.renameRow { display: grid; grid-template-columns: minmax(160px, 1fr) auto auto; gap: .45rem; align-items: center; }
+.dangerButton { border-radius: 8px; border: 1px solid #b84b4b; background: #fff; color: #8f2929; font: inherit; font-weight: 750; cursor: pointer; }
 .dangerButton:hover { background: #fff1f1; }
-@media (max-width: 850px) { .summary, .grid { grid-template-columns: 1fr; } .form { grid-template-columns: 1fr; } .full, .actions { grid-column: auto; } .documentItem { grid-template-columns: 1fr; } .documentActions { justify-content: flex-start; } .renameRow { grid-template-columns: 1fr; } }
+@media (max-width: 850px) { .summary, .grid { grid-template-columns: 1fr; } .form { grid-template-columns: 1fr; } .full, .actions { grid-column: auto; } .documentItem { grid-template-columns: 1fr; } .documentActions { justify-content: flex-start; flex-wrap: wrap; } .renameRow { grid-template-columns: 1fr; } .documentMain p { display: block; margin: .15rem 0 0; } .documentMain p::before { content: ""; } }
