@@ -1,0 +1,181 @@
+/* Project Atlas visual layer: glass panels, night sky, and evidence stars */
+
+body {
+  background:
+    radial-gradient(circle at 28% 18%, rgba(45, 212, 243, .16) 0 1px, transparent 2px),
+    radial-gradient(circle at 72% 24%, rgba(139, 92, 246, .18) 0 1px, transparent 2px),
+    radial-gradient(circle at 84% 72%, rgba(45, 212, 243, .1) 0 1px, transparent 2px),
+    linear-gradient(135deg, #050914 0%, #081220 46%, #0d1827 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -2;
+  background-image:
+    radial-gradient(circle at 8% 12%, rgba(255,255,255,.72) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 18% 72%, rgba(45,212,243,.45) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 31% 35%, rgba(255,255,255,.56) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 44% 18%, rgba(139,92,246,.68) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 59% 66%, rgba(255,255,255,.48) 0 1px, transparent 1.6px),
+    radial-gradient(circle at 72% 28%, rgba(45,212,243,.62) 0 1px, transparent 1.8px),
+    radial-gradient(circle at 88% 14%, rgba(255,255,255,.58) 0 1px, transparent 1.4px),
+    radial-gradient(circle at 94% 82%, rgba(139,92,246,.52) 0 1px, transparent 1.5px);
+  background-size: 320px 220px, 420px 310px, 520px 360px, 380px 280px, 600px 420px, 460px 300px, 700px 480px, 540px 400px;
+  opacity: .72;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    linear-gradient(115deg, transparent 0 55%, rgba(45,212,243,.08) 55.1% 55.4%, transparent 55.5%),
+    linear-gradient(22deg, transparent 0 68%, rgba(139,92,246,.09) 68.1% 68.35%, transparent 68.5%),
+    radial-gradient(circle at 62% 14%, rgba(45,212,243,.22), transparent 11rem),
+    radial-gradient(circle at 74% 35%, rgba(139,92,246,.18), transparent 10rem);
+  opacity: .82;
+}
+
+.fc-shell {
+  background: transparent !important;
+}
+
+.fc-sidebar,
+.fc-topbar,
+.fc-card,
+.card,
+.scene-card,
+.fc-search,
+.fc-comms-drawer,
+.fc-conversation-card,
+.fc-comms-tabs button,
+.fc-comms-compose input,
+.fc-comms-compose button {
+  backdrop-filter: blur(18px) saturate(125%);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+}
+
+.fc-sidebar {
+  background:
+    linear-gradient(180deg, rgba(5, 9, 20, .78), rgba(9, 18, 32, .72)),
+    radial-gradient(circle at 50% 0%, rgba(45,212,243,.12), transparent 12rem) !important;
+  box-shadow: inset -1px 0 0 rgba(45,212,243,.1), 18px 0 50px rgba(0,0,0,.24);
+}
+
+.fc-topbar {
+  background: rgba(5, 9, 20, .56) !important;
+}
+
+.fc-content {
+  position: relative;
+}
+
+.fc-content::before {
+  content: "";
+  position: fixed;
+  left: 48%;
+  top: 7.5rem;
+  width: min(48vw, 650px);
+  height: 180px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 32%, #7dd3fc 0 2px, transparent 3px),
+    radial-gradient(circle at 28% 62%, #ffffff 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 42% 38%, #60a5fa 0 2px, transparent 3px),
+    radial-gradient(circle at 56% 70%, #a78bfa 0 2px, transparent 3px),
+    radial-gradient(circle at 72% 42%, #ffffff 0 1.5px, transparent 2.5px),
+    linear-gradient(30deg, transparent 17%, rgba(125,211,252,.55) 17.2% 17.7%, transparent 18%),
+    linear-gradient(150deg, transparent 40%, rgba(167,139,250,.5) 40.2% 40.7%, transparent 41%);
+  opacity: .82;
+  filter: drop-shadow(0 0 10px rgba(45,212,243,.4));
+}
+
+.fc-card,
+.card,
+.scene-card,
+[class*="card"],
+[class*="collapseSection"],
+[class*="sideCollapse"],
+[class*="summary"],
+[class*="folioBand"] {
+  background: linear-gradient(180deg, rgba(18, 32, 52, .58), rgba(8, 18, 32, .42)) !important;
+  border-color: rgba(45, 212, 243, .22) !important;
+  box-shadow: 0 22px 65px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.035) !important;
+  backdrop-filter: blur(18px) saturate(125%);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+}
+
+[class*="collapseSection"]:hover,
+.fc-card:hover,
+.card:hover,
+[class*="summary"]:hover {
+  border-color: rgba(45, 212, 243, .42) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,.28), 0 0 0 1px rgba(45,212,243,.08) !important;
+}
+
+.fc-search {
+  background: rgba(12, 24, 40, .72) !important;
+  border-color: rgba(148, 163, 184, .28) !important;
+}
+
+.fc-brand-mark,
+.fc-nav-icon,
+.fc-comms-button,
+[class*="avatar"] {
+  background: radial-gradient(circle at 35% 32%, rgba(94,230,255,.25), rgba(11, 24, 42, .75)) !important;
+  box-shadow: 0 0 28px rgba(45,212,243,.18), inset 0 0 22px rgba(45,212,243,.08) !important;
+}
+
+.fc-nav-link:hover,
+.fc-nav-link:focus-visible {
+  background: linear-gradient(90deg, rgba(45,212,243,.16), rgba(45,212,243,.04)) !important;
+  box-shadow: inset 0 0 0 1px rgba(45,212,243,.24);
+}
+
+.fc-comms-button {
+  color: #9ff4ff !important;
+  cursor: grab;
+}
+.fc-comms-button:active { cursor: grabbing; }
+
+[class*="badgeButton"],
+[class*="scenarioBadgeButton"] {
+  border: 1px solid rgba(125, 211, 252, .55) !important;
+  color: #9ff4ff !important;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255,255,255,.95), rgba(125,211,252,.86) 18%, rgba(139,92,246,.46) 38%, rgba(8,18,32,.28) 62%) !important;
+  box-shadow: 0 0 24px rgba(45,212,243,.46), 0 0 55px rgba(139,92,246,.22) !important;
+  text-shadow: 0 0 14px rgba(255,255,255,.65);
+}
+
+[class*="badgeButton"]::before,
+[class*="scenarioBadgeButton"]::before {
+  content: "✦";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1.05rem;
+}
+
+[class*="badgeButton"] {
+  font-size: 0 !important;
+}
+
+[class*="skyPlaceholder"] {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,.9) 0 1px, transparent 2px),
+    radial-gradient(circle at 58% 52%, rgba(45,212,243,.75) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 78% 22%, rgba(167,139,250,.8) 0 1.5px, transparent 2.5px),
+    linear-gradient(180deg, rgba(8,18,32,.65), rgba(5,9,20,.48)) !important;
+}
+
+[class*="folioBand"] span:hover {
+  background: rgba(45,212,243,.12);
+  color: var(--fc-text);
+}
