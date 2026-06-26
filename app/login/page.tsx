@@ -21,9 +21,12 @@ export default function LoginPage() {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { display_name: displayName } }
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/confirm`,
+          data: { display_name: displayName }
+        }
       });
-      setMessage(error ? error.message : "Check your email to confirm the account, then sign in.");
+      setMessage(error ? error.message : "Check your email to confirm the account. The link will return you to Fabled Compass.");
       return;
     }
 
