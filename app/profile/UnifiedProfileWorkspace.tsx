@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../utils/supabase/client";
 import { extractResumeText } from "../../utils/resume/extractText";
@@ -104,7 +104,7 @@ export default function UnifiedProfileWorkspace() {
   const [profile, setProfile] = useState<ProfileForm>(emptyProfile);
   const [badges, setBadges] = useState<Badge[]>([]);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
-  const [message, setMessage] = useState("Loading profile...");
+  const [message, setMessage] = useState("Loading Professional Folio...");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -156,7 +156,7 @@ export default function UnifiedProfileWorkspace() {
     setSaving(true);
     const supabase = createClient();
     const { error } = await supabase.from("profiles").upsert({ id: userId, ...profile, updated_at: new Date().toISOString() });
-    setMessage(error ? error.message : "Profile and privacy settings saved.");
+    setMessage(error ? error.message : "Professional Folio and privacy settings saved.");
     setSaving(false);
   }
 
@@ -181,7 +181,7 @@ export default function UnifiedProfileWorkspace() {
       const text = await extractResumeText(file);
       const nextProfile = parseResumeText(text, { ...profile, resume_file_path: path });
       setProfile(nextProfile);
-      setMessage("Resume uploaded and parsed. Review the autofilled information, then save the profile.");
+      setMessage("Resume uploaded and parsed. Review the imported Folio information, then save.");
     } catch (error) {
       const detail = error instanceof Error ? error.message : "The resume could not be parsed.";
       setProfile((current) => ({ ...current, resume_file_path: path }));
@@ -192,44 +192,51 @@ export default function UnifiedProfileWorkspace() {
   }
 
   const initials = profile.display_name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase() || "FC";
+  const completedFields = useMemo(() => [
+    profile.display_name,
+    profile.headline,
+    profile.location,
+    profile.about,
+    profile.skills,
+    profile.experience,
+    profile.education,
+    profile.resume_file_path
+  ].filter(Boolean).length, [profile]);
+  const portfolioStrength = Math.round((completedFields / 8) * 100);
 
   return (
     <div className={styles.page}>
       <section className={styles.header}>
-        <p className="eyebrow">Navigator Profile</p>
-        <h1>{profile.display_name || "Your profile"}</h1>
-        <p>{profile.headline || "Build one complete professional profile with demonstrated workplace skills."}</p>
+        <p className={styles.kicker}>Professional Folio</p>
+        <h1>{profile.display_name || "Your Professional Folio"}</h1>
+        <p>{profile.headline || "Build a living record of your professional identity, evidence, and growth."}</p>
       </section>
 
       <main className={styles.shell}>
-        <section className={`${styles.card} ${styles.summary}`}>
-          <div className="avatar">{initials}</div>
+        <section className={`${styles.card} ${styles.summary}`} aria-label="Professional Folio overview">
+          <div className={styles.avatar}>{initials}</div>
           <div className={styles.summaryText}>
+            <p className={styles.kicker}>Identity</p>
             <h2>{profile.display_name || "Navigator"}</h2>
-            <p className="muted">{profile.headline || "Professional headline not added"}</p>
+            <p className={styles.muted}>{profile.headline || "Professional headline not added"}</p>
             <p>{profile.location || "Location not added"}</p>
           </div>
-          <div>
-            <p className="eyebrow">Badges</p>
-            <div className={styles.badgeStrip}>
-              {badges.length === 0 && <span className={styles.small}>None yet</span>}
-              {badges.map((badge) => (
-                <button className={styles.badgeButton} key={badge.id} type="button" aria-label={badge.badge_name}>
-                  F
-                  <span className={styles.tooltip}>
-                    <strong>{badge.badge_name}</strong><br />
-                    Earned through {badge.source_scenario}. Version {badge.badge_version}, awarded {new Date(badge.earned_at).toLocaleDateString()}.
-                  </span>
-                </button>
-              ))}
-            </div>
+          <div className={styles.statGrid}>
+            <div><span>Portfolio Strength</span><strong>{portfolioStrength}%</strong></div>
+            <div><span>Evidence Stars</span><strong>{badges.length}</strong></div>
+            <div><span>Journey Entries</span><strong>{attempts.length}</strong></div>
           </div>
+        </section>
+
+        <section className={styles.folioBand} aria-label="Folio status">
+          <span>Identity</span><span>Competencies</span><span>Experience</span><span>Education</span><span>Story</span><span>Evidence</span>
         </section>
 
         <div className={styles.grid}>
           <form className={`${styles.card} ${styles.profileForm}`} onSubmit={save}>
             <details className={styles.collapseSection} open>
-              <summary>Basic information</summary>
+              <summary><span><small>01</small>Identity</span></summary>
+              <div className={styles.sectionIntro}>Who is this professional?</div>
               <div className={styles.sectionGrid}>
                 <label className={styles.field}>Display name<input className={styles.input} value={profile.display_name} onChange={(event) => update("display_name", event.target.value)} /></label>
                 <label className={styles.field}>Professional headline<input className={styles.input} value={profile.headline} onChange={(event) => update("headline", event.target.value)} /></label>
@@ -243,40 +250,73 @@ export default function UnifiedProfileWorkspace() {
             </details>
 
             <details className={styles.collapseSection} open>
-              <summary>Professional summary</summary>
-              <div className={styles.sectionBody}><textarea className={styles.textarea} aria-label="Professional summary" value={profile.about} onChange={(event) => update("about", event.target.value)} /></div>
+              <summary><span><small>02</small>Professional Story</span></summary>
+              <div className={styles.sectionIntro}>What motivates this person, and where are they going?</div>
+              <div className={styles.sectionBody}><textarea className={styles.textarea} aria-label="Professional story" placeholder="Describe your professional direction, values, and goals." value={profile.about} onChange={(event) => update("about", event.target.value)} /></div>
             </details>
 
             <details className={styles.collapseSection}>
-              <summary>Skills</summary>
-              <div className={styles.sectionBody}><textarea className={styles.textarea} aria-label="Skills" value={profile.skills} onChange={(event) => update("skills", event.target.value)} /></div>
+              <summary><span><small>03</small>Competencies</span></summary>
+              <div className={styles.sectionIntro}>What can this person demonstrate?</div>
+              <div className={styles.sectionBody}><textarea className={styles.textarea} aria-label="Competencies" placeholder="List competencies supported by work, projects, education, or challenges." value={profile.skills} onChange={(event) => update("skills", event.target.value)} /></div>
             </details>
 
             <details className={styles.collapseSection}>
-              <summary>Experience</summary>
+              <summary><span><small>04</small>Experience</span></summary>
+              <div className={styles.sectionIntro}>Where has this person applied their abilities?</div>
               <div className={styles.sectionBody}><textarea className={styles.textarea} aria-label="Experience" value={profile.experience} onChange={(event) => update("experience", event.target.value)} /></div>
             </details>
 
             <details className={styles.collapseSection}>
-              <summary>Education and certifications</summary>
+              <summary><span><small>05</small>Education and Certifications</span></summary>
+              <div className={styles.sectionIntro}>What formal learning supports this Folio?</div>
               <div className={styles.sectionBody}><textarea className={styles.textarea} aria-label="Education and certifications" value={profile.education} onChange={(event) => update("education", event.target.value)} /></div>
             </details>
 
+            <details className={styles.collapseSection}>
+              <summary><span><small>06</small>Professional Attributes</span></summary>
+              <div className={styles.emptyState}>Evidence-backed attributes such as Leadership, Communication, Adaptability, and Professionalism will appear here.</div>
+            </details>
+
+            <details className={styles.collapseSection}>
+              <summary><span><small>07</small>Projects and Evidence</span></summary>
+              <div className={styles.emptyState}>Projects, challenge results, recommendations, and verified evidence will connect here.</div>
+            </details>
+
+            <details className={styles.collapseSection}>
+              <summary><span><small>08</small>Professional Sky</span></summary>
+              <div className={styles.skyPlaceholder}><span>✦</span><p>Your completed evidence will form constellations here.</p></div>
+            </details>
+
             <div className={styles.actions}>
-              <button className="button button-dark" disabled={saving || !userId} type="submit">{saving ? "Saving..." : "Save Profile"}</button>
+              <button className="button button-dark" disabled={saving || !userId} type="submit">{saving ? "Saving..." : "Save Professional Folio"}</button>
             </div>
           </form>
 
           <aside className={styles.stack}>
             <details className={`${styles.card} ${styles.sideCollapse}`} open>
-              <summary><span><small>Privacy</small>Profile visibility</span></summary>
+              <summary><span><small>Evidence</small>Evidence Stars</span></summary>
               <div className={styles.sideContent}>
-                <label className={styles.field}>
-                  Who can view this profile?
+                <div className={styles.badgeStrip}>
+                  {badges.length === 0 && <span className={styles.small}>Complete a challenge to place the first star in your sky.</span>}
+                  {badges.map((badge) => (
+                    <button className={styles.badgeButton} key={badge.id} type="button" aria-label={badge.badge_name}>
+                      ✦
+                      <span className={styles.tooltip}><strong>{badge.badge_name}</strong><br />Earned through {badge.source_scenario}. Version {badge.badge_version}, awarded {new Date(badge.earned_at).toLocaleDateString()}.</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </details>
+
+            <details className={`${styles.card} ${styles.sideCollapse}`} open>
+              <summary><span><small>Privacy</small>Folio visibility</span></summary>
+              <div className={styles.sideContent}>
+                <label className={styles.field}>Who can view this Folio?
                   <select className={styles.input} value={profile.profile_visibility} onChange={(event) => update("profile_visibility", event.target.value as ProfileVisibility)}>
                     <option value="private">Only me</option>
                     <option value="employers">Approved employers</option>
-                    <option value="public">Public profile</option>
+                    <option value="public">Public Folio</option>
                   </select>
                 </label>
                 <div className={styles.privacyList}>
@@ -285,31 +325,31 @@ export default function UnifiedProfileWorkspace() {
                   <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_phone} onChange={(event) => update("show_phone", event.target.checked)} /><span>Show phone number</span></label>
                   <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_resume} onChange={(event) => update("show_resume", event.target.checked)} /><span>Allow resume access</span></label>
                 </div>
-                <p className={styles.small}>Your private profile editor always shows all fields. These settings control what may appear in employer and public views.</p>
+                <p className={styles.small}>The private editor always shows all fields. These settings control employer and public views.</p>
                 <button className="button button-dark" disabled={saving || !userId} type="button" onClick={() => save()}>{saving ? "Saving..." : "Save Privacy"}</button>
               </div>
             </details>
 
             <details className={`${styles.card} ${styles.sideCollapse}`} open>
-              <summary><span><small>Resume Import</small>Upload and autofill</span></summary>
+              <summary><span><small>Documents</small>Resume import</span></summary>
               <div className={styles.sideContent}>
                 <div className={styles.uploadBox}>
                   <input type="file" accept=".txt,.md,.pdf,.docx" disabled={uploading} onChange={uploadResume} />
-                  <p className={styles.small}>PDF, DOCX, text, and Markdown resumes are read in the browser and used to prefill available profile fields. Review all imported information before saving.</p>
+                  <p className={styles.small}>Upload a resume to prefill available Folio fields. Review imported information before saving.</p>
                 </div>
-                {profile.resume_file_path && <p className={styles.small}>A resume is stored with this profile.</p>}
+                {profile.resume_file_path && <p className={styles.small}>A resume is stored in this Folio.</p>}
               </div>
             </details>
 
             <details className={`${styles.card} ${styles.sideCollapse}`}>
-              <summary><span><small>Recent Activity</small>Scenario attempts</span></summary>
+              <summary><span><small>Journey</small>Recent challenge record</span></summary>
               <div className={styles.sideContent}>
                 <div className={styles.history}>
-                  {attempts.length === 0 && <p className={styles.small}>No saved attempts yet.</p>}
+                  {attempts.length === 0 && <p className={styles.small}>Your completed challenges will appear here.</p>}
                   {attempts.map((attempt) => (
                     <div className={styles.historyItem} key={attempt.id}>
                       <span>{new Date(attempt.completed_at).toLocaleDateString()}</span>
-                      <strong>{attempt.overall_score}% · {attempt.passed ? "Passed" : "Reviewed"}</strong>
+                      <strong>{attempt.overall_score}% · {attempt.passed ? "Completed" : "Reviewed"}</strong>
                     </div>
                   ))}
                 </div>
