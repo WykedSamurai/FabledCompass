@@ -115,8 +115,9 @@ export default function DifficultCustomerPage() {
         <h1>{result.passed ? "Badge earned" : "Journey reviewed"}</h1>
         <div className="result-grid">
           <article className="card badge-preview">
-            <div className="badge-seal">✦</div>
-            <h3>Customer Service Foundations</h3>
+            <div className="badge-seal">↺</div>
+            <h3>Customer Recovery</h3>
+            <p className="muted">The Difficult Customer</p>
             <div className="score">{result.overall}%</div>
             <p>{result.passed ? "Awarded" : "Not yet awarded"}</p>
           </article>
@@ -134,7 +135,7 @@ export default function DifficultCustomerPage() {
             <div className="actions">
               <button className="button button-dark" disabled={saving || saved} onClick={saveResult}>{saving ? "Saving..." : saved ? "Result Saved" : "Save Result"}</button>
               <button className="button" onClick={restart}>Try Again</button>
-              <Link className="button" href="/account/profile">View Account Profile</Link>
+              <Link className="button" href="/profile">View Profile</Link>
             </div>
             {saveMessage && <p className="form-message" role="status">{saveMessage}</p>}
             {!saved && <p className="muted">A signed-in account is required to save attempts and badges.</p>}
