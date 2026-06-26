@@ -6,8 +6,8 @@ export default function DashboardPage() {
     <div className="fc-page-stack">
       <PageHeader
         eyebrow="Career Journey"
-        title="Dashboard"
-        description="A quiet workspace for direction, progress, and next steps."
+        title="Navigator"
+        description="Review your direction, progress, and next steps."
       />
 
       <section className="fc-dashboard-grid">
@@ -22,13 +22,13 @@ export default function DashboardPage() {
         </Card>
 
         <Card eyebrow="Next Step" title="Continue Journey">
-          <p className="fc-muted">Customer Recovery is ready to continue building evidence in your Portfolio.</p>
+          <p className="fc-muted">Customer Recovery is ready to continue building evidence in your Professional Folio.</p>
           <a className="fc-button" href="/adventures/difficult-customer">Begin Challenge</a>
         </Card>
 
-        <Card eyebrow="Strength" title="Portfolio Strength">
+        <Card eyebrow="Folio" title="Portfolio Strength">
           <p className="fc-score">—</p>
-          <p className="fc-muted">Scoring will always explain what contributed to the result and what can improve it.</p>
+          <p className="fc-muted">Scoring will explain what contributed to the result and what can improve it.</p>
         </Card>
 
         <Card eyebrow="Signal" title="Compass Suggestions">
