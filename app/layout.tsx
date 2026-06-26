@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import AppShell from "../components/layout/AppShell";
 import "./globals.css";
+import "./sky.css";
 
 export const metadata: Metadata = {
   title: "Fabled Compass",
