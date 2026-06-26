@@ -227,69 +227,94 @@ export default function UnifiedProfileWorkspace() {
         </section>
 
         <div className={styles.grid}>
-          <form className={`${styles.card} ${styles.form}`} onSubmit={save}>
-            <label className={styles.field}>Display name<input className={styles.input} value={profile.display_name} onChange={(event) => update("display_name", event.target.value)} /></label>
-            <label className={styles.field}>Professional headline<input className={styles.input} value={profile.headline} onChange={(event) => update("headline", event.target.value)} /></label>
-            <label className={styles.field}>Public email<input className={styles.input} type="email" value={profile.email_public} onChange={(event) => update("email_public", event.target.value)} /></label>
-            <label className={styles.field}>Phone<input className={styles.input} value={profile.phone} onChange={(event) => update("phone", event.target.value)} /></label>
-            <label className={styles.field}>Location<input className={styles.input} value={profile.location} onChange={(event) => update("location", event.target.value)} /></label>
-            <label className={styles.field}>Website<input className={styles.input} value={profile.website} onChange={(event) => update("website", event.target.value)} /></label>
-            <label className={styles.field}>LinkedIn<input className={styles.input} value={profile.linkedin_url} onChange={(event) => update("linkedin_url", event.target.value)} /></label>
-            <label className={styles.field}>Portfolio link<input className={styles.input} value={profile.portfolio_url} onChange={(event) => update("portfolio_url", event.target.value)} /></label>
-            <label className={`${styles.field} ${styles.full}`}>Professional summary<textarea className={styles.textarea} value={profile.about} onChange={(event) => update("about", event.target.value)} /></label>
-            <label className={`${styles.field} ${styles.full}`}>Skills<textarea className={styles.textarea} value={profile.skills} onChange={(event) => update("skills", event.target.value)} /></label>
-            <label className={`${styles.field} ${styles.full}`}>Experience<textarea className={styles.textarea} value={profile.experience} onChange={(event) => update("experience", event.target.value)} /></label>
-            <label className={`${styles.field} ${styles.full}`}>Education and certifications<textarea className={styles.textarea} value={profile.education} onChange={(event) => update("education", event.target.value)} /></label>
+          <form className={`${styles.card} ${styles.profileForm}`} onSubmit={save}>
+            <details className={styles.collapseSection} open>
+              <summary>Basic information</summary>
+              <div className={styles.sectionGrid}>
+                <label className={styles.field}>Display name<input className={styles.input} value={profile.display_name} onChange={(event) => update("display_name", event.target.value)} /></label>
+                <label className={styles.field}>Professional headline<input className={styles.input} value={profile.headline} onChange={(event) => update("headline", event.target.value)} /></label>
+                <label className={styles.field}>Public email<input className={styles.input} type="email" value={profile.email_public} onChange={(event) => update("email_public", event.target.value)} /></label>
+                <label className={styles.field}>Phone<input className={styles.input} value={profile.phone} onChange={(event) => update("phone", event.target.value)} /></label>
+                <label className={styles.field}>Location<input className={styles.input} value={profile.location} onChange={(event) => update("location", event.target.value)} /></label>
+                <label className={styles.field}>Website<input className={styles.input} value={profile.website} onChange={(event) => update("website", event.target.value)} /></label>
+                <label className={styles.field}>LinkedIn<input className={styles.input} value={profile.linkedin_url} onChange={(event) => update("linkedin_url", event.target.value)} /></label>
+                <label className={styles.field}>Portfolio link<input className={styles.input} value={profile.portfolio_url} onChange={(event) => update("portfolio_url", event.target.value)} /></label>
+              </div>
+            </details>
+
+            <details className={styles.collapseSection} open>
+              <summary>Professional summary</summary>
+              <div className={styles.sectionBody}><textarea className={styles.textarea} aria-label="Professional summary" value={profile.about} onChange={(event) => update("about", event.target.value)} /></div>
+            </details>
+
+            <details className={styles.collapseSection}>
+              <summary>Skills</summary>
+              <div className={styles.sectionBody}><textarea className={styles.textarea} aria-label="Skills" value={profile.skills} onChange={(event) => update("skills", event.target.value)} /></div>
+            </details>
+
+            <details className={styles.collapseSection}>
+              <summary>Experience</summary>
+              <div className={styles.sectionBody}><textarea className={styles.textarea} aria-label="Experience" value={profile.experience} onChange={(event) => update("experience", event.target.value)} /></div>
+            </details>
+
+            <details className={styles.collapseSection}>
+              <summary>Education and certifications</summary>
+              <div className={styles.sectionBody}><textarea className={styles.textarea} aria-label="Education and certifications" value={profile.education} onChange={(event) => update("education", event.target.value)} /></div>
+            </details>
+
             <div className={styles.actions}>
               <button className="button button-dark" disabled={saving || !userId} type="submit">{saving ? "Saving..." : "Save Profile"}</button>
             </div>
           </form>
 
           <aside className={styles.stack}>
-            <section className={styles.card}>
-              <p className="eyebrow">Privacy</p>
-              <h2>Profile visibility</h2>
-              <label className={styles.field}>
-                Who can view this profile?
-                <select className={styles.input} value={profile.profile_visibility} onChange={(event) => update("profile_visibility", event.target.value as ProfileVisibility)}>
-                  <option value="private">Only me</option>
-                  <option value="employers">Approved employers</option>
-                  <option value="public">Public profile</option>
-                </select>
-              </label>
-              <div className={styles.privacyList}>
-                <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_location} onChange={(event) => update("show_location", event.target.checked)} /><span>Show location</span></label>
-                <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_public_email} onChange={(event) => update("show_public_email", event.target.checked)} /><span>Show public email</span></label>
-                <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_phone} onChange={(event) => update("show_phone", event.target.checked)} /><span>Show phone number</span></label>
-                <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_resume} onChange={(event) => update("show_resume", event.target.checked)} /><span>Allow resume access</span></label>
+            <details className={`${styles.card} ${styles.sideCollapse}`} open>
+              <summary><span><small>Privacy</small>Profile visibility</span></summary>
+              <div className={styles.sideContent}>
+                <label className={styles.field}>
+                  Who can view this profile?
+                  <select className={styles.input} value={profile.profile_visibility} onChange={(event) => update("profile_visibility", event.target.value as ProfileVisibility)}>
+                    <option value="private">Only me</option>
+                    <option value="employers">Approved employers</option>
+                    <option value="public">Public profile</option>
+                  </select>
+                </label>
+                <div className={styles.privacyList}>
+                  <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_location} onChange={(event) => update("show_location", event.target.checked)} /><span>Show location</span></label>
+                  <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_public_email} onChange={(event) => update("show_public_email", event.target.checked)} /><span>Show public email</span></label>
+                  <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_phone} onChange={(event) => update("show_phone", event.target.checked)} /><span>Show phone number</span></label>
+                  <label className={styles.toggleRow}><input type="checkbox" checked={profile.show_resume} onChange={(event) => update("show_resume", event.target.checked)} /><span>Allow resume access</span></label>
+                </div>
+                <p className={styles.small}>Your private profile editor always shows all fields. These settings control what may appear in employer and public views.</p>
+                <button className="button button-dark" disabled={saving || !userId} type="button" onClick={() => save()}>{saving ? "Saving..." : "Save Privacy"}</button>
               </div>
-              <p className={styles.small}>Your private profile editor always shows all fields. These settings control what may appear in employer and public views.</p>
-              <button className="button button-dark" disabled={saving || !userId} type="button" onClick={() => save()}>{saving ? "Saving..." : "Save Privacy"}</button>
-            </section>
+            </details>
 
-            <section className={styles.card}>
-              <p className="eyebrow">Resume Import</p>
-              <h2>Upload and autofill</h2>
-              <div className={styles.uploadBox}>
-                <input type="file" accept=".txt,.md,.pdf,.docx" disabled={uploading} onChange={uploadResume} />
-                <p className={styles.small}>PDF, DOCX, text, and Markdown resumes are read in the browser and used to prefill available profile fields. Review all imported information before saving.</p>
+            <details className={`${styles.card} ${styles.sideCollapse}`} open>
+              <summary><span><small>Resume Import</small>Upload and autofill</span></summary>
+              <div className={styles.sideContent}>
+                <div className={styles.uploadBox}>
+                  <input type="file" accept=".txt,.md,.pdf,.docx" disabled={uploading} onChange={uploadResume} />
+                  <p className={styles.small}>PDF, DOCX, text, and Markdown resumes are read in the browser and used to prefill available profile fields. Review all imported information before saving.</p>
+                </div>
+                {profile.resume_file_path && <p className={styles.small}>A resume is stored with this profile.</p>}
               </div>
-              {profile.resume_file_path && <p className={styles.small}>A resume is stored with this profile.</p>}
-            </section>
+            </details>
 
-            <section className={styles.card}>
-              <p className="eyebrow">Recent Activity</p>
-              <h2>Scenario attempts</h2>
-              <div className={styles.history}>
-                {attempts.length === 0 && <p className={styles.small}>No saved attempts yet.</p>}
-                {attempts.map((attempt) => (
-                  <div className={styles.historyItem} key={attempt.id}>
-                    <span>{new Date(attempt.completed_at).toLocaleDateString()}</span>
-                    <strong>{attempt.overall_score}% · {attempt.passed ? "Passed" : "Reviewed"}</strong>
-                  </div>
-                ))}
+            <details className={`${styles.card} ${styles.sideCollapse}`}>
+              <summary><span><small>Recent Activity</small>Scenario attempts</span></summary>
+              <div className={styles.sideContent}>
+                <div className={styles.history}>
+                  {attempts.length === 0 && <p className={styles.small}>No saved attempts yet.</p>}
+                  {attempts.map((attempt) => (
+                    <div className={styles.historyItem} key={attempt.id}>
+                      <span>{new Date(attempt.completed_at).toLocaleDateString()}</span>
+                      <strong>{attempt.overall_score}% · {attempt.passed ? "Passed" : "Reviewed"}</strong>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </section>
+            </details>
           </aside>
         </div>
 
