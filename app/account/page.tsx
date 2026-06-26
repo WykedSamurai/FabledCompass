@@ -40,7 +40,7 @@ export default function AccountPage() {
           <h2>Account</h2>
           <p>{message || email}</p>
           <div className="actions">
-            <a className="button button-dark" href="/profile">Open Profile</a>
+            <a className="button button-dark" href="/account/profile">Edit Profile</a>
             <button className="button" type="button" onClick={signOut}>Sign Out</button>
           </div>
         </article>
