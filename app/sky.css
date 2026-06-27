@@ -41,8 +41,26 @@ body::after {
   opacity: .65;
 }
 
-.fc-shell {
-  background: transparent !important;
+.fc-shell { background: transparent !important; }
+
+.fc-content { position: relative; }
+.fc-content::before {
+  content: "";
+  position: fixed;
+  left: 52%;
+  top: 6.75rem;
+  width: min(48vw, 660px);
+  height: 220px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 17% 34%, rgba(125,211,252,.42) 0 1px, transparent 2px),
+    radial-gradient(circle at 29% 63%, rgba(255,255,255,.34) 0 .8px, transparent 1.8px),
+    radial-gradient(circle at 43% 39%, rgba(96,165,250,.4) 0 1px, transparent 2px),
+    radial-gradient(circle at 57% 71%, rgba(167,139,250,.36) 0 1px, transparent 2px),
+    radial-gradient(circle at 73% 43%, rgba(255,255,255,.34) 0 .8px, transparent 1.8px),
+    radial-gradient(circle at 84% 22%, rgba(45,212,243,.32) 0 .9px, transparent 1.8px);
+  opacity: .55;
+  filter: blur(.35px) drop-shadow(0 0 5px rgba(45,212,243,.1));
 }
 
 .fc-sidebar,
@@ -55,46 +73,22 @@ body::after {
 .fc-conversation-card,
 .fc-comms-tabs button,
 .fc-comms-compose input,
-.fc-comms-compose button {
+.fc-comms-compose button,
+[class*="card"],
+[class*="collapseSection"],
+[class*="sideCollapse"],
+[class*="summary"],
+[class*="folioBand"] {
   backdrop-filter: blur(18px) saturate(125%);
   -webkit-backdrop-filter: blur(18px) saturate(125%);
 }
 
 .fc-sidebar {
-  background:
-    linear-gradient(180deg, rgba(5, 9, 20, .78), rgba(9, 18, 32, .72)),
-    radial-gradient(circle at 50% 0%, rgba(45,212,243,.1), transparent 12rem) !important;
+  background: linear-gradient(180deg, rgba(5, 9, 20, .78), rgba(9, 18, 32, .72)) !important;
   box-shadow: inset -1px 0 0 rgba(45,212,243,.1), 18px 0 50px rgba(0,0,0,.24);
 }
-
-.fc-topbar {
-  background: rgba(5, 9, 20, .56) !important;
-}
-
-.fc-content {
-  position: relative;
-}
-
-.fc-content::before {
-  content: "";
-  position: fixed;
-  left: 48%;
-  top: 7.5rem;
-  width: min(48vw, 650px);
-  height: 180px;
-  pointer-events: none;
-  background:
-    radial-gradient(circle at 18% 32%, rgba(125,211,252,.55) 0 1.25px, transparent 2.4px),
-    radial-gradient(circle at 28% 62%, rgba(255,255,255,.46) 0 .9px, transparent 2px),
-    radial-gradient(circle at 42% 38%, rgba(96,165,250,.54) 0 1.25px, transparent 2.4px),
-    radial-gradient(circle at 56% 70%, rgba(167,139,250,.48) 0 1.25px, transparent 2.4px),
-    radial-gradient(circle at 72% 42%, rgba(255,255,255,.44) 0 .9px, transparent 2px),
-    linear-gradient(19deg, transparent 24%, rgba(125,211,252,.055) 24.15% 24.28%, transparent 24.45%),
-    linear-gradient(143deg, transparent 36%, rgba(167,139,250,.05) 36.15% 36.3%, transparent 36.5%),
-    linear-gradient(159deg, transparent 59%, rgba(125,211,252,.045) 59.15% 59.28%, transparent 59.5%);
-  opacity: .33;
-  filter: blur(.45px) drop-shadow(0 0 5px rgba(45,212,243,.12));
-}
+.fc-topbar { background: rgba(5, 9, 20, .56) !important; }
+.fc-search { background: rgba(12, 24, 40, .72) !important; border-color: rgba(148, 163, 184, .28) !important; }
 
 .fc-card,
 .card,
@@ -107,8 +101,6 @@ body::after {
   background: linear-gradient(180deg, rgba(18, 32, 52, .5), rgba(8, 18, 32, .38)) !important;
   border-color: rgba(45, 212, 243, .2) !important;
   box-shadow: 0 22px 65px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.03) !important;
-  backdrop-filter: blur(18px) saturate(125%);
-  -webkit-backdrop-filter: blur(18px) saturate(125%);
 }
 
 [class*="collapseSection"]:hover,
@@ -117,11 +109,6 @@ body::after {
 [class*="summary"]:hover {
   border-color: rgba(45, 212, 243, .36) !important;
   box-shadow: 0 24px 70px rgba(0,0,0,.28), 0 0 0 1px rgba(45,212,243,.06) !important;
-}
-
-.fc-search {
-  background: rgba(12, 24, 40, .72) !important;
-  border-color: rgba(148, 163, 184, .28) !important;
 }
 
 .fc-brand-mark,
@@ -133,50 +120,21 @@ body::after {
 }
 
 .fc-nav-link:hover,
-.fc-nav-link:focus-visible {
-  background: linear-gradient(90deg, rgba(45,212,243,.16), rgba(45,212,243,.04)) !important;
-  box-shadow: inset 0 0 0 1px rgba(45,212,243,.24);
-}
-
-.fc-comms-button {
-  color: #9ff4ff !important;
-  cursor: grab;
-}
+.fc-nav-link:focus-visible { background: linear-gradient(90deg, rgba(45,212,243,.16), rgba(45,212,243,.04)) !important; box-shadow: inset 0 0 0 1px rgba(45,212,243,.24); }
+.fc-comms-button { color: #9ff4ff !important; cursor: grab; }
 .fc-comms-button:active { cursor: grabbing; }
 
 [class*="badgeButton"],
 [class*="scenarioBadgeButton"] {
   border: 1px solid rgba(125, 211, 252, .55) !important;
   color: #9ff4ff !important;
-  background:
-    radial-gradient(circle at 50% 45%, rgba(255,255,255,.95), rgba(125,211,252,.86) 18%, rgba(139,92,246,.46) 38%, rgba(8,18,32,.28) 62%) !important;
+  background: radial-gradient(circle at 50% 45%, rgba(255,255,255,.95), rgba(125,211,252,.86) 18%, rgba(139,92,246,.46) 38%, rgba(8,18,32,.28) 62%) !important;
   box-shadow: 0 0 24px rgba(45,212,243,.46), 0 0 55px rgba(139,92,246,.22) !important;
   text-shadow: 0 0 14px rgba(255,255,255,.65);
 }
 
 [class*="badgeButton"]::before,
-[class*="scenarioBadgeButton"]::before {
-  content: "✦";
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 1.05rem;
-}
-
-[class*="badgeButton"] {
-  font-size: 0 !important;
-}
-
-[class*="skyPlaceholder"] {
-  background:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,.72) 0 .9px, transparent 1.8px),
-    radial-gradient(circle at 58% 52%, rgba(45,212,243,.58) 0 1.2px, transparent 2.4px),
-    radial-gradient(circle at 78% 22%, rgba(167,139,250,.58) 0 1.2px, transparent 2.4px),
-    linear-gradient(180deg, rgba(8,18,32,.65), rgba(5,9,20,.48)) !important;
-}
-
-[class*="folioBand"] span:hover {
-  background: rgba(45,212,243,.12);
-  color: var(--fc-text);
-}
+[class*="scenarioBadgeButton"]::before { content: "✦"; position: absolute; inset: 0; display: grid; place-items: center; font-size: 1.05rem; }
+[class*="badgeButton"] { font-size: 0 !important; }
+[class*="skyPlaceholder"] { background: radial-gradient(circle at 20% 30%, rgba(255,255,255,.72) 0 .9px, transparent 1.8px), radial-gradient(circle at 58% 52%, rgba(45,212,243,.58) 0 1.2px, transparent 2.4px), radial-gradient(circle at 78% 22%, rgba(167,139,250,.58) 0 1.2px, transparent 2.4px), linear-gradient(180deg, rgba(8,18,32,.65), rgba(5,9,20,.48)) !important; }
+[class*="folioBand"] span:hover { background: rgba(45,212,243,.12); color: var(--fc-text); }
