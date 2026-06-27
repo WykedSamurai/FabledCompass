@@ -3,10 +3,11 @@ import AppShell from "../components/layout/AppShell";
 import "./globals.css";
 import "./sky.css";
 import "./atlas-fix.css";
+import "./character-sheet.css";
 
 export const metadata: Metadata = {
   title: "Fabled Compass",
-  description: "Navigate careers through jobs, workplace adventures, and demonstrated skills."
+  description: "Navigate careers."
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
