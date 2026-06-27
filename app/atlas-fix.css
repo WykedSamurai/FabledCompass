@@ -12,6 +12,21 @@ body::before {
   opacity: .78 !important;
 }
 
+.fc-sidebar,
+.fc-workspace,
+.fc-comms-button,
+.fc-comms-drawer,
+.fc-comms-scrim {
+  position: relative;
+  z-index: 1;
+}
+
+.fc-comms-button,
+.fc-comms-drawer,
+.fc-comms-scrim {
+  z-index: 20;
+}
+
 .fc-card,
 .card,
 .scene-card {
