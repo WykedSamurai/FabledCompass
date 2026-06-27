@@ -21,9 +21,7 @@ export default function DashboardPage() {
   const competencies = calculateAllCompetencies(sampleEvidence);
   const compass = calculateProfessionalCompass(competencies);
   const leadershipConstellation = buildConstellation("leadership", sampleEvidence);
-  const topCompetencies = [...competencies]
-    .sort((first, second) => second.progress - first.progress)
-    .slice(0, 4);
+  const topCompetencies = [...competencies].sort((first, second) => second.progress - first.progress).slice(0, 4);
   const attributeScores = {
     leadership: compass.leadership,
     communication: compass.communication,
@@ -34,7 +32,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="fc-page-stack">
+    <div className="fc-page-stack fc-compact-sheet">
       <section className="fc-character-sheet-hero">
         <div>
           <p className="fc-eyebrow">Professional Character Sheet</p>
@@ -42,20 +40,20 @@ export default function DashboardPage() {
           <div className="fc-archetype-line">
             <span>{archetype.icon}</span>
             <strong>{archetype.name}</strong>
+            <em>{archetype.motto}</em>
           </div>
-          <p className="fc-archetype-motto">{archetype.motto}</p>
           <p className="fc-muted">Personal Legend: Build a career story through evidence, reflection, and growth.</p>
         </div>
         <div className="fc-character-summary">
-          <span>Level 7 Professional</span>
+          <span>Level 7</span>
           <span>Career Path Active</span>
-          <strong>{compass.overall}% Portfolio Strength</strong>
+          <strong>{compass.overall}% Portfolio</strong>
         </div>
       </section>
 
       <section className="fc-character-sheet-grid">
-        <AtlasCard>
-          <AtlasHeader eyebrow="Core" title="Six Attributes" />
+        <details className="fc-sheet-section" open>
+          <summary>Six Attributes <span>{compass.overall}% overall</span></summary>
           <div className="fc-attribute-grid">
             {primaryAttributes.map((attribute) => (
               <div className="fc-attribute-row" key={attribute.key}>
@@ -64,10 +62,10 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
-        </AtlasCard>
+        </details>
 
-        <AtlasCard>
-          <AtlasHeader eyebrow="Compass" title="Professional Compass" />
+        <details className="fc-sheet-section">
+          <summary>Professional Compass <span>{compass.overall}%</span></summary>
           <div className="fc-compass-placeholder" aria-label="Professional Compass scores">
             <span>Leadership {compass.leadership}%</span>
             <span>Communication {compass.communication}%</span>
@@ -75,15 +73,15 @@ export default function DashboardPage() {
             <span>Professionalism {compass.professionalism}%</span>
             <strong>{compass.overall}%</strong>
           </div>
-        </AtlasCard>
+        </details>
 
-        <details className="fc-sheet-section" open>
+        <details className="fc-sheet-section">
           <summary>Skills <span>{topCompetencies.length} active signals</span></summary>
           <ul className="fc-evidence-list">
             {topCompetencies.map((competency) => (
               <li key={competency.id}>
                 <strong>{competency.label}</strong>
-                <span>{competency.progress}% · {competency.evidenceCount} evidence</span>
+                <span>{competency.progress}% - {competency.evidenceCount} evidence</span>
               </li>
             ))}
           </ul>
@@ -95,7 +93,7 @@ export default function DashboardPage() {
             {sampleEvidence.map((evidence) => (
               <li key={evidence.id}>
                 <strong>{evidence.title}</strong>
-                <span>{evidence.score}% · {evidence.verification}</span>
+                <span>{evidence.score}% - {evidence.verification}</span>
               </li>
             ))}
           </ul>
@@ -105,15 +103,14 @@ export default function DashboardPage() {
           <summary>Constellations <span>{leadershipConstellation.completion}% Leadership</span></summary>
           <div className="fc-constellation-list">
             {leadershipConstellation.stars.map((star) => (
-              <span className={star.active ? "is-active" : ""} key={star.id}>✦</span>
+              <span className={star.active ? "is-active" : ""} key={star.id}>*</span>
             ))}
           </div>
-          <p className="fc-muted">{leadershipConstellation.completion}% constellation completion.</p>
         </details>
 
         <AtlasCard>
           <AtlasHeader eyebrow="Next Step" title="Continue Journey" />
-          <p className="fc-muted">Customer Recovery is ready to continue building evidence in your Professional Folio.</p>
+          <p className="fc-muted">Customer Recovery is ready to continue building evidence.</p>
           <AtlasButton href="/adventures/difficult-customer">Begin Challenge</AtlasButton>
         </AtlasCard>
       </section>
