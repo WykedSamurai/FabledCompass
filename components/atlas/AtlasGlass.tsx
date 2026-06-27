@@ -1,7 +1,8 @@
+import type { ReactNode } from "react";
 import styles from "./atlasGlass.module.css";
 
 type BaseProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
 };
 
