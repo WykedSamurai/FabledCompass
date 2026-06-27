@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../utils/supabase/client";
 
@@ -29,23 +30,24 @@ export default function AccountPage() {
   }
 
   return (
-    <>
-      <section className="page-hero">
-        <p className="eyebrow">Navigator Account</p>
-        <h1>Your account is connected.</h1>
-        <p>Manage your profile, saved scenario attempts, and earned badges.</p>
+    <div className="fc-page-stack fc-workspace-page">
+      <section className="fc-workspace-hero">
+        <p className="fc-eyebrow">Navigator Center</p>
+        <h1>Account Control</h1>
+        <p>Manage profile details, badges, and access settings in one place.</p>
       </section>
-      <section className="section section-narrow">
-        <article className="card auth-card">
-          <h2>Account</h2>
-          <p>{message || email}</p>
-          <div className="actions">
-            <a className="button button-dark" href="/account/profile">Edit Profile</a>
-            <a className="button button-dark" href="/account/badges">Badges & Attempts</a>
-            <button className="button" type="button" onClick={signOut}>Sign Out</button>
+
+      <section className="fc-workspace-grid">
+        <article className="fc-card">
+          <h2>Connected Account</h2>
+          <p className="fc-muted">{message || email}</p>
+          <div className="fc-action-row">
+            <Link className="fc-button" href="/account/profile">Edit Profile</Link>
+            <Link className="fc-button" href="/account/badges">Badges & Attempts</Link>
+            <button className="fc-button" type="button" onClick={signOut}>Sign Out</button>
           </div>
         </article>
       </section>
-    </>
+    </div>
   );
 }

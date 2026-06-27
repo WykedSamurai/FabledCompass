@@ -24,28 +24,28 @@ const jobs = [
 
 export default function JobsPage() {
   return (
-    <>
-      <section className="page-hero">
-        <p className="eyebrow">Career Board</p>
-        <h1>Find the next path worth taking.</h1>
-        <p>This prototype uses sample listings to demonstrate how careers and earned skills will connect.</p>
+    <div className="fc-page-stack fc-workspace-page">
+      <section className="fc-workspace-hero">
+        <p className="fc-eyebrow">Career Board</p>
+        <h1>Open Opportunities</h1>
+        <p>Browse roles that align with your professional strengths and demonstrated evidence.</p>
       </section>
-      <section className="section section-narrow">
-        <div className="jobs-grid">
-          {jobs.map((job) => (
-            <article className="card job-card" key={`${job.company}-${job.title}`}>
+
+      <section className="fc-job-list">
+        {jobs.map((job) => (
+          <article className="fc-card fc-job-card" key={`${job.company}-${job.title}`}>
+            <div className="fc-card-header-row">
               <div>
-                <p className="eyebrow">{job.type}</p>
+                <p className="fc-eyebrow">{job.type}</p>
                 <h2>{job.title}</h2>
-                <strong>{job.company}</strong>
-                <p className="muted">{job.location}</p>
-                <p>{job.summary}</p>
+                <p className="fc-muted">{job.company} • {job.location}</p>
               </div>
-              <button className="button button-dark" type="button">View Role</button>
-            </article>
-          ))}
-        </div>
+              <button className="fc-button" type="button">View Role</button>
+            </div>
+            <p>{job.summary}</p>
+          </article>
+        ))}
       </section>
-    </>
+    </div>
   );
 }

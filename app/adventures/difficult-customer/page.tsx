@@ -84,6 +84,49 @@ export default function DifficultCustomerPage() {
     return { percentages, overall, passed };
   }, [scores, automaticFail]);
 
+  const scoreDetails = useMemo(() => {
+    const breakdown = skills.map((skill, index) => ({ skill, value: result.percentages[index] }));
+    const belowFloor = breakdown.filter((item) => item.value < 50);
+    const strongest = [...breakdown].sort((first, second) => second.value - first.value).slice(0, 2);
+    return { breakdown, belowFloor, strongest };
+  }, [result.percentages]);
+
+  const scoreExplanation = useMemo(() => {
+    const reasons: string[] = [];
+    if (automaticFail) {
+      reasons.push("One response triggered an automatic fail condition by promising out-of-policy action or using dismissive language.");
+    }
+    reasons.push(`Overall score is ${result.overall}%. Passing requires 70% overall and at least 50% in each skill area.`);
+    if (scoreDetails.belowFloor.length) {
+      reasons.push(`Needs attention: ${scoreDetails.belowFloor.map((item) => `${item.skill} (${item.value}%)`).join(", ")}.`);
+    } else {
+      reasons.push("All skill areas met the 50% floor.");
+    }
+    reasons.push(`Strongest areas: ${scoreDetails.strongest.map((item) => `${item.skill} (${item.value}%)`).join(", ")}.`);
+    return reasons;
+  }, [automaticFail, result.overall, scoreDetails.belowFloor, scoreDetails.strongest]);
+
+  const nextActions = useMemo(() => {
+    const actions: string[] = [];
+    if (automaticFail) {
+      actions.push("Retry and avoid responses that deny support, insult the customer, or exceed your authority.");
+    }
+    if (scoreDetails.belowFloor.some((item) => item.skill === "Policy Awareness")) {
+      actions.push("Confirm policy limits clearly and escalate through supervisor approval paths when required.");
+    }
+    if (scoreDetails.belowFloor.some((item) => item.skill === "Empathy" || item.skill === "Communication")) {
+      actions.push("Lead with acknowledgment of customer frustration before moving into fact-finding.");
+    }
+    if (scoreDetails.belowFloor.some((item) => item.skill === "Conflict Resolution" || item.skill === "Professionalism")) {
+      actions.push("Use neutral, de-escalating language and summarize the next concrete step to close each scene.");
+    }
+    if (actions.length === 0) {
+      actions.push("Save this result, then replay to improve consistency and raise top-skill scores even further.");
+    }
+    actions.push("Save your result so Portfolio and badge evidence remain current.");
+    return actions;
+  }, [automaticFail, scoreDetails.belowFloor]);
+
   function choose(choice: Choice) {
     const updated = { ...scores };
     skills.forEach((skill) => { updated[skill] += choice.scores[skill] ?? 0; });
@@ -123,15 +166,19 @@ export default function DifficultCustomerPage() {
           </article>
           <article className="card">
             <h2>Skill results</h2>
-            {skills.map((skill, index) => (
-              <div className="skill-row" key={skill}>
-                <span>{skill}</span>
-                <div className="skill-meter"><div className="skill-fill" style={{ width: `${result.percentages[index]}%` }} /></div>
-                <strong>{result.percentages[index]}%</strong>
+            {scoreDetails.breakdown.map((item) => (
+              <div className="skill-row" key={item.skill}>
+                <span>{item.skill}</span>
+                <div className="skill-meter"><div className="skill-fill" style={{ width: `${item.value}%` }} /></div>
+                <strong>{item.value}%</strong>
               </div>
             ))}
+            <h3>Score explanation</h3>
+            <ul className="scenario-guidance-list">{scoreExplanation.map((item) => <li key={item}>{item}</li>)}</ul>
+            <h3>Next actions</h3>
+            <ul className="scenario-guidance-list">{nextActions.map((item) => <li key={item}>{item}</li>)}</ul>
             <h3>What your choices showed</h3>
-            <ul>{feedback.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ul>
+            <ul className="scenario-guidance-list">{feedback.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}</ul>
             <div className="actions">
               <button className="button button-dark" disabled={saving || saved} onClick={saveResult}>{saving ? "Saving..." : saved ? "Result Saved" : "Save Result"}</button>
               <button className="button" onClick={restart}>Try Again</button>

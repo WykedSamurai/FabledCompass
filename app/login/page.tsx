@@ -41,25 +41,27 @@ export default function LoginPage() {
   }
 
   return (
-    <>
-      <section className="page-hero">
-        <p className="eyebrow">Navigator Access</p>
-        <h1>{creating ? "Begin your journey." : "Welcome back."}</h1>
+    <div className="fc-page-stack fc-workspace-page">
+      <section className="fc-workspace-hero">
+        <p className="fc-eyebrow">Navigator Access</p>
+        <h1>{creating ? "Create your account." : "Sign in to continue."}</h1>
+        <p>Access your profile, applications, and evidence-backed progress.</p>
       </section>
-      <section className="section section-narrow">
-        <article className="card auth-card">
-          <form className="form-grid" onSubmit={submit}>
+
+      <section>
+        <article className="fc-card fc-auth-panel">
+          <form className="fc-auth-form" onSubmit={submit}>
             {creating && <label>Display name<input name="displayName" required /></label>}
             <label>Email<input name="email" type="email" required /></label>
             <label>Password<input name="password" type="password" minLength={8} required /></label>
-            <button className="button button-dark" type="submit">{creating ? "Create Account" : "Sign In"}</button>
+            <button className="fc-button" type="submit">{creating ? "Create Account" : "Sign In"}</button>
           </form>
-          <button className="button" type="button" onClick={() => setCreating(!creating)}>
+          <button className="fc-ghost-button" type="button" onClick={() => setCreating(!creating)}>
             {creating ? "Use an existing account" : "Create a new account"}
           </button>
-          {message && <p role="status">{message}</p>}
+          {message && <p className="form-message" role="status">{message}</p>}
         </article>
       </section>
-    </>
+    </div>
   );
 }
