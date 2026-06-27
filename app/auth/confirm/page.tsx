@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../utils/supabase/client";
@@ -31,17 +32,17 @@ export default function ConfirmPage() {
   }, [router]);
 
   return (
-    <>
-      <section className="page-hero">
-        <p className="eyebrow">Email Confirmation</p>
+    <div className="fc-page-stack fc-workspace-page">
+      <section className="fc-workspace-hero">
+        <p className="fc-eyebrow">Email Confirmation</p>
         <h1>Returning to Fabled Compass.</h1>
       </section>
-      <section className="section section-narrow">
-        <article className="card auth-card">
-          <p role="status">{message}</p>
-          <a className="button button-dark" href="/login">Go to Sign In</a>
+      <section>
+        <article className="fc-card fc-auth-panel">
+          <p className="fc-muted" role="status">{message}</p>
+          <Link className="fc-button" href="/login">Go to Sign In</Link>
         </article>
       </section>
-    </>
+    </div>
   );
 }

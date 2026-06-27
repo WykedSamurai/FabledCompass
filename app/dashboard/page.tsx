@@ -1,5 +1,5 @@
-import { AtlasButton, AtlasCard, AtlasHeader } from "../../components/atlas";
-import { getArchetype } from "../../lib/archetypes";
+import { AtlasButton } from "../../components/atlas";
+import { archetypes, getArchetype, type ArchetypeId } from "../../lib/archetypes";
 import {
   buildConstellation,
   calculateAllCompetencies,
@@ -18,6 +18,7 @@ const primaryAttributes = [
 
 export default function DashboardPage() {
   const archetype = getArchetype("traveler");
+  const archetypeIds = Object.keys(archetypes) as ArchetypeId[];
   const competencies = calculateAllCompetencies(sampleEvidence);
   const compass = calculateProfessionalCompass(competencies);
   const leadershipConstellation = buildConstellation("leadership", sampleEvidence);
@@ -34,26 +35,44 @@ export default function DashboardPage() {
   return (
     <div className="fc-page-stack fc-compact-sheet">
       <section className="fc-character-sheet-hero">
-        <div>
-          <p className="fc-eyebrow">Professional Character Sheet</p>
-          <h1>Career Navigator</h1>
-          <div className="fc-archetype-line">
-            <span>{archetype.icon}</span>
-            <strong>{archetype.name}</strong>
-            <em>{archetype.motto}</em>
+        <div className="fc-identity-core">
+          <div className="fc-archetype-portrait" aria-hidden="true">{archetype.icon}</div>
+          <div>
+            <p className="fc-eyebrow">Professional Character</p>
+            <h1>Career Navigator</h1>
+            <p className="fc-identity-name">Atlas Professional</p>
+            <p className="fc-identity-title">Career Growth Navigator</p>
           </div>
-          <p className="fc-muted">Personal Legend: Build a career story through evidence, reflection, and growth.</p>
+        </div>
+        <div className="fc-identity-details">
+          <label className="fc-archetype-picker">
+            <span>Archetype</span>
+            <select aria-label="Archetype" defaultValue={archetype.id}>
+              {archetypeIds.map((archetypeId) => (
+                <option key={archetypeId} value={archetypeId}>
+                  {archetypes[archetypeId].name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="fc-archetype-motto">Motto: {archetype.motto}</p>
+          <p className="fc-muted fc-personal-legend">
+            Personal Legend: Build a career story through evidence, reflection, and growth.
+          </p>
         </div>
         <div className="fc-character-summary">
-          <span>Level 7</span>
-          <span>Career Path Active</span>
-          <strong>{compass.overall}% Portfolio</strong>
+          <span><small>Level</small><strong>7</strong></span>
+          <span><small>Career Path</small><strong>Navigator</strong></span>
+          <span><small>Portfolio Strength</small><strong>{compass.overall}%</strong></span>
         </div>
       </section>
 
       <section className="fc-character-sheet-grid">
-        <details className="fc-sheet-section" open>
-          <summary>Six Attributes <span>{compass.overall}% overall</span></summary>
+        <article className="fc-sheet-section fc-sheet-section-static">
+          <header>
+            <h2>Attributes</h2>
+            <span>{compass.overall}% overall</span>
+          </header>
           <div className="fc-attribute-grid">
             {primaryAttributes.map((attribute) => (
               <div className="fc-attribute-row" key={attribute.key}>
@@ -62,21 +81,10 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
-        </details>
+        </article>
 
         <details className="fc-sheet-section">
-          <summary>Professional Compass <span>{compass.overall}%</span></summary>
-          <div className="fc-compass-placeholder" aria-label="Professional Compass scores">
-            <span>Leadership {compass.leadership}%</span>
-            <span>Communication {compass.communication}%</span>
-            <span>Problem Solving {compass.problemSolving}%</span>
-            <span>Professionalism {compass.professionalism}%</span>
-            <strong>{compass.overall}%</strong>
-          </div>
-        </details>
-
-        <details className="fc-sheet-section">
-          <summary>Skills <span>{topCompetencies.length} active signals</span></summary>
+          <summary>Competencies <span>{topCompetencies.length} active signals</span></summary>
           <ul className="fc-evidence-list">
             {topCompetencies.map((competency) => (
               <li key={competency.id}>
@@ -108,11 +116,22 @@ export default function DashboardPage() {
           </div>
         </details>
 
-        <AtlasCard>
-          <AtlasHeader eyebrow="Next Step" title="Continue Journey" />
+        <details className="fc-sheet-section">
+          <summary>Professional Compass <span>{compass.overall}%</span></summary>
+          <div className="fc-compass-placeholder" aria-label="Professional Compass scores">
+            <span>Leadership {compass.leadership}%</span>
+            <span>Communication {compass.communication}%</span>
+            <span>Problem Solving {compass.problemSolving}%</span>
+            <span>Professionalism {compass.professionalism}%</span>
+            <strong>{compass.overall}%</strong>
+          </div>
+        </details>
+
+        <details className="fc-sheet-section">
+          <summary>Next Challenge <span>Ready</span></summary>
           <p className="fc-muted">Customer Recovery is ready to continue building evidence.</p>
           <AtlasButton href="/adventures/difficult-customer">Begin Challenge</AtlasButton>
-        </AtlasCard>
+        </details>
       </section>
     </div>
   );

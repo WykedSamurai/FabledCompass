@@ -52,21 +52,21 @@ export default function AuthPage() {
   }
 
   return (
-    <>
-      <section className="page-hero">
-        <p className="eyebrow">Navigator Access</p>
+    <div className="fc-page-stack fc-workspace-page">
+      <section className="fc-workspace-hero">
+        <p className="fc-eyebrow">Navigator Access</p>
         <h1>{mode === "login" ? "Welcome back." : "Begin your journey."}</h1>
         <p>Create an account to save profile information, scenario results, and earned badges.</p>
       </section>
 
-      <section className="section section-narrow auth-wrap">
-        <article className="card auth-card">
-          <div className="auth-tabs" role="tablist" aria-label="Account access">
-            <button className={mode === "login" ? "auth-tab active" : "auth-tab"} onClick={() => setMode("login")} type="button">Sign In</button>
-            <button className={mode === "signup" ? "auth-tab active" : "auth-tab"} onClick={() => setMode("signup")} type="button">Create Account</button>
+      <section>
+        <article className="fc-card fc-auth-panel">
+          <div className="fc-auth-tabs" role="tablist" aria-label="Account access">
+            <button className={mode === "login" ? "fc-auth-tab is-active" : "fc-auth-tab"} onClick={() => setMode("login")} type="button">Sign In</button>
+            <button className={mode === "signup" ? "fc-auth-tab is-active" : "fc-auth-tab"} onClick={() => setMode("signup")} type="button">Create Account</button>
           </div>
 
-          <form className="form-grid" onSubmit={submit}>
+          <form className="fc-auth-form" onSubmit={submit}>
             {mode === "signup" && (
               <>
                 <label>
@@ -90,7 +90,7 @@ export default function AuthPage() {
               Password
               <input name="password" type="password" minLength={8} autoComplete={mode === "login" ? "current-password" : "new-password"} required />
             </label>
-            <button className="button button-dark" disabled={loading} type="submit">
+            <button className="fc-button" disabled={loading} type="submit">
               {loading ? "Working..." : mode === "login" ? "Sign In" : "Create Account"}
             </button>
           </form>
@@ -98,6 +98,6 @@ export default function AuthPage() {
           {message && <p className="form-message" role="status">{message}</p>}
         </article>
       </section>
-    </>
+    </div>
   );
 }
