@@ -13,18 +13,21 @@ body::before {
 }
 
 .fc-sidebar,
-.fc-workspace,
-.fc-comms-button,
-.fc-comms-drawer,
-.fc-comms-scrim {
+.fc-workspace {
   position: relative;
   z-index: 1;
 }
 
-.fc-comms-button,
-.fc-comms-drawer,
-.fc-comms-scrim {
+.fc-comms-button {
   z-index: 20;
+}
+
+.fc-comms-scrim {
+  z-index: 18;
+}
+
+.fc-comms-drawer {
+  z-index: 19;
 }
 
 .fc-card,
