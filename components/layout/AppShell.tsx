@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import AtlasSky from "../atlas/AtlasSky";
 import CommunicationHub from "./CommunicationHub";
 
 const navigation = [
@@ -40,6 +41,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className={`fc-shell ${collapsed ? "is-sidebar-collapsed" : ""}`} data-journey="career">
+      <AtlasSky />
+
       <aside className="fc-sidebar" aria-label="Fabled Compass navigation">
         <div className="fc-sidebar-top">
           <Link className="fc-brand" href="/dashboard">
