@@ -1,0 +1,70 @@
+.panel,
+.card,
+.drawer,
+.dialog {
+  border: 1px solid rgba(45, 212, 243, .2);
+  background: linear-gradient(180deg, rgba(18, 32, 52, .48), rgba(8, 18, 32, .34));
+  box-shadow: 0 22px 65px rgba(0, 0, 0, .24), inset 0 1px 0 rgba(255, 255, 255, .035);
+  backdrop-filter: blur(18px) saturate(125%);
+  -webkit-backdrop-filter: blur(18px) saturate(125%);
+}
+
+.panel {
+  border-radius: 20px;
+  padding: 1.25rem;
+}
+
+.card {
+  border-radius: 16px;
+  padding: 1.1rem;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.card:hover {
+  border-color: rgba(45, 212, 243, .36);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .28), 0 0 0 1px rgba(45, 212, 243, .06);
+  transform: translateY(-1px);
+}
+
+.section {
+  display: grid;
+  gap: 1rem;
+}
+
+.header {
+  display: grid;
+  gap: .35rem;
+  margin-bottom: 1rem;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  line-height: 1.1;
+}
+
+.eyebrow {
+  margin: 0;
+  color: var(--fc-accent);
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  font-size: .68rem;
+  font-weight: 850;
+}
+
+.description {
+  margin: 0;
+  color: var(--fc-muted);
+  max-width: 64ch;
+}
+
+.drawer {
+  border-radius: 20px 0 0 20px;
+  padding: 1.25rem;
+}
+
+.dialog {
+  border-radius: 20px;
+  padding: 1.25rem;
+  max-width: 720px;
+}

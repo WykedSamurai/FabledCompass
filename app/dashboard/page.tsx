@@ -1,17 +1,17 @@
-import Card from "../../components/ui/Card";
-import PageHeader from "../../components/ui/PageHeader";
+import { AtlasCard, AtlasHeader } from "../../components/atlas";
 
 export default function DashboardPage() {
   return (
     <div className="fc-page-stack">
-      <PageHeader
-        eyebrow="Career Journey"
-        title="Navigator"
-        description="Review your direction, progress, and next steps."
-      />
+      <div className="fc-page-header">
+        <p className="fc-eyebrow">Career Journey</p>
+        <h1>Navigator</h1>
+        <p>Review your direction, progress, and next steps.</p>
+      </div>
 
       <section className="fc-dashboard-grid">
-        <Card eyebrow="Compass" title="Professional Compass">
+        <AtlasCard>
+          <AtlasHeader eyebrow="Compass" title="Professional Compass" />
           <div className="fc-compass-placeholder" aria-label="Professional Compass placeholder">
             <span>Leadership</span>
             <span>Communication</span>
@@ -19,21 +19,24 @@ export default function DashboardPage() {
             <span>Professionalism</span>
             <strong>◈</strong>
           </div>
-        </Card>
+        </AtlasCard>
 
-        <Card eyebrow="Next Step" title="Continue Journey">
+        <AtlasCard>
+          <AtlasHeader eyebrow="Next Step" title="Continue Journey" />
           <p className="fc-muted">Customer Recovery is ready to continue building evidence in your Professional Folio.</p>
           <a className="fc-button" href="/adventures/difficult-customer">Begin Challenge</a>
-        </Card>
+        </AtlasCard>
 
-        <Card eyebrow="Folio" title="Portfolio Strength">
+        <AtlasCard>
+          <AtlasHeader eyebrow="Folio" title="Portfolio Strength" />
           <p className="fc-score">—</p>
           <p className="fc-muted">Scoring will explain what contributed to the result and what can improve it.</p>
-        </Card>
+        </AtlasCard>
 
-        <Card eyebrow="Signal" title="Compass Suggestions">
+        <AtlasCard>
+          <AtlasHeader eyebrow="Signal" title="Compass Suggestions" />
           <p className="fc-muted">The Communication Hub will surface contextual coaching, messages, and OOC support here.</p>
-        </Card>
+        </AtlasCard>
       </section>
     </div>
   );
