@@ -1,0 +1,9 @@
+/* Remove the decorative beam overlay that made the sky look like diagonal streaks. */
+
+.fc-content::before {
+  display: none !important;
+}
+
+body::after {
+  opacity: .25 !important;
+}
