@@ -1,0 +1,77 @@
+.sky {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(45, 212, 243, .08), transparent 24rem),
+    radial-gradient(circle at 72% 45%, rgba(139, 92, 246, .07), transparent 22rem),
+    linear-gradient(135deg, #040814 0%, #07111f 46%, #0b1727 100%);
+}
+
+.nebulaOne,
+.nebulaTwo {
+  position: absolute;
+  width: 48rem;
+  height: 48rem;
+  border-radius: 50%;
+  filter: blur(42px);
+  opacity: .18;
+}
+
+.nebulaOne {
+  left: 42%;
+  top: -18rem;
+  background: rgba(45, 212, 243, .38);
+}
+
+.nebulaTwo {
+  right: -14rem;
+  top: 18%;
+  background: rgba(139, 92, 246, .34);
+}
+
+.starfield {
+  position: absolute;
+  inset: 0;
+}
+
+.star {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .86);
+  box-shadow: 0 0 9px rgba(125, 211, 252, .26);
+  animation: atlasTwinkle 5.5s ease-in-out infinite;
+}
+
+.xs { width: 1px; height: 1px; opacity: .42; }
+.sm { width: 2px; height: 2px; opacity: .6; }
+.md { width: 3px; height: 3px; opacity: .78; }
+
+.constellation {
+  position: absolute;
+  inset: 0;
+  opacity: .28;
+  filter: drop-shadow(0 0 8px rgba(45, 212, 243, .18));
+}
+
+.constellation polyline {
+  fill: none;
+  stroke: rgba(125, 211, 252, .22);
+  stroke-width: .16;
+}
+
+.constellation circle {
+  fill: rgba(255, 255, 255, .72);
+}
+
+@keyframes atlasTwinkle {
+  0%, 100% { transform: scale(1); opacity: .42; }
+  50% { transform: scale(1.35); opacity: .88; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star { animation: none; }
+}
