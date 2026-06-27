@@ -1,4 +1,4 @@
-import { AtlasCard, AtlasHeader } from "../../components/atlas";
+import { AtlasButton, AtlasCard, AtlasHeader } from "../../components/atlas";
 
 export default function DashboardPage() {
   return (
@@ -24,7 +24,7 @@ export default function DashboardPage() {
         <AtlasCard>
           <AtlasHeader eyebrow="Next Step" title="Continue Journey" />
           <p className="fc-muted">Customer Recovery is ready to continue building evidence in your Professional Folio.</p>
-          <a className="fc-button" href="/adventures/difficult-customer">Begin Challenge</a>
+          <AtlasButton href="/adventures/difficult-customer">Begin Challenge</AtlasButton>
         </AtlasCard>
 
         <AtlasCard>
