@@ -6,10 +6,12 @@ type BaseProps = {
   className?: string;
 };
 
-type HeaderProps = BaseProps & {
+type HeaderProps = {
   eyebrow?: string;
   title: string;
   description?: string;
+  children?: ReactNode;
+  className?: string;
 };
 
 function classNames(...names: Array<string | undefined>) {
