@@ -1,4 +1,4 @@
-import { AtlasButton, AtlasCard, AtlasHeader } from "../../components/atlas";
+import { AtlasButton } from "../../components/atlas";
 import { getArchetype } from "../../lib/archetypes";
 import {
   buildConstellation,
@@ -8,20 +8,29 @@ import {
 } from "../../lib/evidence";
 
 const primaryAttributes = [
-  { label: "Leadership", key: "leadership" },
-  { label: "Communication", key: "communication" },
-  { label: "Problem Solving", key: "problemSolving" },
-  { label: "Professionalism", key: "professionalism" },
-  { label: "Adaptability", key: "adaptability" },
-  { label: "Collaboration", key: "collaboration" }
+  { label: "Leadership", key: "leadership", icon: "L" },
+  { label: "Communication", key: "communication", icon: "C" },
+  { label: "Problem Solving", key: "problemSolving", icon: "P" },
+  { label: "Professionalism", key: "professionalism", icon: "R" },
+  { label: "Adaptability", key: "adaptability", icon: "A" },
+  { label: "Collaboration", key: "collaboration", icon: "T" }
 ] as const;
+
+const sheetRows = [
+  { label: "Skills", detail: "Abilities developed and improving", count: "36 Skills", icon: "S" },
+  { label: "Evidence", detail: "Proof of experience and impact", count: "3 Records", icon: "E" },
+  { label: "Constellations", detail: "Patterns of strengths", count: "1 Active", icon: "C" },
+  { label: "Career", detail: "Experience, roles, and achievements", count: "4 Roles", icon: "R" },
+  { label: "Education and Certifications", detail: "Learning and credentials", count: "6 Items", icon: "D" },
+  { label: "Achievements", detail: "Milestones earned", count: "18 Badges", icon: "A" },
+  { label: "AI Mentor", detail: "Personal guidance", count: "Ask", icon: "M" }
+];
 
 export default function DashboardPage() {
   const archetype = getArchetype("traveler");
   const competencies = calculateAllCompetencies(sampleEvidence);
   const compass = calculateProfessionalCompass(competencies);
   const leadershipConstellation = buildConstellation("leadership", sampleEvidence);
-  const topCompetencies = [...competencies].sort((first, second) => second.progress - first.progress).slice(0, 4);
   const attributeScores = {
     leadership: compass.leadership,
     communication: compass.communication,
@@ -32,87 +41,89 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="fc-page-stack fc-compact-sheet">
-      <section className="fc-character-sheet-hero">
-        <div>
-          <p className="fc-eyebrow">Professional Character Sheet</p>
-          <h1>Career Navigator</h1>
-          <div className="fc-archetype-line">
-            <span>{archetype.icon}</span>
-            <strong>{archetype.name}</strong>
-            <em>{archetype.motto}</em>
-          </div>
-          <p className="fc-muted">Personal Legend: Build a career story through evidence, reflection, and growth.</p>
+    <div className="fc-page-stack fc-polished-sheet">
+      <section className="fc-sheet-identity">
+        <div className="fc-sheet-portrait" aria-hidden="true">
+          <span>{archetype.icon}</span>
         </div>
-        <div className="fc-character-summary">
+
+        <div className="fc-sheet-title-block">
+          <h1>Penny Carter</h1>
+          <div className="fc-archetype-control">
+            <strong>{archetype.icon} {archetype.name}</strong>
+            <button type="button">Change Archetype</button>
+          </div>
+          <p className="fc-archetype-motto">{archetype.motto}</p>
+          <p className="fc-muted">Personal Legend: Helping people grow through thoughtful leadership and practical problem solving.</p>
+        </div>
+
+        <div className="fc-sheet-rank">
           <span>Level 7</span>
-          <span>Career Path Active</span>
-          <strong>{compass.overall}% Portfolio</strong>
+          <small>Professional</small>
+          <span>Career Path</span>
+          <small>Human Resources</small>
+          <span>Portfolio Strength</span>
+          <strong>{compass.overall}%</strong>
+          <AtlasButton href="/portfolio" variant="ghost">View Progress</AtlasButton>
         </div>
       </section>
 
-      <section className="fc-character-sheet-grid">
-        <details className="fc-sheet-section" open>
-          <summary>Six Attributes <span>{compass.overall}% overall</span></summary>
-          <div className="fc-attribute-grid">
+      <section className="fc-sheet-main-row">
+        <div className="fc-sheet-panel fc-attributes-panel">
+          <div className="fc-sheet-panel-heading">
+            <p>Six Attributes</p>
+            <span>{compass.overall}% overall</span>
+          </div>
+          <div className="fc-attribute-cards">
             {primaryAttributes.map((attribute) => (
-              <div className="fc-attribute-row" key={attribute.key}>
-                <span>{attribute.label}</span>
-                <strong>{attributeScores[attribute.key]}%</strong>
-              </div>
+              <article className="fc-attribute-card" key={attribute.key}>
+                <span className="fc-attribute-icon">{attribute.icon}</span>
+                <strong>{attribute.label}</strong>
+                <b>{attributeScores[attribute.key]}%</b>
+                <i><span style={{ width: `${attributeScores[attribute.key]}%` }} /></i>
+              </article>
             ))}
           </div>
-        </details>
+        </div>
 
-        <details className="fc-sheet-section">
-          <summary>Professional Compass <span>{compass.overall}%</span></summary>
-          <div className="fc-compass-placeholder" aria-label="Professional Compass scores">
-            <span>Leadership {compass.leadership}%</span>
-            <span>Communication {compass.communication}%</span>
-            <span>Problem Solving {compass.problemSolving}%</span>
-            <span>Professionalism {compass.professionalism}%</span>
-            <strong>{compass.overall}%</strong>
+        <div className="fc-sheet-panel fc-mini-compass-panel">
+          <div className="fc-sheet-panel-heading">
+            <p>Professional Compass</p>
+            <span>{compass.overall}%</span>
           </div>
-        </details>
-
-        <details className="fc-sheet-section">
-          <summary>Skills <span>{topCompetencies.length} active signals</span></summary>
-          <ul className="fc-evidence-list">
-            {topCompetencies.map((competency) => (
-              <li key={competency.id}>
-                <strong>{competency.label}</strong>
-                <span>{competency.progress}% - {competency.evidenceCount} evidence</span>
-              </li>
-            ))}
-          </ul>
-        </details>
-
-        <details className="fc-sheet-section">
-          <summary>Evidence <span>{sampleEvidence.length} records</span></summary>
-          <ul className="fc-evidence-list">
-            {sampleEvidence.map((evidence) => (
-              <li key={evidence.id}>
-                <strong>{evidence.title}</strong>
-                <span>{evidence.score}% - {evidence.verification}</span>
-              </li>
-            ))}
-          </ul>
-        </details>
-
-        <details className="fc-sheet-section">
-          <summary>Constellations <span>{leadershipConstellation.completion}% Leadership</span></summary>
-          <div className="fc-constellation-list">
-            {leadershipConstellation.stars.map((star) => (
-              <span className={star.active ? "is-active" : ""} key={star.id}>*</span>
-            ))}
+          <div className="fc-mini-compass" aria-label="Professional Compass scores">
+            <span className="north">L</span>
+            <span className="east">C</span>
+            <span className="south">R</span>
+            <span className="west">P</span>
+            <strong>{compass.overall}</strong>
           </div>
-        </details>
+        </div>
+      </section>
 
-        <AtlasCard>
-          <AtlasHeader eyebrow="Next Step" title="Continue Journey" />
-          <p className="fc-muted">Customer Recovery is ready to continue building evidence.</p>
-          <AtlasButton href="/adventures/difficult-customer">Begin Challenge</AtlasButton>
-        </AtlasCard>
+      <section className="fc-sheet-rows">
+        {sheetRows.map((row) => (
+          <details className="fc-sheet-row" key={row.label}>
+            <summary>
+              <span className="fc-row-icon">{row.icon}</span>
+              <strong>{row.label}</strong>
+              <em>{row.detail}</em>
+              <small>{row.count}</small>
+              <b>&gt;</b>
+            </summary>
+            <div className="fc-row-detail">
+              {row.label === "Constellations" ? (
+                <div className="fc-constellation-list">
+                  {leadershipConstellation.stars.map((star) => (
+                    <span className={star.active ? "is-active" : ""} key={star.id}>*</span>
+                  ))}
+                </div>
+              ) : (
+                <p className="fc-muted">This section will expand into the full {row.label.toLowerCase()} record.</p>
+              )}
+            </div>
+          </details>
+        ))}
       </section>
     </div>
   );
