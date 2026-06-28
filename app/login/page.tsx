@@ -1,64 +1,93 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../utils/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [creating, setCreating] = useState(false);
+  const [email, setEmail] = useState("");
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const email = String(form.get("email") || "");
-    const password = String(form.get("password") || "");
+  async function signInWithGoogle() {
+    setGoogleLoading(true);
+    setMessage("");
     const supabase = createClient();
 
-    if (creating) {
-      const displayName = String(form.get("displayName") || "");
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/confirm`,
-          data: { display_name: displayName }
-        }
-      });
-      setMessage(error ? error.message : "Check your email to confirm the account. The link will return you to Fabled Compass.");
-      return;
-    }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback?next=/account`
+      }
+    });
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
       setMessage(error.message);
+      setGoogleLoading(false);
       return;
     }
 
-    router.push("/account");
+    router.push("/auth/callback?next=/account");
     router.refresh();
+  }
+
+  async function sendMagicLink() {
+    const normalizedEmail = email.trim();
+    if (!normalizedEmail) {
+      setMessage("Enter your email to receive a magic sign-in link.");
+      return;
+    }
+
+    setEmailLoading(true);
+    setMessage("");
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithOtp({
+      email: normalizedEmail,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/confirm?next=/account`
+      }
+    });
+
+    setEmailLoading(false);
+    setMessage(
+      error
+        ? error.message
+        : "Magic link sent. Check your email and open the link to finish signing in."
+    );
   }
 
   return (
     <div className="fc-page-stack fc-workspace-page">
       <section className="fc-workspace-hero">
         <p className="fc-eyebrow">Navigator Access</p>
-        <h1>{creating ? "Create your account." : "Sign in to continue."}</h1>
-        <p>Access your profile, applications, and evidence-backed progress.</p>
+        <h1>Sign in with Google.</h1>
+        <p>Use Google when available, or sign in with a free email magic link.</p>
       </section>
 
       <section>
         <article className="fc-card fc-auth-panel">
-          <form className="fc-auth-form" onSubmit={submit}>
-            {creating && <label>Display name<input name="displayName" required /></label>}
-            <label>Email<input name="email" type="email" required /></label>
-            <label>Password<input name="password" type="password" minLength={8} required /></label>
-            <button className="fc-button" type="submit">{creating ? "Create Account" : "Sign In"}</button>
-          </form>
-          <button className="fc-ghost-button" type="button" onClick={() => setCreating(!creating)}>
-            {creating ? "Use an existing account" : "Create a new account"}
+          <button className="fc-button" type="button" onClick={signInWithGoogle} disabled={googleLoading || emailLoading}>
+            {googleLoading ? "Redirecting..." : "Continue with Google"}
           </button>
+          <p className="fc-muted">Google sign-in requires the Google provider to be enabled in Supabase Auth.</p>
+
+          <label>
+            Email for magic link
+            <input
+              name="email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+          </label>
+          <button className="fc-ghost-button" type="button" onClick={sendMagicLink} disabled={googleLoading || emailLoading}>
+            {emailLoading ? "Sending..." : "Send Magic Link"}
+          </button>
+
           {message && <p className="form-message" role="status">{message}</p>}
         </article>
       </section>
