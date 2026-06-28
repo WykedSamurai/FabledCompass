@@ -13,6 +13,7 @@ export default function ConfirmPage() {
     async function confirm() {
       const supabase = createClient();
       const { data, error } = await supabase.auth.getSession();
+      const next = new URLSearchParams(window.location.search).get("next") || "/account";
 
       if (error) {
         setMessage(error.message);
@@ -20,7 +21,7 @@ export default function ConfirmPage() {
       }
 
       if (data.session) {
-        router.replace("/account");
+        router.replace(next);
         router.refresh();
         return;
       }
