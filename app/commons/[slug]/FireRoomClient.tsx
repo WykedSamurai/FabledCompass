@@ -3,83 +3,167 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { FireRoom } from "../../../lib/commons";
-import { isHumanVerified } from "../../../utils/account/types";
 import { createClient } from "../../../utils/supabase/client";
 
-type FireRoomClientProps = {
-  fire: FireRoom;
-  allFires: FireRoom[];
-  principles: string[];
+export type FireRoomSummary = {
+  id: string;
+  slug: string;
+  name: string;
+  focus: string;
+  roomCapacity: number;
+  isLobby: boolean;
+  memberCount: number;
 };
 
-type RoomMember = {
-  name: string;
+export type FireRoomMember = {
+  userId: string;
+  displayName: string;
   role: string;
 };
 
-export default function FireRoomClient({ fire, allFires, principles }: FireRoomClientProps) {
+export type FireRoomMessage = {
+  id: string;
+  senderId: string;
+  senderName: string;
+  senderRole: string;
+  body: string;
+  createdAt: string;
+};
+
+type FireRoomClientProps = {
+  room: FireRoomSummary;
+  allRooms: FireRoomSummary[];
+  members: FireRoomMember[];
+  messages: FireRoomMessage[];
+  principles: string[];
+};
+
+function relativeTimeLabel(timestamp: string): string {
+  const deltaMs = Date.now() - new Date(timestamp).getTime();
+  const deltaMinutes = Math.max(0, Math.floor(deltaMs / 60000));
+  if (deltaMinutes < 1) {
+    return "Now";
+  }
+  if (deltaMinutes < 60) {
+    return `${deltaMinutes}m`;
+  }
+  const deltaHours = Math.floor(deltaMinutes / 60);
+  if (deltaHours < 24) {
+    return `${deltaHours}h`;
+  }
+  return `${Math.floor(deltaHours / 24)}d`;
+}
+
+export default function FireRoomClient({ room, allRooms, members, messages, principles }: FireRoomClientProps) {
   const router = useRouter();
-  const [isVerifiedPerson, setIsVerifiedPerson] = useState(false);
+  const [userId, setUserId] = useState("");
+  const [canPost, setCanPost] = useState(false);
+  const [draftMessage, setDraftMessage] = useState("");
+  const [roomMessages, setRoomMessages] = useState<FireRoomMessage[]>(messages);
+  const [selectedMemberId, setSelectedMemberId] = useState(members[0]?.userId ?? "");
+  const [message, setMessage] = useState("");
 
-  const roomMembers = useMemo<RoomMember[]>(() => {
-    const seen = new Set<string>();
-    const members: RoomMember[] = [];
-    for (const voice of fire.travelerVoices) {
-      if (!seen.has(voice.name)) {
-        members.push({ name: voice.name, role: voice.role });
-        seen.add(voice.name);
-      }
-    }
-    return members;
-  }, [fire.travelerVoices]);
-
-  const [selectedMemberName, setSelectedMemberName] = useState(roomMembers[0]?.name ?? "");
-  const selectedMember = roomMembers.find((member) => member.name === selectedMemberName) ?? null;
+  const selectedMember = useMemo(
+    () => members.find((member) => member.userId === selectedMemberId) ?? null,
+    [members, selectedMemberId]
+  );
 
   useEffect(() => {
+    async function ensureMembership() {
+      const supabase = createClient();
+      const { data: authData } = await supabase.auth.getUser();
+      if (!authData.user) {
+        setMessage("Sign in required.");
+        setCanPost(false);
+        return;
+      }
+
+      setUserId(authData.user.id);
+      const { error } = await supabase
+        .from("chat_room_memberships")
+        .upsert({ room_id: room.id, user_id: authData.user.id }, { onConflict: "room_id,user_id" });
+
+      if (error) {
+        setMessage(error.message);
+        setCanPost(false);
+        return;
+      }
+
+      setCanPost(true);
+      setMessage("");
+    }
+
+    void ensureMembership();
+  }, [room.id]);
+
+  async function sendRoomMessage(): Promise<void> {
+    const text = draftMessage.trim();
+    if (!text || !userId || !canPost) {
+      return;
+    }
+
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      setIsVerifiedPerson(Boolean(data.user && isHumanVerified(data.user.user_metadata.human_verification_status)));
-    });
-  }, []);
+    const { data: inserted, error } = await supabase
+      .from("chat_room_messages")
+      .insert({
+        room_id: room.id,
+        sender_id: userId,
+        body: text
+      })
+      .select("id, created_at")
+      .single();
+
+    if (error || !inserted) {
+      setMessage(error?.message || "Could not send message.");
+      return;
+    }
+
+    const supabaseUser = await supabase.auth.getUser();
+    const profileName = typeof supabaseUser.data.user?.user_metadata.display_name === "string"
+      ? supabaseUser.data.user.user_metadata.display_name
+      : "You";
+
+    setRoomMessages((current) => [
+      ...current,
+      {
+        id: String(inserted.id),
+        senderId: userId,
+        senderName: profileName,
+        senderRole: "Traveler",
+        body: text,
+        createdAt: inserted.created_at
+      }
+    ]);
+    setDraftMessage("");
+    setMessage("");
+  }
 
   function openWhisper(): void {
     if (!selectedMember) {
       return;
     }
-    if (!isVerifiedPerson) {
-      window.alert("Only verified people can contact members. Complete verification in Account settings first.");
-      router.push("/account");
-      return;
-    }
-    router.push(`/messages?candidateName=${encodeURIComponent(selectedMember.name)}&source=commons`);
+    router.push(`/messages?targetUserId=${encodeURIComponent(selectedMember.userId)}&targetName=${encodeURIComponent(selectedMember.displayName)}`);
   }
 
   function openInvite(): void {
     if (!selectedMember) {
       return;
     }
-    if (!isVerifiedPerson) {
-      window.alert("Only verified people can contact members. Complete verification in Account settings first.");
-      router.push("/account");
-      return;
-    }
-    router.push(`/messages?candidateName=${encodeURIComponent(selectedMember.name)}&source=commons-invite`);
+    router.push(`/messages?targetUserId=${encodeURIComponent(selectedMember.userId)}&targetName=${encodeURIComponent(selectedMember.displayName)}&intent=invite`);
   }
 
   function openProfile(): void {
     if (!selectedMember) {
       return;
     }
-    router.push(`/profile?traveler=${encodeURIComponent(selectedMember.name)}`);
+    router.push(`/profile?userId=${encodeURIComponent(selectedMember.userId)}`);
   }
 
   return (
     <section className="fc-aol-shell">
       <div className="fc-aol-titlebar">
-        <strong>{fire.name} - Fabled Compass Chat</strong>
-        <span>{roomMembers.length} Travelers Online</span>
+        <strong>{room.name} - Fabled Compass Chat</strong>
+        <span>{members.length} Travelers Online</span>
       </div>
 
       <aside className="fc-aol-panel fc-aol-rooms">
@@ -88,18 +172,18 @@ export default function FireRoomClient({ fire, allFires, principles }: FireRoomC
           <Link className="fc-button" href="/commons">All Rooms</Link>
         </div>
         <div className="fc-aol-search">
-          <input type="text" value={fire.name} readOnly />
+          <input type="text" value={room.name} readOnly />
           <button type="button">Search</button>
         </div>
         <div className="fc-aol-list">
-          {allFires.map((room) => (
+          {allRooms.map((nextRoom) => (
             <Link
-              key={room.slug}
-              href={`/commons/${room.slug}`}
-              className={`fc-aol-room ${room.slug === fire.slug ? "is-active" : ""}`}
+              key={nextRoom.slug}
+              href={`/commons/${nextRoom.slug}`}
+              className={`fc-aol-room ${nextRoom.slug === room.slug ? "is-active" : ""}`}
             >
-              <strong>{room.name}</strong>
-              <span>{room.travelerVoices.length} users</span>
+              <strong>{nextRoom.name}</strong>
+              <span>{nextRoom.memberCount}/{nextRoom.roomCapacity} users</span>
             </Link>
           ))}
         </div>
@@ -107,28 +191,43 @@ export default function FireRoomClient({ fire, allFires, principles }: FireRoomC
 
       <article className="fc-aol-panel fc-aol-chat">
         <div className="fc-aol-panel-head">
-          <p>Conversation: {fire.name}</p>
-          <span>{fire.description}</span>
+          <p>Conversation: {room.name}</p>
+          <span>{room.focus}</span>
         </div>
-        <div className="fc-aol-topic">Topic: {fire.prompt}</div>
+        <div className="fc-aol-topic">
+          Topic: {room.focus}
+        </div>
 
         <div className="fc-aol-log">
-          {fire.travelerVoices.map((voice, index) => (
-            <p key={`${voice.name}-${voice.message}`}>
-              <span className="fc-chatroom-time">[{`12:${String(10 + index * 3).padStart(2, "0")}`}]</span>{" "}
+          {roomMessages.length === 0 && <p>No messages yet. Be the first to start this room.</p>}
+          {roomMessages.map((entry) => (
+            <p key={entry.id}>
+              <span className="fc-chatroom-time">[{relativeTimeLabel(entry.createdAt)}]</span>{" "}
               <strong>
-                <Link href={`/profile?traveler=${encodeURIComponent(voice.name)}`}>{voice.name}</Link>
+                <Link href={`/profile?userId=${encodeURIComponent(entry.senderId)}`}>{entry.senderName}</Link>
               </strong>{" "}
-              <span className="fc-fire-role">&lt;{voice.role}&gt;</span>: {voice.message}
+              <span className="fc-fire-role">&lt;{entry.senderRole}&gt;</span>: {entry.body}
             </p>
           ))}
         </div>
 
-        <form className="fc-aol-compose">
-          <input placeholder={`Say something in ${fire.name}...`} />
-          <button type="button">Send</button>
-          <button type="button">Clear</button>
+        <form
+          className="fc-aol-compose"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void sendRoomMessage();
+          }}
+        >
+          <input
+            placeholder={`Say something in ${room.name}...`}
+            value={draftMessage}
+            onChange={(event) => setDraftMessage(event.target.value)}
+            disabled={!canPost}
+          />
+          <button type="submit" disabled={!canPost}>Send</button>
+          <button type="button" onClick={() => setDraftMessage("")} disabled={!canPost}>Clear</button>
         </form>
+        {message && <p className="form-message">{message}</p>}
       </article>
 
       <aside className="fc-aol-panel fc-aol-users">
@@ -137,26 +236,23 @@ export default function FireRoomClient({ fire, allFires, principles }: FireRoomC
           <span>Verified members only</span>
         </div>
         <div className="fc-aol-user-list">
-          {roomMembers.map((member) => (
+          {members.map((member) => (
             <button
-              key={`member-${member.name}`}
+              key={`member-${member.userId}`}
               type="button"
-              className={`fc-aol-member-btn ${selectedMemberName === member.name ? "is-active" : ""}`}
-              onClick={() => setSelectedMemberName(member.name)}
+              className={`fc-aol-member-btn ${selectedMemberId === member.userId ? "is-active" : ""}`}
+              onClick={() => setSelectedMemberId(member.userId)}
             >
-              <strong>{member.name}</strong> <span className="fc-fire-role">{member.role}</span>
+              <strong>{member.displayName}</strong> <span className="fc-fire-role">{member.role}</span>
             </button>
           ))}
         </div>
         <p className="fc-fire-role">
-          {selectedMember ? `Selected: ${selectedMember.name}` : "Select a member to choose a contact action."}
+          {selectedMember ? `Selected: ${selectedMember.displayName}` : "Select a member to choose a contact action."}
         </p>
-        {!isVerifiedPerson && (
-          <p className="form-message">Verification required: only verified people can start contact actions.</p>
-        )}
         <div className="fc-aol-actions">
-          <button type="button" onClick={openWhisper} disabled={!selectedMember || !isVerifiedPerson}>Whisper</button>
-          <button type="button" onClick={openInvite} disabled={!selectedMember || !isVerifiedPerson}>Invite</button>
+          <button type="button" onClick={openWhisper} disabled={!selectedMember}>Whisper</button>
+          <button type="button" onClick={openInvite} disabled={!selectedMember}>Invite</button>
           <button type="button" onClick={openProfile} disabled={!selectedMember}>Profile</button>
         </div>
         <ul className="fc-guidance-list">
