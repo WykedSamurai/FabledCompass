@@ -1,3 +1,5 @@
+import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
+
 const assessmentHighlights = [
   "Baseline professional strengths and growth opportunities",
   "Assessment outcomes translated into clear improvement tasks",
@@ -6,7 +8,8 @@ const assessmentHighlights = [
 
 export default function AssessmentsPage() {
   return (
-    <div className="fc-page-stack fc-workspace-page">
+    <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
+      <PrototypeWatermark />
       <section className="fc-workspace-hero">
         <p className="fc-eyebrow">Adventure Journey</p>
         <h1>Assessments</h1>

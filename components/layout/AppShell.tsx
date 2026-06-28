@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import AtlasSky from "../atlas/AtlasSky";
 import CommunicationHub from "./CommunicationHub";
+import SiteFooter from "./SiteFooter";
 
 const navigation = [
   {
@@ -90,6 +91,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="fc-content">{children}</main>
+        <SiteFooter />
       </div>
 
       <CommunicationHub />

@@ -1,3 +1,5 @@
+import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
+
 const competencyHighlights = [
   "Evidence-backed competency trends by category",
   "Reasoned score explanations tied to specific artifacts",
@@ -6,7 +8,8 @@ const competencyHighlights = [
 
 export default function CompetenciesPage() {
   return (
-    <div className="fc-page-stack fc-workspace-page">
+    <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
+      <PrototypeWatermark />
       <section className="fc-workspace-hero">
         <p className="fc-eyebrow">Adventure Journey</p>
         <h1>Competencies</h1>
