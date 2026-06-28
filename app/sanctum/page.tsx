@@ -54,7 +54,7 @@ function createNewCharacter(): PlayableCharacter {
 
   return {
     id: generateCharacterId(),
-    name: "New Adventurer",
+    name: "New Traveler",
     class: "fighter",
     race: "human",
     level: 1,
@@ -73,23 +73,23 @@ export default function SanctuumPage() {
   const [characters, setCharacters] = useState<PlayableCharacter[]>([
     {
       id: "char_sample_001",
-      name: "Kael Ironbrand",
-      class: "fighter",
-      race: "human",
+      name: "Giulia Ferraro",
+      class: "rogue",
+      race: "elf",
       level: 3,
       experience: 2100,
       abilityScores: {
-        strength: 16,
-        dexterity: 12,
-        constitution: 15,
-        intelligence: 10,
+        strength: 11,
+        dexterity: 16,
+        constitution: 12,
+        intelligence: 14,
         wisdom: 13,
-        charisma: 11
+        charisma: 15
       },
-      hitPoints: 24,
-      armor: 14,
-      backstory: "A former soldier seeking redemption through adventure.",
-      personalLegend: "The Steel Knight Who Chose Honor Over Orders",
+      hitPoints: 18,
+      armor: 13,
+      backstory: "A Venetian courier-merchant navigating royal courts, ports, and guild routes across Europe.",
+      personalLegend: "To chart a trusted trade network from Lisbon to Constantinople.",
       createdAt: new Date(Date.now() - 86400000 * 30).toISOString(),
       updatedAt: new Date(Date.now() - 86400000 * 2).toISOString()
     }
@@ -132,7 +132,7 @@ export default function SanctuumPage() {
       <div className="fc-page-stack">
         <div className="fc-page-header">
           <h1>The Sanctum</h1>
-          <p className="fc-eyebrow">Your Private Wayfinder Campaign</p>
+          <p className="fc-eyebrow">Your Private 1500s Earth Chronicle</p>
         </div>
         <div className="fc-section">
           <p>No characters yet. Create your first wayfinder to begin.</p>
@@ -154,11 +154,11 @@ export default function SanctuumPage() {
           </div>
           <div>
             <p className="fc-eyebrow">The Sanctum</p>
-            <h1>Wayfinder's Chamber</h1>
+            <h1>Earthbound Chronicle</h1>
             <p className="fc-identity-name">{activeCharacter.name}</p>
             <p className="fc-identity-title">
-              Level {activeCharacter.level} {characterClasses[activeCharacter.class]?.name || "Adventurer"} •{" "}
-              {characterRaces[activeCharacter.race]?.name || "Human"}
+              Level {activeCharacter.level} {characterClasses[activeCharacter.class]?.name || "Professional"} •{" "}
+              {characterRaces[activeCharacter.race]?.name || "City-State Native"}
             </p>
           </div>
         </div>
@@ -213,7 +213,7 @@ export default function SanctuumPage() {
             </div>
             <div className="fc-form-row">
               <div className="fc-form-group">
-                <label>Class</label>
+                <label>Role</label>
                 <select
                   value={activeCharacter.class}
                   onChange={(e) => handleUpdateCharacter({ class: e.target.value as CharacterClass })}
@@ -227,7 +227,7 @@ export default function SanctuumPage() {
                 </select>
               </div>
               <div className="fc-form-group">
-                <label>Race</label>
+                <label>Origin</label>
                 <select
                   value={activeCharacter.race}
                   onChange={(e) => handleUpdateCharacter({ race: e.target.value as CharacterRace })}
@@ -242,12 +242,12 @@ export default function SanctuumPage() {
               </div>
             </div>
             <div className="fc-form-group">
-              <label>Personal Quest</label>
+              <label>Personal Objective</label>
               <textarea
                 value={activeCharacter.personalLegend || ""}
                 onChange={(e) => handleUpdateCharacter({ personalLegend: e.target.value })}
                 className="fc-textarea"
-                placeholder="What is your character's defining quest or legend?"
+                placeholder="What defining objective or reputation are they pursuing in 1500s Earth?"
                 rows={2}
               />
             </div>
@@ -257,7 +257,7 @@ export default function SanctuumPage() {
                 value={activeCharacter.backstory || ""}
                 onChange={(e) => handleUpdateCharacter({ backstory: e.target.value })}
                 className="fc-textarea"
-                placeholder="Where did they come from? What drives them?"
+                placeholder="Which city, court, guild, or fleet shaped them, and what drives them forward?"
                 rows={3}
               />
             </div>
@@ -267,7 +267,7 @@ export default function SanctuumPage() {
 
       {/* Character Selector & Actions */}
       <section className="fc-section">
-        <h3>Your Wayfinders ({characters.length}/{MAX_CHARACTER_SLOTS})</h3>
+        <h3>Your Characters ({characters.length}/{MAX_CHARACTER_SLOTS})</h3>
         <div className="fc-character-list">
           {characters.map((char) => (
             <div
@@ -292,8 +292,8 @@ export default function SanctuumPage() {
               </div>
               <div className="fc-character-hover-card" role="status" aria-live="polite">
                 <p className="fc-hover-title">{char.name}</p>
-                <p>Class: {characterClasses[char.class]?.name}</p>
-                <p>Ancestry: {characterRaces[char.race]?.name}</p>
+                <p>Role: {characterClasses[char.class]?.name}</p>
+                <p>Origin: {characterRaces[char.race]?.name}</p>
                 <p>Level {char.level} • HP {char.hitPoints} • AC {char.armor}</p>
                 <p>Played by: {ACCOUNT_PLAYER_NAME}</p>
               </div>
@@ -316,7 +316,7 @@ export default function SanctuumPage() {
               <div className="fc-card-icon">✦</div>
               <div className="fc-card-content">
                 <div className="fc-card-name">Empty Slot</div>
-                <div className="fc-card-meta">Create a new wayfinder for this account</div>
+                <div className="fc-card-meta">Create a new character for this account</div>
               </div>
             </div>
           ))}
@@ -331,11 +331,11 @@ export default function SanctuumPage() {
         </div>
       </section>
 
-      {/* Class & Race Info */}
+      {/* Role & Origin Info */}
       {activeCharacter && (
         <section className="fc-section fc-collapsible">
           <details>
-            <summary>ℹ️ {characterClasses[activeCharacter.class]?.name || "Class"} & {characterRaces[activeCharacter.race]?.name || "Race"}</summary>
+            <summary>ℹ️ {characterClasses[activeCharacter.class]?.name || "Role"} & {characterRaces[activeCharacter.race]?.name || "Origin"}</summary>
             <div className="fc-collapsible-content">
               <div className="fc-info-block">
                 <h4>{characterClasses[activeCharacter.class]?.name}</h4>
