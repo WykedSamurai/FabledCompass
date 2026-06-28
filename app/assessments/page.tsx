@@ -6,6 +6,7 @@ import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
 
 type Dimension = "energy" | "information" | "decision" | "structure";
 type TradeId = "electrician" | "hvacr" | "facilities" | "maintenance" | "welder";
+type ServiceId = "qsr" | "hotel" | "restaurant";
 
 type WorkstyleChoice = {
   id: "A" | "B";
@@ -159,6 +160,85 @@ type TradeScene = {
   correctAnswer: "A" | "B" | "C" | "D";
   competency: string;
   choices: TradeChoice[];
+};
+
+
+const serviceAssessments: Record<ServiceId, { title: string; focus: string; scenes: TradeScene[]; nextActions: string[] }> = {
+  qsr: {
+    title: "Fast Food / QSR Crew",
+    focus: "Drive-thru flow, food safety, allergen control, customer de-escalation, and fryer emergency response.",
+    scenes: [
+      { id: "qsr-1", situation: "It is the peak Friday lunch rush. The drive-thru timer is in the red, a customer at the window is screaming that their order is wrong, and the kitchen just ran out of crispy chicken tenders.", prompt: "How do you handle this?", correctAnswer: "B", competency: "Speed Optimization, Drive-Thru Dynamics, De-escalation", choices: [
+        { label: "A", text: "Argue with the customer to prove the kitchen made what was on the receipt, then stop the drive-thru line until the chicken cooks.", score: 0, feedback: "Escalates conflict and freezes throughput during peak service." },
+        { label: "B", text: "Apologize politely to the customer, hand them the correct items available, ask them to pull forward to a designated parking spot to keep the timer moving, and inform the kitchen lead of the exact chicken count needed.", score: 4, feedback: "Correct: de-escalates, protects drive-thru flow, and gives the kitchen an exact recovery count." },
+        { label: "C", text: "Shut down the drive-thru window entirely and go help the kitchen drop more chicken into the fryers.", score: 1, feedback: "Under-scoped: kitchen help matters, but abandoning the window worsens the service bottleneck." },
+        { label: "D", text: "Give the angry customer a full refund, tell them to leave the line, and ignore the missing food items for the next cars.", score: 0, feedback: "Does not solve the food shortage or protect upcoming orders from repeat failure." }
+      ]},
+      { id: "qsr-2", situation: "An assembly line worker accidentally drops a pair of regular meat tongs into the designated allergen-free/gluten-free prep station during a rush.", prompt: "What is the mandatory protocol?", correctAnswer: "B", competency: "Food Safety Compliance, Allergen Cross-Contamination", choices: [
+        { label: "A", text: "Wipe the tongs quickly with a dry paper towel and put them back in the allergen station to keep speed up.", score: 0, feedback: "Unsafe: dry wiping does not remove allergen cross-contact risk." },
+        { label: "B", text: "Stop production at that station immediately, remove the contaminated tongs for full washing/sanitizing, discard any potentially exposed food items, wash hands, and open a fresh, sanitized utensil.", score: 4, feedback: "Correct: stops the contaminated line, removes exposed items, and restarts with clean tools and hands." },
+        { label: "C", text: "Ignore it unless a customer explicitly states they have a life-threatening, severe allergy.", score: 0, feedback: "Unsafe: allergen controls must be reliable before a guest discloses severity." },
+        { label: "D", text: "Spray the tongs with chemical sanitizer right over the food line to clean them instantly.", score: 0, feedback: "Unsafe: chemicals over food create a new contamination hazard." }
+      ]},
+      { id: "qsr-3", situation: "While operating the deep fryer, the oil begins to smoke excessively, and a small flame ignites on the surface of the vat.", prompt: "What is your immediate response?", correctAnswer: "B", competency: "Emergency Preparedness, Class B Fire Suppression Protocol", choices: [
+        { label: "A", text: "Pour a bucket of cold water directly onto the flaming oil to extinguish it quickly.", score: 0, feedback: "Dangerous: water can violently spread a grease fire." },
+        { label: "B", text: "Turn off the fryer's heating element if safe, hit the automated kitchen hood Ansul fire suppression system switch, or smother it with a metal lid/baking soda—never water.", score: 4, feedback: "Correct: removes heat and uses appropriate grease-fire suppression methods." },
+        { label: "C", text: "Run out of the store immediately without alerting the rest of the crew or the shift manager.", score: 0, feedback: "Unsafe: evacuation may be necessary, but the crew and manager must be alerted." },
+        { label: "D", text: "Fan the flames with a cardboard box to try and blow the fire out before it reaches the filters.", score: 0, feedback: "Dangerous: airflow and cardboard can feed the flame." }
+      ]}
+    ],
+    nextActions: ["Practice rush-hour pull-forward scripts that preserve speed and respect.", "Review allergen station reset steps before peak periods.", "Confirm where fryer shutoffs and hood suppression pulls are located."]
+  },
+  hotel: {
+    title: "Hotel Front Desk / Guest Services",
+    focus: "VIP recovery, guest safety, key-control discretion, quiet-hour enforcement, and documentation.",
+    scenes: [
+      { id: "hotel-1", situation: "An exhausted platinum-tier business traveler arrives at 11:30 PM. Due to a system glitch, the hotel is 100% full, and their reserved executive suite was accidentally given away.", prompt: "How do you de-escalate the situation?", correctAnswer: "B", competency: "VIP Retention, Service Recovery, Brand Protection", choices: [
+        { label: "A", text: "Tell the guest there is nothing you can do because the system glitched, and suggest they look for another hotel down the street.", score: 0, feedback: "Fails service recovery and leaves the guest unsupported." },
+        { label: "B", text: "Validate their frustration, offer a complimentary drink/snack, secure them a comparable room at a partner property nearby, pay for their Uber there, and assure them their next stay with you is free.", score: 4, feedback: "Correct: acknowledges the failure, solves lodging, covers transport, and protects loyalty." },
+        { label: "C", text: "Hide in the back office until the guest gets tired of waiting at the desk and leaves.", score: 0, feedback: "Avoidance escalates the guest impact and brand risk." },
+        { label: "D", text: "Offer to let them sleep on a couch in the main lobby at a slightly discounted rate.", score: 0, feedback: "Unprofessional and unsafe for a reserved-room failure." }
+      ]},
+      { id: "hotel-2", situation: "A well-dressed individual walks up to the front desk, claims they are staying in Room 304, and says they locked their keycard inside. They do not have their ID on them because it is up in the room.", prompt: "How do you proceed?", correctAnswer: "B", competency: "Guest Safety, Liability Prevention, Anti-Theft Protocol", choices: [
+        { label: "A", text: "Hand them a new keycard immediately based on their polite demeanor to ensure excellent customer service.", score: 0, feedback: "Unsafe: demeanor is not identity verification." },
+        { label: "B", text: "Escort the individual to Room 304 with a security guard or manager, require them to show the ID once the door is opened, and verify the name matches the system before handing over the room keys.", score: 4, feedback: "Correct: balances guest assistance with room-security verification." },
+        { label: "C", text: "Tell them to wait in the lobby until the actual guest registered to the room comes back to claim them.", score: 1, feedback: "Safer than handing out keys, but may strand a legitimate guest without using available verification steps." },
+        { label: "D", text: "Give them the master key so they can go get their ID and bring the master key back down to you.", score: 0, feedback: "Severe security breach: never release a master key to a guest." }
+      ]},
+      { id: "hotel-3", situation: "A guest calls down at 1:00 AM complaining bitterly about loud music and partying in the room directly next to theirs.", prompt: "What is the correct multi-step protocol?", correctAnswer: "B", competency: "Conflict Resolution, Asset Management, Operational Quiet Hours", choices: [
+        { label: "A", text: "Call the offending room once; if they don't answer, tell the complaining guest to use earplugs or call the local police department yourself.", score: 1, feedback: "Incomplete: the hotel still owns quiet-hour enforcement and follow-up." },
+        { label: "B", text: "Dispatch security or go yourself to knock on the loud room's door, issue a polite but firm warning regarding quiet hours, document the interaction, and follow up with the complaining guest to ensure the issue stopped.", score: 4, feedback: "Correct: addresses the source, documents the warning, and verifies recovery." },
+        { label: "C", text: "Wait 30 minutes to see if the party winds down naturally before taking any administrative action.", score: 0, feedback: "Poor service recovery: the guest has already reported an active quiet-hours issue." },
+        { label: "D", text: "Immediately evict the entire party from the hotel without giving them a warning first.", score: 1, feedback: "May become necessary after escalation, but the first response should warn and document unless immediate danger exists." }
+      ]}
+    ],
+    nextActions: ["Rehearse overbooking recovery language and partner-property workflows.", "Review no-ID key replacement policy with security escalation paths.", "Practice quiet-hours documentation and guest follow-up."]
+  },
+  restaurant: {
+    title: "Restaurant Server",
+    focus: "Section triage, delay recovery, responsible alcohol service, and high-risk dietary communication.",
+    scenes: [
+      { id: "restaurant-1", situation: "You are running a 5-table section. Table 2 has been waiting 35 minutes for their entrees because the kitchen backed up, and they are visibly angry. Table 4 needs their check, and Table 5 just sat down and needs water.", prompt: "How do you prioritize?", correctAnswer: "B", competency: "Multi-Tasking, Section Management, Customer Triage", choices: [
+        { label: "A", text: "Hide in the kitchen until Table 2's food is ready so you don't have to face their angry looks.", score: 0, feedback: "Avoidance lets multiple tables decline at once." },
+        { label: "B", text: "Greet Table 5 quickly with water, drop Table 4's check on the way past, then stop at Table 2 to apologize sincerely, explain the delay, offer a free appetizer/round of drinks, and involve the manager.", score: 4, feedback: "Correct: batches tasks efficiently while prioritizing the highest-risk recovery table." },
+        { label: "C", text: "Serve Table 5 their entire meal first because their food will cook faster than Table 2's delayed order.", score: 0, feedback: "Poor prioritization: it ignores delayed guests and a ready check request." },
+        { label: "D", text: "Drop Table 4's check, ignore Table 5, and stand by the kitchen pass yelling at the line cooks to hurry up.", score: 0, feedback: "Escalates kitchen tension and neglects guest needs." }
+      ]},
+      { id: "restaurant-2", situation: "A customer at a booth has had three double-whiskeys in an hour. They are slurring their words, speaking loudly, and demanding a fourth drink. Their friends are encouraging them to keep going.", prompt: "How do you handle the cutoff?", correctAnswer: "B", competency: "Dram Shop Law Compliance, Professional Boundaries, Team Communication", choices: [
+        { label: "A", text: "Serve the fourth drink anyway because their friends are paying for it and you want a good tip.", score: 0, feedback: "Unsafe and potentially illegal: visible intoxication requires cutoff." },
+        { label: "B", text: "Politely but firmly inform the guest that you cannot legally serve them more alcohol, offer them water or a soft drink, notify your manager and the bartender immediately, and log the incident.", score: 4, feedback: "Correct: sets the boundary, offers alternatives, aligns the team, and documents the incident." },
+        { label: "C", text: "Have another server slip the drink to the table secretly so you don't look like the bad guy.", score: 0, feedback: "Dangerous: evades responsible-service duties and creates liability." },
+        { label: "D", text: "Loudly announce to the entire dining room that the customer is cut off for being too drunk.", score: 1, feedback: "The cutoff is right, but public shaming escalates conflict." }
+      ]},
+      { id: "restaurant-3", situation: "A guest informs you they have a severe, airborne peanut allergy. They want to order a salad that normally does not contain nuts, but is prepped in the same area as the peanut-butter desserts.", prompt: "What is your action?", correctAnswer: "B", competency: "High-Risk Allergen Mitigation, Kitchen-Front Communication", choices: [
+        { label: "A", text: "Tell the guest the salad is safe because peanuts aren't listed in the ingredients, ignoring the prep station setup.", score: 0, feedback: "Unsafe: ingredient lists do not eliminate cross-contact risk." },
+        { label: "B", text: "Alert the kitchen manager and line cooks immediately, verify if cross-contact can be 100% prevented, ensure fresh gloves and sanitized knives/boards are used, and double-check the plate before running it yourself.", score: 4, feedback: "Correct: escalates the allergy, verifies feasibility, and controls the plate handoff." },
+        { label: "C", text: "Tell the guest to leave the restaurant because serving them is too much of a liability for your shift.", score: 0, feedback: "Unprofessional: communicate risk honestly and involve management rather than dismissing the guest." },
+        { label: "D", text: "Serve the salad as normal and keep an EpiPen nearby just in case they have a reaction.", score: 0, feedback: "Unsafe: emergency response is not a substitute for prevention." }
+      ]}
+    ],
+    nextActions: ["Practice section walks that batch greetings, checks, and recovery visits.", "Review alcohol cutoff scripts and manager/bartender notification standards.", "Build a kitchen-front allergy communication checklist."]
+  }
 };
 
 const tradeAssessments: Record<TradeId, { title: string; focus: string; scenes: TradeScene[]; nextActions: string[] }> = {
@@ -410,6 +490,12 @@ export default function AssessmentsPage() {
     maintenance: { index: 0, score: 0, feedback: [], complete: false },
     welder: { index: 0, score: 0, feedback: [], complete: false }
   });
+  const [service, setService] = useState<ServiceId>("qsr");
+  const [serviceRuns, setServiceRuns] = useState<Record<ServiceId, { index: number; score: number; feedback: string[]; complete: boolean }>>({
+    qsr: { index: 0, score: 0, feedback: [], complete: false },
+    hotel: { index: 0, score: 0, feedback: [], complete: false },
+    restaurant: { index: 0, score: 0, feedback: [], complete: false }
+  });
 
   const currentWorkstyle = workstyleScenes[workstyleIndex];
   const workstyleComplete = Object.keys(workstyleAnswers).length === workstyleScenes.length;
@@ -493,6 +579,32 @@ export default function AssessmentsPage() {
       }));
   }
 
+  function answerService(choice: TradeChoice) {
+      setServiceRuns((currentRuns) => {
+        const next = { ...currentRuns };
+        const run = { ...next[service] };
+        run.score += choice.score;
+        run.feedback = [...run.feedback, choice.feedback];
+
+        const sceneCount = serviceAssessments[service].scenes.length;
+        if (run.index >= sceneCount - 1) {
+          run.complete = true;
+        } else {
+          run.index += 1;
+        }
+
+        next[service] = run;
+        return next;
+      });
+  }
+
+  function restartService() {
+      setServiceRuns((currentRuns) => ({
+        ...currentRuns,
+        [service]: { index: 0, score: 0, feedback: [], complete: false }
+      }));
+  }
+
   const selectedTrade = tradeAssessments[trade];
   const selectedTradeRun = tradeRuns[trade];
   const currentTradeScene = selectedTrade.scenes[selectedTradeRun.index];
@@ -505,6 +617,18 @@ export default function AssessmentsPage() {
       : tradeScore >= 55
         ? "Promising baseline with a few key growth areas."
       : "Early-stage readiness. Focus on fundamentals first.";
+
+  const selectedService = serviceAssessments[service];
+  const selectedServiceRun = serviceRuns[service];
+  const currentServiceScene = selectedService.scenes[selectedServiceRun.index];
+  const serviceMaxScore = selectedService.scenes.length * 4;
+  const serviceScore = Math.round((selectedServiceRun.score / serviceMaxScore) * 100);
+  const serviceProgress = Math.round(((selectedServiceRun.index + (selectedServiceRun.complete ? 1 : 0)) / selectedService.scenes.length) * 100);
+  const serviceSummary = serviceScore >= 75
+      ? "Strong starting readiness for this service pathway."
+      : serviceScore >= 55
+        ? "Promising service baseline with a few key growth areas."
+      : "Early-stage service readiness. Focus on safety, communication, and escalation fundamentals first.";
 
   return (
     <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
@@ -691,6 +815,91 @@ export default function AssessmentsPage() {
           </ul>
         </aside>
       </section>
+
+      <section className="fc-trade-shell">
+        <article className="fc-card">
+          <div className="fc-card-header-row">
+            <div>
+              <p className="fc-eyebrow">Service Industry Trials</p>
+              <h2>Service Roleplay Trials</h2>
+            </div>
+            <span className="fc-muted">{selectedServiceRun.complete ? "Completed" : `Scene ${selectedServiceRun.index + 1} of ${selectedService.scenes.length}`}</span>
+          </div>
+
+          <div className="fc-trade-tabs" role="tablist" aria-label="Service industry assessment paths">
+            <button className={service === "qsr" ? "fc-trade-tab is-active" : "fc-trade-tab"} onClick={() => setService("qsr")} type="button">Fast Food / QSR</button>
+            <button className={service === "hotel" ? "fc-trade-tab is-active" : "fc-trade-tab"} onClick={() => setService("hotel")} type="button">Hotel Front Desk</button>
+            <button className={service === "restaurant" ? "fc-trade-tab is-active" : "fc-trade-tab"} onClick={() => setService("restaurant")} type="button">Restaurant Server</button>
+          </div>
+
+          <p className="fc-muted">{selectedService.focus}</p>
+          <div className="progress"><div className="progress-bar" style={{ width: `${serviceProgress}%` }} /></div>
+
+          {!selectedServiceRun.complete && currentServiceScene && (
+            <div className="fc-trade-list">
+              <article className="fc-roleplay-scene">
+                <p className="fc-muted">{currentServiceScene.situation}</p>
+                <p className="fc-assessment-question">{currentServiceScene.prompt}</p>
+              </article>
+              <div className="fc-assessment-options">
+                {currentServiceScene.choices.map((choice) => (
+                  <button className="fc-assessment-option" type="button" key={choice.text} onClick={() => answerService(choice)}>
+                    {choice.label}) {choice.text}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {selectedServiceRun.complete && (
+            <div className="fc-trade-list">
+              <p className="fc-muted">Quiz complete. Review your score first, then compare against the answer key.</p>
+              <h3>{serviceScore}% Readiness</h3>
+              <p className="fc-muted">{serviceSummary}</p>
+              <h3>What your choices showed</h3>
+              <ul className="fc-guidance-list">
+                {selectedServiceRun.feedback.map((item, idx) => <li key={`${idx}-${item}`}>{item}</li>)}
+              </ul>
+              <h3>Answer Key & Vetting Rubric</h3>
+              <ul className="fc-guidance-list">
+                {selectedService.scenes.map((scene, idx) => (
+                  <li key={scene.id}>
+                    <strong>Question {idx + 1}: {scene.correctAnswer}</strong> — {scene.competency}
+                  </li>
+                ))}
+              </ul>
+              <h3>Hiring Manager Grading Signals</h3>
+              <ul className="fc-guidance-list">
+                <li><strong>A+ candidate:</strong> Selects correct answers, protects guest safety, communicates cleanly, and uses escalation or documentation at the right moment.</li>
+                <li><strong>B candidate:</strong> Resolves the immediate guest issue but may miss operational flow, documentation, or cross-team communication.</li>
+                <li><strong>Dangerous candidate:</strong> Chooses shortcuts that ignore food safety, guest security, responsible alcohol service, or emergency protocols.</li>
+              </ul>
+              <div className="fc-action-row">
+                <button className="fc-button" type="button" onClick={restartService}>Retake {selectedService.title}</button>
+              </div>
+            </div>
+          )}
+        </article>
+
+        <aside className="fc-card fc-side-card">
+          <p className="fc-eyebrow">{selectedService.title}</p>
+          {selectedServiceRun.complete ? (
+            <>
+              <h3>{serviceScore}% Readiness</h3>
+              <p className="fc-muted">{serviceSummary}</p>
+            </>
+          ) : (
+            <>
+              <h3>Score hidden until complete</h3>
+              <p className="fc-muted">Answer keys and scoring details unlock after the final service scenario.</p>
+            </>
+          )}
+          <ul className="fc-guidance-list">
+            {selectedService.nextActions.map((action) => <li key={action}>{action}</li>)}
+          </ul>
+        </aside>
+      </section>
+
     </div>
   );
 }
