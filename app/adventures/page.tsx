@@ -4,9 +4,9 @@ export default function AdventuresPage() {
   return (
     <div className="fc-page-stack fc-workspace-page">
       <section className="fc-workspace-hero">
-        <p className="fc-eyebrow">Adventure Journey</p>
-        <h1>Adventure Library</h1>
-        <p>Practice before the moment matters with evidence-backed scenario challenges.</p>
+        <p className="fc-eyebrow">Questline</p>
+        <h1>Trial Codex</h1>
+        <p>Train before the moment matters with evidence-backed scenario trials.</p>
       </section>
 
       <section className="fc-workspace-grid">

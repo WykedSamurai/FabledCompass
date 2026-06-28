@@ -63,8 +63,8 @@ export default function CompetenciesPage() {
   return (
     <div className="fc-page-stack fc-workspace-page">
       <section className="fc-workspace-hero">
-        <p className="fc-eyebrow">Career Progression Board</p>
-        <h1>Competency Atlas</h1>
+        <p className="fc-eyebrow">Skill Constellation</p>
+        <h1>Skill Tree Atlas</h1>
         <p>Track rank progression, inspect evidence sources, and follow your next best action for every skill path.</p>
       </section>
 
@@ -72,8 +72,8 @@ export default function CompetenciesPage() {
         <article className="fc-card fc-competency-summary">
           <div className="fc-card-header-row">
             <div>
-              <p className="fc-eyebrow">Core Track</p>
-              <h2>Professional Path Level</h2>
+              <p className="fc-eyebrow">Core Disciplines</p>
+              <h2>Path Rank</h2>
             </div>
             <span className="fc-status-pill">{coreAverage}% average</span>
           </div>
@@ -88,8 +88,8 @@ export default function CompetenciesPage() {
         </article>
 
         <aside className="fc-card fc-side-card fc-next-rail">
-          <p className="fc-eyebrow">Next Best Actions</p>
-          <h3>Weakest lanes first</h3>
+          <p className="fc-eyebrow">Next Quest Actions</p>
+          <h3>Lowest skills first</h3>
           <ul className="fc-guidance-list">
             {weakest.map((competency) => (
               <li key={competency.id}>
@@ -128,7 +128,7 @@ export default function CompetenciesPage() {
               </div>
 
               <div className="fc-evidence-source-list">
-                <p className="fc-eyebrow">Evidence Sources</p>
+                <p className="fc-eyebrow">Proof Ledger</p>
                 {evidence.length > 0 ? (
                   <ul className="fc-guidance-list">
                     {evidence.map((item) => (
@@ -143,7 +143,7 @@ export default function CompetenciesPage() {
               </div>
 
               <div className="fc-next-action">
-                <p className="fc-eyebrow">Next Action</p>
+                <p className="fc-eyebrow">Next Quest Step</p>
                 <p className="fc-muted">{actionsByCompetency[competency.id]}</p>
               </div>
             </article>

@@ -5,9 +5,9 @@ export default function NetworkPage() {
     <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
       <PrototypeWatermark />
       <section className="fc-workspace-hero">
-        <p className="fc-eyebrow">Community Hub</p>
-        <h1>Network</h1>
-        <p>Build meaningful professional connections with the same interaction model as the Communication Hub.</p>
+        <p className="fc-eyebrow">Allies Hub</p>
+        <h1>Alliance Web</h1>
+        <p>Build meaningful professional alliances with the same interaction model as the Signal Hub.</p>
       </section>
 
       <section className="fc-network-grid">
@@ -15,7 +15,7 @@ export default function NetworkPage() {
           <div className="fc-comms-header">
             <div>
               <p className="fc-eyebrow">Signal</p>
-              <h2>Community Conversations</h2>
+              <h2>Guildhall Conversations</h2>
             </div>
           </div>
 
@@ -34,7 +34,7 @@ export default function NetworkPage() {
           </section>
 
           <section className="fc-comms-panel">
-            <p className="fc-eyebrow">Active spaces</p>
+            <p className="fc-eyebrow">Active circles</p>
             <article className="fc-conversation-card">
               <strong>Customer Experience Circle</strong>
               <span>Weekly debriefs focused on communication and conflict resolution.</span>
@@ -46,7 +46,7 @@ export default function NetworkPage() {
           </section>
 
           <form className="fc-comms-compose">
-            <input placeholder="Start a community message..." />
+            <input placeholder="Send a guild signal..." />
             <button type="button">Send</button>
           </form>
         </article>

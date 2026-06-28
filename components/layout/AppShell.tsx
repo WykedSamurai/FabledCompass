@@ -13,31 +13,31 @@ type NavGroup = { label: string; accent: "career" | "community" | "adventure"; i
 
 const navigation = [
   {
-    label: "Career",
+    label: "Journey",
     accent: "career",
     items: [
       { href: "/dashboard", label: "Compass", icon: "compass" },
-      { href: "/portfolio", label: "Professional Folio", icon: "folio" },
-      { href: "/jobs", label: "Jobs", icon: "jobs" },
-      { href: "/applications", label: "Applications", icon: "applications" }
+      { href: "/portfolio", label: "Chronicle", icon: "folio" },
+      { href: "/jobs", label: "Quest Board", icon: "jobs" },
+      { href: "/applications", label: "Quest Log", icon: "applications" }
     ]
   },
   {
-    label: "Community",
+    label: "Allies",
     accent: "community",
     items: [
-      { href: "/network", label: "Network", icon: "network" },
-      { href: "/groups", label: "Groups", icon: "groups" },
-      { href: "/messages", label: "Communication Hub", icon: "messages" }
+      { href: "/network", label: "Alliance Web", icon: "network" },
+      { href: "/groups", label: "Guilds", icon: "groups" },
+      { href: "/messages", label: "Signal Hub", icon: "messages" }
     ]
   },
   {
-    label: "Adventure",
+    label: "Trials",
     accent: "adventure",
     items: [
-      { href: "/adventures", label: "Challenges", icon: "challenges" },
-      { href: "/assessments", label: "Assessments", icon: "assessments" },
-      { href: "/competencies", label: "Competencies", icon: "competencies" }
+      { href: "/adventures", label: "Questline", icon: "challenges" },
+      { href: "/assessments", label: "Trial Grounds", icon: "assessments" },
+      { href: "/competencies", label: "Skill Tree", icon: "competencies" }
     ]
   }
 ] satisfies NavGroup[];
@@ -166,10 +166,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <header className="fc-topbar">
           <label className="fc-search">
             <span>Search</span>
-            <input placeholder="Search Fabled Compass" />
+            <input placeholder="Search the realm" />
           </label>
           <div className="fc-top-actions">
-            <Link href="/account">Compass Center</Link>
+            <Link href="/account">Guild Hall</Link>
           </div>
         </header>
 

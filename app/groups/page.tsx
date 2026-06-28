@@ -29,8 +29,8 @@ export default function GroupsPage() {
     <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
       <PrototypeWatermark />
       <section className="fc-workspace-hero">
-        <p className="fc-eyebrow">Community Journey</p>
-        <h1>Groups</h1>
+        <p className="fc-eyebrow">Alliance Journey</p>
+        <h1>Guilds</h1>
         <p>Collaborate with peers through focused communities and guided discussion.</p>
       </section>
 
@@ -52,7 +52,7 @@ export default function GroupsPage() {
         </div>
 
         <aside className="fc-card fc-side-card">
-          <p className="fc-eyebrow">Group Strategy</p>
+          <p className="fc-eyebrow">Guild Strategy</p>
           <ul className="fc-guidance-list">
             <li>Stay active in one core group tied to your target role.</li>
             <li>Use group feedback to strengthen your application stories.</li>
