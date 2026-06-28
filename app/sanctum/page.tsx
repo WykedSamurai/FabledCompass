@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AtlasButton } from "../../components/atlas";
+import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
 import {
   characterRoles,
   homelandOptions,
@@ -175,7 +176,8 @@ export default function SanctuumPage() {
   }
 
   return (
-    <div className="fc-page-stack fc-compact-sheet">
+    <div className="fc-page-stack fc-compact-sheet fc-prototype-frame">
+      <PrototypeWatermark />
       {authLoading ? (
         <section className="fc-section fc-empty-state">
           <h2>Loading Sanctum</h2>
