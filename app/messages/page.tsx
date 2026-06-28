@@ -26,19 +26,19 @@ export default function MessagesPage() {
     <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
       <PrototypeWatermark />
       <section className="fc-workspace-hero">
-        <p className="fc-eyebrow">Communication Hub</p>
-        <h1>Messages</h1>
+        <p className="fc-eyebrow">Signal Hub</p>
+        <h1>Signal Raven</h1>
         <p>Conversation tools stay connected to your portfolio and journey context.</p>
       </section>
 
       <section className="fc-network-grid">
         <div className="fc-page-stack">
           <article className="fc-card">
-            <div className="fc-comms-tabs" role="tablist" aria-label="Message sections">
+            <div className="fc-comms-tabs" role="tablist" aria-label="Signal sections">
               <button type="button">All</button>
               <button type="button">Recruiters</button>
               <button type="button">Groups</button>
-              <button type="button">Compass</button>
+              <button type="button">Guide</button>
             </div>
 
             <div className="fc-thread-list">
@@ -57,16 +57,16 @@ export default function MessagesPage() {
 
           <article className="fc-card">
             <div className="fc-card-header-row">
-              <h2>Compass Coach</h2>
-              <span className="fc-status-pill">Active</span>
+              <h2>Compass Guide</h2>
+              <span className="fc-status-pill">Online</span>
             </div>
             <div className="fc-chat-log">
-              <p><strong>Compass:</strong> You are one strong interview story away from a stronger application package.</p>
+              <p><strong>Guide:</strong> You are one strong interview story away from a stronger application package.</p>
               <p><strong>You:</strong> What should I prepare first?</p>
-              <p><strong>Compass:</strong> Use your Customer Recovery scenario result and connect it to a real workplace example.</p>
+              <p><strong>Guide:</strong> Use your Customer Recovery scenario result and connect it to a real workplace example.</p>
             </div>
             <form className="fc-comms-compose">
-              <input placeholder="Reply to Compass..." />
+              <input placeholder="Send a raven reply..." />
               <button type="button">Send</button>
             </form>
           </article>

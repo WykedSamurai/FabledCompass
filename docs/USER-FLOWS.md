@@ -13,7 +13,7 @@
 ## Job Seeker: Complete a Scenario
 
 1. Open the scenario library.
-2. Select **The Difficult Customer**.
+2. Select **Service Recovery Constellation**.
 3. Review the scenario description, skills assessed, estimated length, and possible badge.
 4. Begin the scenario.
 5. Read each scene and choose a response.

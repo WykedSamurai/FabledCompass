@@ -39,9 +39,9 @@ export default function DashboardPage() {
           <div className="fc-archetype-portrait" aria-hidden="true">{archetype.icon}</div>
           <div>
             <p className="fc-eyebrow">Professional Character</p>
-            <h1>Career Navigator</h1>
+            <h1>Career Compass</h1>
             <p className="fc-identity-name">Atlas Professional</p>
-            <p className="fc-identity-title">Career Growth Navigator</p>
+            <p className="fc-identity-title">Compass Bearer</p>
           </div>
         </div>
         <div className="fc-identity-details">
@@ -62,7 +62,7 @@ export default function DashboardPage() {
         </div>
         <div className="fc-character-summary">
           <span><small>Level</small><strong>7</strong></span>
-          <span><small>Career Path</small><strong>Navigator</strong></span>
+          <span><small>Career Path</small><strong>Pathfinder</strong></span>
           <span><small>Portfolio Strength</small><strong>{compass.overall}%</strong></span>
         </div>
       </section>
@@ -129,8 +129,8 @@ export default function DashboardPage() {
 
         <details className="fc-sheet-section">
           <summary>Next Challenge <span>Ready</span></summary>
-          <p className="fc-muted">Customer Recovery is ready to continue building evidence.</p>
-          <AtlasButton href="/adventures/difficult-customer">Begin Challenge</AtlasButton>
+          <p className="fc-muted">Service Recovery Constellation is ready to continue building evidence.</p>
+          <AtlasButton href="/assessments/service-recovery-constellation">Begin Challenge</AtlasButton>
         </details>
       </section>
     </div>

@@ -56,9 +56,9 @@ update public.user_badges ub
 set badge_definition_id = sb.id,
     badge_slug = sb.badge_slug,
     badge_name = sb.badge_name,
-    source_scenario = 'The Difficult Customer'
+    source_scenario = 'Service Recovery Constellation'
 from public.scenario_badges sb
 where sb.scenario_slug = 'difficult-customer'
   and sb.version = 1
-  and ub.source_scenario = 'The Difficult Customer';
+  and ub.source_scenario = 'Service Recovery Constellation';
 ```

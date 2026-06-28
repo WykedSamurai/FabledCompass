@@ -41,7 +41,7 @@ Levels must reflect increasingly difficult evidence, not repeated completion of 
 
 ### Customer Service Foundations
 
-**Source:** The Difficult Customer
+**Source:** Service Recovery Constellation
 
 **Skills assessed:**
 

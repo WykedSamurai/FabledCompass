@@ -62,7 +62,7 @@ Feedback must address behavior, not make claims about the user's personality or 
 
 ## First Scenario Definition
 
-### The Difficult Customer
+### Service Recovery Constellation
 
 **User role:** Frontline customer service employee
 

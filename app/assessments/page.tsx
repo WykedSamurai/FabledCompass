@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
 
 type Dimension = "energy" | "information" | "decision" | "structure";
@@ -393,16 +394,38 @@ export default function AssessmentsPage() {
     <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
       <PrototypeWatermark />
       <section className="fc-workspace-hero">
-        <p className="fc-eyebrow">Adventure Journey</p>
-        <h1>Personality Style Assessment</h1>
-        <p>Roleplay quiz assessments for workstyle insight and trade-readiness coaching.</p>
+        <p className="fc-eyebrow">Questline</p>
+        <h1>Trial Grounds</h1>
+        <p>Roleplay trials for workstyle insight and trade-readiness coaching.</p>
+      </section>
+
+      <section className="fc-workspace-grid">
+        <article className="fc-card fc-adventure-card">
+          <div className="fc-card-header-row">
+            <div>
+              <p className="fc-eyebrow">Featured Trial</p>
+              <h2>Service Recovery Constellation</h2>
+            </div>
+            <span className="fc-status-pill">Ready</span>
+          </div>
+          <p className="fc-muted">Navigate a tense client-support moment with empathy, policy accuracy, and clean escalation choices.</p>
+          <div className="fc-inline-tags">
+            <span>Communication</span>
+            <span>Empathy</span>
+            <span>Policy Awareness</span>
+            <span>5-7 minutes</span>
+          </div>
+          <div className="fc-action-row">
+            <Link className="fc-button" href="/assessments/service-recovery-constellation">Enter Trial</Link>
+          </div>
+        </article>
       </section>
 
       {!workstyleComplete && (
         <section className="fc-assessment-shell">
           <article className="fc-card">
             <div className="fc-card-header-row">
-              <h2>Workstyle Roleplay Quiz</h2>
+              <h2>Workstyle Trial</h2>
               <span className="fc-muted">Scene {workstyleIndex + 1} of {workstyleScenes.length}</span>
             </div>
             <div className="progress"><div className="progress-bar" style={{ width: `${workstyleProgress}%` }} /></div>
@@ -447,7 +470,7 @@ export default function AssessmentsPage() {
               </ul>
 
               <div className="fc-action-row">
-                <button className="fc-button" type="button" onClick={restartWorkstyle}>Retake Assessment</button>
+                <button className="fc-button" type="button" onClick={restartWorkstyle}>Replay Trial</button>
               </div>
             </article>
 
@@ -471,8 +494,8 @@ export default function AssessmentsPage() {
         <article className="fc-card">
           <div className="fc-card-header-row">
             <div>
-              <p className="fc-eyebrow">Basic Assessments</p>
-              <h2>Trades Roleplay Quizzes</h2>
+              <p className="fc-eyebrow">Trade Trials</p>
+              <h2>Trades Roleplay Trials</h2>
             </div>
             <span className="fc-muted">{selectedTradeRun.complete ? "Completed" : `Scene ${selectedTradeRun.index + 1} of ${selectedTrade.scenes.length}`}</span>
           </div>

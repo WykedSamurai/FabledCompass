@@ -48,17 +48,17 @@ export default function ApplicationsPage() {
     <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
       <PrototypeWatermark />
       <section className="fc-workspace-hero">
-        <p className="fc-eyebrow">Applications</p>
-        <h1>Application Tracker</h1>
-        <p>Track where each opportunity stands and keep your next action clear.</p>
+        <p className="fc-eyebrow">Quest Log</p>
+        <h1>Quest Ledger</h1>
+        <p>Track where each opportunity stands and keep your next quest step clear.</p>
       </section>
 
       <section className="fc-workspace-grid">
         <div className="fc-page-stack">
           <article className="fc-card">
             <div className="fc-card-header-row">
-              <h2>Pipeline</h2>
-              <span className="fc-muted">{applications.length} active applications</span>
+              <h2>Quest Stages</h2>
+              <span className="fc-muted">{applications.length} active quests</span>
             </div>
             <div className="fc-pipeline-grid">
               {pipelineCounts.map((item) => (
@@ -82,7 +82,7 @@ export default function ApplicationsPage() {
                   <span className="fc-status-pill">{application.status}</span>
                 </div>
                 <p>{application.note}</p>
-                <p className="fc-application-next"><strong>Next action:</strong> {application.nextAction}</p>
+                <p className="fc-application-next"><strong>Next quest step:</strong> {application.nextAction}</p>
                 <div className="fc-inline-tags">
                   {application.evidence.map((item) => (
                     <span key={item}>{item}</span>
@@ -100,14 +100,14 @@ export default function ApplicationsPage() {
 
         <aside className="fc-card fc-side-card">
           <p className="fc-eyebrow">Today</p>
-          <h3>Application Actions</h3>
+          <h3>Quest Actions</h3>
           <ul className="fc-guidance-list">
             <li>Send one follow-up for submitted applications with no response.</li>
             <li>Attach one evidence example to each interview prep note.</li>
             <li>Review portfolio visibility before sharing with employers.</li>
           </ul>
 
-          <p className="fc-eyebrow">This week</p>
+          <p className="fc-eyebrow">This week's push</p>
           <ul className="fc-guidance-list">
             <li>Move one draft application to submitted.</li>
             <li>Log interview outcomes and convert insights into next steps.</li>

@@ -29,8 +29,8 @@ export default function JobsPage() {
     <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
       <PrototypeWatermark />
       <section className="fc-workspace-hero">
-        <p className="fc-eyebrow">Career Board</p>
-        <h1>Open Opportunities</h1>
+        <p className="fc-eyebrow">Quest Board</p>
+        <h1>Open Quests</h1>
         <p>Browse roles that align with your professional strengths and demonstrated evidence.</p>
       </section>
 
@@ -43,7 +43,7 @@ export default function JobsPage() {
                 <h2>{job.title}</h2>
                 <p className="fc-muted">{job.company} • {job.location}</p>
               </div>
-              <button className="fc-button" type="button">View Role</button>
+              <button className="fc-button" type="button">View Quest</button>
             </div>
             <p>{job.summary}</p>
           </article>

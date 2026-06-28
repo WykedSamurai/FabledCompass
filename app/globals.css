@@ -155,6 +155,15 @@ button { cursor: pointer; }
   font-weight: 850;
   background: rgba(16, 22, 29, .35);
 }
+.fc-nav-icon svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .fc-nav-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fc-nav-link:hover {
   color: var(--fc-text);
@@ -180,6 +189,7 @@ button { cursor: pointer; }
 .is-sidebar-collapsed .fc-sidebar-toggle { width: 34px; height: 24px; }
 .is-sidebar-collapsed .fc-nav-link { justify-content: center; padding: .45rem; }
 .is-sidebar-collapsed .fc-nav-icon { width: 34px; height: 34px; border-radius: 11px; }
+.is-sidebar-collapsed .fc-nav-icon svg { width: 18px; height: 18px; }
 
 .fc-workspace { min-width: 0; }
 .fc-topbar {
@@ -785,6 +795,75 @@ button { cursor: pointer; }
   padding: .58rem .68rem;
 }
 
+.fc-competency-summary {
+  display: grid;
+  gap: .45rem;
+  align-content: start;
+}
+
+.fc-next-rail {
+  gap: .45rem;
+}
+
+.fc-next-rail .fc-guidance-list {
+  margin-top: .15rem;
+}
+
+.fc-competency-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+}
+
+.fc-competency-node {
+  display: grid;
+  gap: .5rem;
+  align-content: start;
+}
+
+.fc-rank-pill {
+  border: 1px solid rgba(45, 212, 243, .38);
+  border-radius: 999px;
+  padding: .18rem .52rem;
+  font-size: .72rem;
+  color: #b6d8ff;
+  background: rgba(45, 212, 243, .09);
+  height: fit-content;
+}
+
+.fc-competency-metrics {
+  display: flex;
+  justify-content: space-between;
+  gap: .7rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.fc-competency-metrics p {
+  margin: 0;
+  color: #9fb2cf;
+  font-size: .82rem;
+}
+
+.fc-competency-metrics strong {
+  color: #d7e4f9;
+  font-size: .95rem;
+}
+
+.fc-evidence-source-list {
+  border-top: 1px solid rgba(148, 163, 184, .14);
+  padding-top: .45rem;
+}
+
+.fc-evidence-source-list .fc-guidance-list {
+  margin-top: .1rem;
+}
+
+.fc-next-action {
+  border-top: 1px solid rgba(148, 163, 184, .14);
+  padding-top: .45rem;
+}
+
 .fc-assessment-options {
   display: grid;
   gap: .45rem;
@@ -1045,6 +1124,10 @@ button { cursor: pointer; }
   }
 
   .fc-trade-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .fc-competency-board {
     grid-template-columns: 1fr;
   }
 
