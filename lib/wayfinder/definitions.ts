@@ -1,232 +1,149 @@
-import type { ClassDefinition, RaceDefinition } from "./types";
+import type { HomelandDefinition, RoleDefinition, SocialStandingDefinition } from "./types";
 
-export const characterClasses: Record<string, ClassDefinition> = {
-  fighter: {
-    id: "fighter",
-    name: "Man-at-Arms",
+export const characterRoles: Record<string, RoleDefinition> = {
+  soldier: {
+    id: "soldier",
+    name: "Soldier",
     icon: "⚔️",
-    description: "A drilled professional in pike, sword, and formation tactics.",
-    primaryAbilities: ["strength", "constitution"],
-    hitDie: 10,
-    skillPoints: 2,
-    motto: "Drill and steel hold the line."
+    description: "A trained combatant shaped by drill, discipline, weapons, and campaign hardship.",
+    primaryAttributes: ["might", "vitality"],
+    conditionBase: 10,
+    skillFocus: ["Blades", "Polearms", "Shields", "Warfare"],
+    motto: "Discipline and steel shape victory."
   },
-  rogue: {
-    id: "rogue",
-    name: "Courier-Spymaster",
+  courtier: {
+    id: "courtier",
+    name: "Courtier",
+    icon: "⚜️",
+    description: "A social operator fluent in etiquette, patronage, reputation, and political danger.",
+    primaryAttributes: ["presence", "awareness"],
+    conditionBase: 8,
+    skillFocus: ["Etiquette", "Persuasion", "Insight", "Heraldry"],
+    motto: "A room is a battlefield before the first blade is drawn."
+  },
+  agent: {
+    id: "agent",
+    name: "Agent",
     icon: "🗡️",
-    description: "A fast mover of letters, secrets, and negotiated advantage.",
-    primaryAbilities: ["dexterity", "charisma"],
-    hitDie: 8,
-    skillPoints: 8,
-    motto: "Information arrives before armies."
+    description: "A spy, investigator, thief, courier, or hidden hand who thrives where records and secrets meet.",
+    primaryAttributes: ["finesse", "awareness"],
+    conditionBase: 8,
+    skillFocus: ["Stealth", "Deception", "Investigation", "Lockcraft"],
+    motto: "The quiet hand moves history."
   },
-  wizard: {
-    id: "wizard",
-    name: "Natural Philosopher",
+  scholar: {
+    id: "scholar",
+    name: "Scholar",
     icon: "📚",
-    description: "A scholar of mathematics, astronomy, and practical experimentation.",
-    primaryAbilities: ["intelligence", "wisdom"],
-    hitDie: 6,
-    skillPoints: 2,
-    motto: "Measured truth outlasts rumor."
+    description: "An educated specialist trained in law, medicine, engineering, history, theology, or natural philosophy.",
+    primaryAttributes: ["reason", "awareness"],
+    conditionBase: 6,
+    skillFocus: ["Research", "Law", "Medicine", "Natural Philosophy"],
+    motto: "Knowledge is leverage."
   },
   cleric: {
     id: "cleric",
-    name: "Chaplain-Healer",
-    icon: "⛪",
-    description: "A caretaker of body and conscience serving parish, camp, and court.",
-    primaryAbilities: ["wisdom", "strength"],
-    hitDie: 8,
-    skillPoints: 2,
-    motto: "Steady hands and steady hearts."
+    name: "Cleric",
+    icon: "✠",
+    description: "A religious figure whose authority comes from doctrine, confession, literacy, and institutional reach.",
+    primaryAttributes: ["awareness", "presence"],
+    conditionBase: 8,
+    skillFocus: ["Religion", "Insight", "Persuasion", "Administration"],
+    motto: "Faith binds what law cannot reach."
   },
-  ranger: {
-    id: "ranger",
-    name: "Frontier Scout",
+  warden: {
+    id: "warden",
+    name: "Warden",
     icon: "🏹",
-    description: "A tracker and guide for roads, forests, and contested borders.",
-    primaryAbilities: ["dexterity", "wisdom"],
-    hitDie: 10,
-    skillPoints: 6,
-    motto: "Read the land before it reads you."
+    description: "A hunter, scout, forester, outrider, guide, or border watchman skilled beyond city walls.",
+    primaryAttributes: ["finesse", "awareness"],
+    conditionBase: 10,
+    skillFocus: ["Survival", "Tracking", "Bows", "Animal Handling"],
+    motto: "The land speaks to those who listen."
   },
-  paladin: {
-    id: "paladin",
-    name: "Knight-Errant",
-    icon: "🛡️",
-    description: "An oath-bound rider balancing honor, duty, and political reality.",
-    primaryAbilities: ["strength", "charisma"],
-    hitDie: 10,
-    skillPoints: 2,
-    motto: "Honor is proven in service."
+  artisan: {
+    id: "artisan",
+    name: "Artisan",
+    icon: "🛠️",
+    description: "A skilled maker whose tools, workshop, guild ties, and reputation can open unexpected doors.",
+    primaryAttributes: ["reason", "finesse"],
+    conditionBase: 8,
+    skillFocus: ["Craft", "Appraisal", "Commerce", "Guild Law"],
+    motto: "A steady hand can build a kingdom."
   },
-  barbarian: {
-    id: "barbarian",
-    name: "Free Company Veteran",
-    icon: "🔥",
-    description: "A hardened mercenary from rough campaigns and long roads.",
-    primaryAbilities: ["strength", "constitution"],
-    hitDie: 12,
-    skillPoints: 2,
-    motto: "Endurance wins wars of attrition."
+  merchant: {
+    id: "merchant",
+    name: "Merchant",
+    icon: "⚖️",
+    description: "A trader, factor, broker, banker, caravan master, or smuggler who understands risk and access.",
+    primaryAttributes: ["reason", "presence"],
+    conditionBase: 8,
+    skillFocus: ["Commerce", "Persuasion", "Appraisal", "Streetwise"],
+    motto: "Every gate has a price."
   },
-  bard: {
-    id: "bard",
-    name: "Diplomat-Orator",
-    icon: "🎵",
-    description: "A persuasive performer and negotiator shaping alliances and morale.",
-    primaryAbilities: ["charisma", "intelligence"],
-    hitDie: 8,
-    skillPoints: 8,
-    motto: "A well-placed word can move a kingdom."
+  performer: {
+    id: "performer",
+    name: "Performer",
+    icon: "🎭",
+    description: "A musician, dancer, actor, acrobat, or storyteller who turns attention into influence.",
+    primaryAttributes: ["presence", "finesse"],
+    conditionBase: 8,
+    skillFocus: ["Performance", "Etiquette", "Acrobatics", "Deception"],
+    motto: "The audience remembers what power forgets."
   },
-  druid: {
-    id: "druid",
-    name: "Field Physick",
-    icon: "🌿",
-    description: "A practical herbalist and survival expert trained by hard seasons.",
-    primaryAbilities: ["wisdom", "constitution"],
-    hitDie: 8,
-    skillPoints: 4,
-    motto: "Study the earth; preserve the people."
-  },
-  monk: {
-    id: "monk",
-    name: "Monastic Scholar",
-    icon: "✋",
-    description: "A disciplined student of scripture, languages, and controlled movement.",
-    primaryAbilities: ["dexterity", "wisdom"],
-    hitDie: 8,
-    skillPoints: 4,
-    motto: "Discipline sharpens every craft."
-  },
-  sorcerer: {
-    id: "sorcerer",
-    name: "Master Artisan",
-    icon: "⚙️",
-    description: "A gifted craft specialist whose workshop output reshapes entire towns.",
-    primaryAbilities: ["charisma", "constitution"],
-    hitDie: 6,
-    skillPoints: 2,
-    motto: "Mastery turns skill into legacy."
-  },
-  warlock: {
-    id: "warlock",
-    name: "Court Strategist",
-    icon: "🏛️",
-    description: "An advisor skilled in patronage, policy, and high-risk political bargains.",
-    primaryAbilities: ["charisma", "intelligence"],
-    hitDie: 6,
-    skillPoints: 2,
-    motto: "Every alliance carries a cost."
+  physician: {
+    id: "physician",
+    name: "Physician",
+    icon: "⚕️",
+    description: "A healer, surgeon, apothecary, or learned practitioner navigating illness, anatomy, and trust.",
+    primaryAttributes: ["reason", "awareness"],
+    conditionBase: 8,
+    skillFocus: ["Medicine", "Observation", "Apothecary", "Research"],
+    motto: "A pulse tells truths the tongue conceals."
   }
 };
 
-export const characterRaces: Record<string, RaceDefinition> = {
-  human: {
-    id: "human",
-    name: "Kingdom Native",
-    icon: "👤",
-    description: "Raised in a local crown domain with broad practical expectations.",
-    abilityBonuses: { strength: 1, dexterity: 1, constitution: 1, intelligence: 1, wisdom: 1, charisma: 1 },
-    speed: 30,
-    motto: "Adapt and advance."
-  },
-  elf: {
-    id: "elf",
-    name: "Merchant Republic Native",
-    icon: "⚓",
-    description: "From port cities where trade routes, credit, and diplomacy define status.",
-    abilityBonuses: { dexterity: 2, intelligence: 1 },
-    speed: 30,
-    motto: "Trade binds distant worlds."
-  },
-  dwarf: {
-    id: "dwarf",
-    name: "Mountain March Native",
-    icon: "⛰️",
-    description: "From upland regions known for mining, metalwork, and defensive strongholds.",
-    abilityBonuses: { constitution: 2, wisdom: 1 },
-    speed: 25,
-    motto: "Build to outlast the century."
-  },
-  halfling: {
-    id: "halfling",
-    name: "Market Town Native",
-    icon: "🧺",
-    description: "From close-knit trading towns where trust and reputation are currency.",
-    abilityBonuses: { dexterity: 2, charisma: 1 },
-    speed: 25,
-    motto: "Community makes resilience."
-  },
-  gnome: {
-    id: "gnome",
-    name: "University City Native",
-    icon: "🏫",
-    description: "From scholarly centers shaped by printing presses and public debate.",
-    abilityBonuses: { intelligence: 2, wisdom: 1 },
-    speed: 25,
-    motto: "Curiosity opens every gate."
-  },
-  "half-orc": {
-    id: "half-orc",
-    name: "Frontier Garrison Native",
-    icon: "🏹",
-    description: "Raised on contested borders where militia duty and survival are daily life.",
-    abilityBonuses: { strength: 2, constitution: 1, charisma: -1 },
-    speed: 30,
-    motto: "Hold fast at the edge."
-  },
-  "half-elf": {
-    id: "half-elf",
-    name: "Cross-Border Native",
-    icon: "🧭",
-    description: "Shaped by multiple cultures, languages, and laws across shifting frontiers.",
-    abilityBonuses: { charisma: 2, dexterity: 1, intelligence: 1 },
-    speed: 30,
-    motto: "Bridge the map, bridge the people."
-  },
-  tiefling: {
-    id: "tiefling",
-    name: "Exile Community Native",
-    icon: "🕯️",
-    description: "From displaced communities that survive through craft, memory, and grit.",
-    abilityBonuses: { charisma: 2, intelligence: 1, dexterity: 1 },
-    speed: 30,
-    motto: "Rebuild, even far from home."
-  },
-  dragonborn: {
-    id: "dragonborn",
-    name: "Naval Port Native",
-    icon: "🚢",
-    description: "Raised in maritime cities where fleets, maps, and storms decide fortunes.",
-    abilityBonuses: { strength: 2, charisma: 1 },
-    speed: 30,
-    motto: "The horizon rewards preparation."
-  },
-  aasimar: {
-    id: "aasimar",
-    name: "Pilgrimage Route Native",
-    icon: "🛤️",
-    description: "From crossroads sustained by faith travelers, inns, and charitable orders.",
-    abilityBonuses: { charisma: 2, wisdom: 1 },
-    speed: 30,
-    motto: "Service leaves the deepest mark."
-  }
+export const homelandOptions: Record<string, HomelandDefinition> = {
+  england: { id: "england", name: "England", icon: "♜", description: "A Tudor realm of court politics, church tension, ports, nobles, and ambitious households.", languages: ["English", "Latin"], motto: "Honor and opportunity under a watchful crown." },
+  scotland: { id: "scotland", name: "Scotland", icon: "☘", description: "A kingdom of clans, border conflict, noble rivalries, scholars, and hard-won alliances.", languages: ["Scots", "Scottish Gaelic", "Latin"], motto: "Loyalty is kinship, oath, and necessity." },
+  france: { id: "france", name: "France", icon: "⚜", description: "A powerful realm of courtly refinement, noble houses, religious strain, and military ambition.", languages: ["French", "Latin"], motto: "Grace conceals strategy." },
+  spain: { id: "spain", name: "Spain", icon: "☀", description: "An expanding monarchy shaped by empire, faith, seafaring, court ceremony, and military prestige.", languages: ["Spanish", "Latin"], motto: "Faith, crown, and conquest cast long shadows." },
+  portugal: { id: "portugal", name: "Portugal", icon: "⚓", description: "A maritime power of navigators, merchants, nobles, missionaries, and ocean routes.", languages: ["Portuguese", "Latin"], motto: "The sea is a road and a wager." },
+  "italian-states": { id: "italian-states", name: "Italian States", icon: "◆", description: "City-states of banking, art, family politics, mercenaries, diplomats, and church influence.", languages: ["Italian", "Latin"], motto: "A city may be smaller than a kingdom and sharper than a sword." },
+  "holy-roman-empire": { id: "holy-roman-empire", name: "Holy Roman Empire", icon: "🜂", description: "A patchwork of princes, free cities, guilds, soldiers, reformers, and imperial claims.", languages: ["German", "Latin"], motto: "Order is negotiated, not assumed." },
+  "poland-lithuania": { id: "poland-lithuania", name: "Poland-Lithuania", icon: "♞", description: "A vast commonwealth of nobles, estates, borders, cavalry traditions, and layered identities.", languages: ["Polish", "Ruthenian", "Latin"], motto: "Liberty and duty ride together." },
+  "ottoman-empire": { id: "ottoman-empire", name: "Ottoman Empire", icon: "☾", description: "An imperial power of courts, armies, scholars, trade routes, administrators, and frontier politics.", languages: ["Ottoman Turkish", "Arabic", "Persian"], motto: "Empire moves through law, sword, and ledger." },
+  "ming-china": { id: "ming-china", name: "Ming China", icon: "龍", description: "A sophisticated imperial world of examinations, officials, artisans, cities, and guarded borders.", languages: ["Mandarin Chinese", "Classical Chinese"], motto: "Order begins with the written record." },
+  "joseon-korea": { id: "joseon-korea", name: "Joseon Korea", icon: "☯", description: "A Confucian kingdom of scholars, court factions, family duty, military pressures, and ritual order.", languages: ["Korean", "Classical Chinese"], motto: "Principle is power when men obey it." },
+  japan: { id: "japan", name: "Japan", icon: "◉", description: "A fractured age of daimyo, samurai households, temples, merchants, spies, and shifting loyalties.", languages: ["Japanese", "Classical Chinese"], motto: "The blade serves house, name, and survival." },
+  "mughal-india": { id: "mughal-india", name: "Mughal India", icon: "✦", description: "A rising imperial order of courts, armies, poets, merchants, faiths, and regional powers.", languages: ["Persian", "Hindavi", "Sanskrit"], motto: "Splendor and command share the same hall." },
+  "safavid-persia": { id: "safavid-persia", name: "Safavid Persia", icon: "✶", description: "A Persianate imperial world of shahs, clerics, cavalry, artisans, trade, and religious identity.", languages: ["Persian", "Azerbaijani", "Arabic"], motto: "Beauty, doctrine, and steel endure." },
+  "kingdom-of-kongo": { id: "kingdom-of-kongo", name: "Kingdom of Kongo", icon: "◇", description: "A Central African kingdom of nobles, trade, diplomacy, Christianity, lineage, and regional power.", languages: ["Kikongo", "Portuguese"], motto: "Lineage carries authority across rivers and roads." },
+  ethiopia: { id: "ethiopia", name: "Ethiopia", icon: "✚", description: "A highland Christian empire of nobles, clergy, soldiers, merchants, and contested frontiers.", languages: ["Ge'ez", "Amharic"], motto: "Faith and crown stand on ancient stone." },
+  "indigenous-americas": { id: "indigenous-americas", name: "Indigenous Americas", icon: "✹", description: "A broad option for characters from the many distinct nations and communities of the Americas.", languages: ["Local language"], motto: "People, place, and memory are not separate things." },
+  unknown: { id: "unknown", name: "Unknown or Concealed", icon: "?", description: "A hidden, disputed, forgotten, or intentionally obscured origin.", languages: ["Unlisted"], motto: "What is not named may still matter." }
 };
 
-export function getClass(id: string): ClassDefinition {
-  return characterClasses[id] || characterClasses.fighter;
-}
+export const socialStandings: Record<string, SocialStandingDefinition> = {
+  royal: { id: "royal", name: "Royal", description: "Born or married into sovereign bloodlines.", access: "Highest court access and dynastic recognition.", obligation: "Constant scrutiny, inheritance politics, and symbolic duty." },
+  "high-noble": { id: "high-noble", name: "High Noble", description: "Great houses with land, titles, retainers, and political consequence.", access: "Councils, commanders, bishops, and elite marriage networks.", obligation: "House reputation, patronage, taxes, and factional pressure." },
+  "lesser-noble": { id: "lesser-noble", name: "Lesser Noble", description: "Titled or blooded nobility with limited resources or regional influence.", access: "Local courts, officers, patronage, and formal respect.", obligation: "Service, appearances, and dependence on stronger patrons." },
+  gentry: { id: "gentry", name: "Gentry", description: "Respectable landholders and educated families below titled nobility.", access: "Local administration, marriage prospects, and social credibility.", obligation: "Reputation, property management, and public conduct." },
+  clergy: { id: "clergy", name: "Clergy", description: "A member of a religious institution or household.", access: "Church courts, literacy, confession, sanctuary, and records.", obligation: "Doctrine, obedience, vows, and institutional politics." },
+  "military-officer": { id: "military-officer", name: "Military Officer", description: "A commander or ranked servant of an army, navy, militia, or guard.", access: "Arsenals, patrols, officers, maps, and military justice.", obligation: "Orders, discipline, chain of command, and campaign duty." },
+  "guild-member": { id: "guild-member", name: "Guild Member", description: "Recognized within a trade, craft, or urban professional body.", access: "Workshops, apprentices, suppliers, and guild courts.", obligation: "Dues, standards, rival masters, and city regulations." },
+  merchant: { id: "merchant", name: "Merchant", description: "A trader, broker, shipper, banker, or commercial agent.", access: "Markets, credit, warehouses, contracts, and travel papers.", obligation: "Debts, tariffs, partners, and reputation for reliability." },
+  "skilled-artisan": { id: "skilled-artisan", name: "Skilled Artisan", description: "A trained craftsperson whose labor has recognized value.", access: "Tools, workshops, patrons, and technical knowledge.", obligation: "Deadlines, materials, masters, and client expectations." },
+  commoner: { id: "commoner", name: "Commoner", description: "A free person without noble, clerical, guild, or elite rank.", access: "Ordinary local networks and practical knowledge.", obligation: "Taxes, labor expectations, and vulnerability to authority." },
+  servant: { id: "servant", name: "Servant", description: "Attached to a household, estate, court, inn, or institution.", access: "Back rooms, routines, overheard secrets, and domestic trust.", obligation: "Obedience, discretion, hierarchy, and dependence." },
+  outlaw: { id: "outlaw", name: "Outlaw", description: "Living outside lawful protection by crime, exile, debt, or political accusation.", access: "Criminal networks, hiding places, and desperate allies.", obligation: "Risk of arrest, betrayal, violence, and false names." },
+  indentured: { id: "indentured", name: "Enslaved or Indentured", description: "Bound by force, debt, law, war, or contract to another's control.", access: "Restricted movement but intimate knowledge of households and labor systems.", obligation: "Coercion, surveillance, limited legal protection, and survival pressure." },
+  concealed: { id: "concealed", name: "Social Standing Concealed", description: "True status is hidden, forged, disputed, or deliberately performed.", access: "Depends on the cover identity.", obligation: "Discovery can destroy protection, trust, or freedom." }
+};
 
-export function getRace(id: string): RaceDefinition {
-  return characterRaces[id] || characterRaces.human;
-}
+export const baseAttributeScore = 10;
 
-export const baseAbilityScore = 10;
-
-export function rollAbilityScore(): number {
+export function rollAttributeScore(): number {
   const rolls = [
     Math.floor(Math.random() * 6) + 1,
     Math.floor(Math.random() * 6) + 1,
@@ -236,6 +153,8 @@ export function rollAbilityScore(): number {
   return rolls.sort((a, b) => b - a).slice(0, 3).reduce((sum, val) => sum + val, 0);
 }
 
+export const rollAbilityScore = rollAttributeScore;
+
 export function calculateModifier(score: number): number {
   return Math.floor((score - 10) / 2);
 }
@@ -243,3 +162,14 @@ export function calculateModifier(score: number): number {
 export function getModifierSign(mod: number): string {
   return mod > 0 ? `+${mod}` : `${mod}`;
 }
+
+export function getRole(id: string): RoleDefinition {
+  return characterRoles[id] || characterRoles.soldier;
+}
+
+export function getHomeland(id: string): HomelandDefinition {
+  return homelandOptions[id] || homelandOptions.england;
+}
+
+export const characterClasses = characterRoles;
+export const characterRaces = homelandOptions;

@@ -3,65 +3,83 @@
 import { useState } from "react";
 import { AtlasButton } from "../../components/atlas";
 import {
-  characterClasses,
-  characterRaces,
-  rollAbilityScore,
+  characterRoles,
+  homelandOptions,
+  socialStandings,
+  rollAttributeScore,
   calculateModifier,
   getModifierSign,
   type PlayableCharacter,
-  type CharacterClass,
-  type CharacterRace,
-  type AbilityScores
+  type Homeland,
+  type SanctumAttributes,
+  type SanctumRole,
+  type SocialStanding
 } from "../../lib/wayfinder";
 
 const MAX_CHARACTER_SLOTS = 3;
 const ACCOUNT_PLAYER_NAME = "Atlas Professional";
 
-const abilityLabels: Record<keyof AbilityScores, string> = {
-  strength: "Strength",
-  dexterity: "Dexterity",
-  constitution: "Constitution",
-  intelligence: "Intelligence",
-  wisdom: "Wisdom",
-  charisma: "Charisma"
+const attributeLabels: Record<keyof SanctumAttributes, string> = {
+  might: "Might",
+  finesse: "Finesse",
+  vitality: "Vitality",
+  reason: "Reason",
+  awareness: "Awareness",
+  presence: "Presence"
 };
 
-const abilityShort: Record<keyof AbilityScores, string> = {
-  strength: "STR",
-  dexterity: "DEX",
-  constitution: "CON",
-  intelligence: "INT",
-  wisdom: "WIS",
-  charisma: "CHA"
+const attributeShort: Record<keyof SanctumAttributes, string> = {
+  might: "MIG",
+  finesse: "FIN",
+  vitality: "VIT",
+  reason: "REA",
+  awareness: "AWR",
+  presence: "PRE"
 };
 
 function generateCharacterId(): string {
   return `char_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
 }
 
-function createNewCharacter(): PlayableCharacter {
-  const abilities: AbilityScores = {
-    strength: rollAbilityScore(),
-    dexterity: rollAbilityScore(),
-    constitution: rollAbilityScore(),
-    intelligence: rollAbilityScore(),
-    wisdom: rollAbilityScore(),
-    charisma: rollAbilityScore()
-  };
+function deriveCharacterStats(attributes: SanctumAttributes, rank = 1) {
+  const vitalityMod = calculateModifier(attributes.vitality);
+  const finesseMod = calculateModifier(attributes.finesse);
+  const awarenessMod = calculateModifier(attributes.awareness);
+  const presenceMod = calculateModifier(attributes.presence);
 
-  const conMod = calculateModifier(abilities.constitution);
-  const hpPerLevel = 6 + conMod;
+  return {
+    condition: Math.max(8 + rank * 4 + vitalityMod, 1),
+    defense: 10 + finesseMod,
+    readiness: finesseMod,
+    endurance: vitalityMod,
+    reaction: finesseMod,
+    resolve: Math.max(awarenessMod, presenceMod),
+    combatTraining: rank
+  };
+}
+
+function createNewCharacter(): PlayableCharacter {
+  const attributes: SanctumAttributes = {
+    might: rollAttributeScore(),
+    finesse: rollAttributeScore(),
+    vitality: rollAttributeScore(),
+    reason: rollAttributeScore(),
+    awareness: rollAttributeScore(),
+    presence: rollAttributeScore()
+  };
 
   return {
     id: generateCharacterId(),
-    name: "New Traveler",
-    class: "fighter",
-    race: "human",
-    level: 1,
-    experience: 0,
-    abilityScores: abilities,
-    hitPoints: Math.max(hpPerLevel, 1),
-    armor: 10,
+    name: "New Character",
+    role: "soldier",
+    homeland: "england",
+    socialStanding: "commoner",
+    specialty: "Man-at-Arms",
+    occupation: "Unwritten",
+    rank: 1,
+    renown: 0,
+    attributes,
+    ...deriveCharacterStats(attributes, 1),
     backstory: "",
     personalLegend: "",
     createdAt: new Date().toISOString(),
@@ -73,23 +91,31 @@ export default function SanctuumPage() {
   const [characters, setCharacters] = useState<PlayableCharacter[]>([
     {
       id: "char_sample_001",
-      name: "Giulia Ferraro",
-      class: "rogue",
-      race: "elf",
-      level: 3,
-      experience: 2100,
-      abilityScores: {
-        strength: 11,
-        dexterity: 16,
-        constitution: 12,
-        intelligence: 14,
-        wisdom: 13,
-        charisma: 15
+      name: "Kael Ironbrand",
+      role: "soldier",
+      homeland: "holy-roman-empire",
+      socialStanding: "military-officer",
+      specialty: "Landsknecht",
+      occupation: "Mercenary Captain",
+      rank: 3,
+      renown: 2100,
+      attributes: {
+        might: 16,
+        finesse: 12,
+        vitality: 15,
+        reason: 10,
+        awareness: 13,
+        presence: 11
       },
-      hitPoints: 18,
-      armor: 13,
-      backstory: "A Venetian courier-merchant navigating royal courts, ports, and guild routes across Europe.",
-      personalLegend: "To chart a trusted trade network from Lisbon to Constantinople.",
+      condition: 24,
+      defense: 14,
+      readiness: 1,
+      endurance: 2,
+      reaction: 1,
+      resolve: 1,
+      combatTraining: 3,
+      backstory: "A former soldier seeking redemption through disciplined service.",
+      personalLegend: "The Steel Knight Who Chose Honor Over Orders",
       createdAt: new Date(Date.now() - 86400000 * 30).toISOString(),
       updatedAt: new Date(Date.now() - 86400000 * 2).toISOString()
     }
@@ -132,10 +158,10 @@ export default function SanctuumPage() {
       <div className="fc-page-stack">
         <div className="fc-page-header">
           <h1>The Sanctum</h1>
-          <p className="fc-eyebrow">Your Private 1500s Earth Chronicle</p>
+          <p className="fc-eyebrow">1500s Earth Roleplay</p>
         </div>
         <div className="fc-section">
-          <p>No characters yet. Create your first wayfinder to begin.</p>
+          <p>No characters yet. Create your first Sanctum character to begin.</p>
           <AtlasButton onClick={handleCreateCharacter} variant="primary">
             Create Character
           </AtlasButton>
@@ -150,50 +176,82 @@ export default function SanctuumPage() {
       <section className="fc-character-sheet-hero">
         <div className="fc-identity-core">
           <div className="fc-archetype-portrait" aria-hidden="true">
-            {characterClasses[activeCharacter.class]?.icon || "⚔️"}
+            {characterRoles[activeCharacter.role]?.icon || "✦"}
           </div>
           <div>
-            <p className="fc-eyebrow">The Sanctum</p>
-            <h1>Earthbound Chronicle</h1>
+            <p className="fc-eyebrow">The Sanctum • Earth, 1500s</p>
+            <h1>Sanctum Character Chamber</h1>
             <p className="fc-identity-name">{activeCharacter.name}</p>
             <p className="fc-identity-title">
-              Level {activeCharacter.level} {characterClasses[activeCharacter.class]?.name || "Professional"} •{" "}
-              {characterRaces[activeCharacter.race]?.name || "City-State Native"}
+              Rank {activeCharacter.rank} {characterRoles[activeCharacter.role]?.name || "Character"} •{" "}
+              {homelandOptions[activeCharacter.homeland]?.name || "Unknown Homeland"}
             </p>
           </div>
         </div>
         <div className="fc-identity-details">
           <div className="fc-detail-row">
-            <span className="fc-label">Hit Points</span>
-            <span className="fc-value">{activeCharacter.hitPoints}</span>
+            <span className="fc-label">Condition</span>
+            <span className="fc-value">{activeCharacter.condition}</span>
           </div>
           <div className="fc-detail-row">
-            <span className="fc-label">Armor Class</span>
-            <span className="fc-value">{activeCharacter.armor}</span>
+            <span className="fc-label">Defense</span>
+            <span className="fc-value">{activeCharacter.defense}</span>
           </div>
           <div className="fc-detail-row">
-            <span className="fc-label">Experience</span>
-            <span className="fc-value">{activeCharacter.experience.toLocaleString()}</span>
+            <span className="fc-label">Renown</span>
+            <span className="fc-value">{activeCharacter.renown.toLocaleString()}</span>
           </div>
         </div>
       </section>
 
-      {/* Core Abilities */}
+      {/* Core Attributes */}
       <section className="fc-section">
         <h2>Core Attributes</h2>
         <div className="fc-abilities-grid">
-          {(Object.keys(abilityLabels) as Array<keyof AbilityScores>).map((ability) => {
-            const score = activeCharacter.abilityScores[ability];
+          {(Object.keys(attributeLabels) as Array<keyof SanctumAttributes>).map((attribute) => {
+            const score = activeCharacter.attributes[attribute];
             const mod = calculateModifier(score);
             return (
-              <div key={ability} className="fc-ability-card">
-                <div className="fc-ability-short">{abilityShort[ability]}</div>
+              <div key={attribute} className="fc-ability-card">
+                <div className="fc-ability-short">{attributeShort[attribute]}</div>
                 <div className="fc-ability-score">{score}</div>
                 <div className="fc-ability-mod">{getModifierSign(mod)}</div>
-                <div className="fc-ability-label">{abilityLabels[ability]}</div>
+                <div className="fc-ability-label">{attributeLabels[attribute]}</div>
               </div>
             );
           })}
+        </div>
+      </section>
+
+      {/* Derived Stats */}
+      <section className="fc-section">
+        <h2>Derived Stats</h2>
+        <div className="fc-abilities-grid">
+          <div className="fc-ability-card">
+            <div className="fc-ability-short">RDY</div>
+            <div className="fc-ability-score">{getModifierSign(activeCharacter.readiness)}</div>
+            <div className="fc-ability-label">Readiness</div>
+          </div>
+          <div className="fc-ability-card">
+            <div className="fc-ability-short">END</div>
+            <div className="fc-ability-score">{getModifierSign(activeCharacter.endurance)}</div>
+            <div className="fc-ability-label">Endurance</div>
+          </div>
+          <div className="fc-ability-card">
+            <div className="fc-ability-short">RCT</div>
+            <div className="fc-ability-score">{getModifierSign(activeCharacter.reaction)}</div>
+            <div className="fc-ability-label">Reaction</div>
+          </div>
+          <div className="fc-ability-card">
+            <div className="fc-ability-short">RES</div>
+            <div className="fc-ability-score">{getModifierSign(activeCharacter.resolve)}</div>
+            <div className="fc-ability-label">Resolve</div>
+          </div>
+          <div className="fc-ability-card">
+            <div className="fc-ability-short">CT</div>
+            <div className="fc-ability-score">{activeCharacter.combatTraining}</div>
+            <div className="fc-ability-label">Combat Training</div>
+          </div>
         </div>
       </section>
 
@@ -215,39 +273,75 @@ export default function SanctuumPage() {
               <div className="fc-form-group">
                 <label>Role</label>
                 <select
-                  value={activeCharacter.class}
-                  onChange={(e) => handleUpdateCharacter({ class: e.target.value as CharacterClass })}
+                  value={activeCharacter.role}
+                  onChange={(e) => handleUpdateCharacter({ role: e.target.value as SanctumRole })}
                   className="fc-select"
                 >
-                  {Object.entries(characterClasses).map(([key, cls]) => (
+                  {Object.entries(characterRoles).map(([key, role]) => (
                     <option key={key} value={key}>
-                      {cls.icon} {cls.name}
+                      {role.icon} {role.name}
                     </option>
                   ))}
                 </select>
               </div>
               <div className="fc-form-group">
-                <label>Origin</label>
+                <label>Homeland</label>
                 <select
-                  value={activeCharacter.race}
-                  onChange={(e) => handleUpdateCharacter({ race: e.target.value as CharacterRace })}
+                  value={activeCharacter.homeland}
+                  onChange={(e) => handleUpdateCharacter({ homeland: e.target.value as Homeland })}
                   className="fc-select"
                 >
-                  {Object.entries(characterRaces).map(([key, race]) => (
+                  {Object.entries(homelandOptions).map(([key, homeland]) => (
                     <option key={key} value={key}>
-                      {race.icon} {race.name}
+                      {homeland.icon} {homeland.name}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
+            <div className="fc-form-row">
+              <div className="fc-form-group">
+                <label>Social Standing</label>
+                <select
+                  value={activeCharacter.socialStanding}
+                  onChange={(e) => handleUpdateCharacter({ socialStanding: e.target.value as SocialStanding })}
+                  className="fc-select"
+                >
+                  {Object.entries(socialStandings).map(([key, standing]) => (
+                    <option key={key} value={key}>
+                      {standing.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="fc-form-group">
+                <label>Specialty</label>
+                <input
+                  type="text"
+                  value={activeCharacter.specialty}
+                  onChange={(e) => handleUpdateCharacter({ specialty: e.target.value })}
+                  className="fc-input"
+                  placeholder="Spy, physician, courtier, landsknecht..."
+                />
+              </div>
+            </div>
             <div className="fc-form-group">
-              <label>Personal Objective</label>
+              <label>Occupation</label>
+              <input
+                type="text"
+                value={activeCharacter.occupation}
+                onChange={(e) => handleUpdateCharacter({ occupation: e.target.value })}
+                className="fc-input"
+                placeholder="What do they actually do in the world?"
+              />
+            </div>
+            <div className="fc-form-group">
+              <label>Personal Quest</label>
               <textarea
                 value={activeCharacter.personalLegend || ""}
                 onChange={(e) => handleUpdateCharacter({ personalLegend: e.target.value })}
                 className="fc-textarea"
-                placeholder="What defining objective or reputation are they pursuing in 1500s Earth?"
+                placeholder="What is your character's defining quest, vow, or reputation?"
                 rows={2}
               />
             </div>
@@ -257,7 +351,7 @@ export default function SanctuumPage() {
                 value={activeCharacter.backstory || ""}
                 onChange={(e) => handleUpdateCharacter({ backstory: e.target.value })}
                 className="fc-textarea"
-                placeholder="Which city, court, guild, or fleet shaped them, and what drives them forward?"
+                placeholder="Where did they come from? Who protects them? Who threatens them?"
                 rows={3}
               />
             </div>
@@ -267,7 +361,7 @@ export default function SanctuumPage() {
 
       {/* Character Selector & Actions */}
       <section className="fc-section">
-        <h3>Your Characters ({characters.length}/{MAX_CHARACTER_SLOTS})</h3>
+        <h3>Your Sanctum Characters ({characters.length}/{MAX_CHARACTER_SLOTS})</h3>
         <div className="fc-character-list">
           {characters.map((char) => (
             <div
@@ -283,18 +377,19 @@ export default function SanctuumPage() {
                 }
               }}
             >
-              <div className="fc-card-icon">{characterClasses[char.class]?.icon || "⚔️"}</div>
+              <div className="fc-card-icon">{characterRoles[char.role]?.icon || "✦"}</div>
               <div className="fc-card-content">
                 <div className="fc-card-name">{char.name}</div>
                 <div className="fc-card-meta">
-                  Level {char.level} {characterClasses[char.class]?.name} • {characterRaces[char.race]?.name}
+                  Rank {char.rank} {characterRoles[char.role]?.name} • {homelandOptions[char.homeland]?.name}
                 </div>
               </div>
               <div className="fc-character-hover-card" role="status" aria-live="polite">
                 <p className="fc-hover-title">{char.name}</p>
-                <p>Role: {characterClasses[char.class]?.name}</p>
-                <p>Origin: {characterRaces[char.race]?.name}</p>
-                <p>Level {char.level} • HP {char.hitPoints} • AC {char.armor}</p>
+                <p>Role: {characterRoles[char.role]?.name}</p>
+                <p>Homeland: {homelandOptions[char.homeland]?.name}</p>
+                <p>Standing: {socialStandings[char.socialStanding]?.name}</p>
+                <p>Rank {char.rank} • Condition {char.condition} • Defense {char.defense}</p>
                 <p>Played by: {ACCOUNT_PLAYER_NAME}</p>
               </div>
               {characters.length > 1 && activeCharacterId === char.id && (
@@ -316,7 +411,7 @@ export default function SanctuumPage() {
               <div className="fc-card-icon">✦</div>
               <div className="fc-card-content">
                 <div className="fc-card-name">Empty Slot</div>
-                <div className="fc-card-meta">Create a new character for this account</div>
+                <div className="fc-card-meta">Create a new Sanctum character for this account</div>
               </div>
             </div>
           ))}
@@ -331,21 +426,29 @@ export default function SanctuumPage() {
         </div>
       </section>
 
-      {/* Role & Origin Info */}
+      {/* Role & Setting Info */}
       {activeCharacter && (
         <section className="fc-section fc-collapsible">
           <details>
-            <summary>ℹ️ {characterClasses[activeCharacter.class]?.name || "Role"} & {characterRaces[activeCharacter.race]?.name || "Origin"}</summary>
+            <summary>
+              ℹ️ {characterRoles[activeCharacter.role]?.name || "Role"}, {homelandOptions[activeCharacter.homeland]?.name || "Homeland"} & {socialStandings[activeCharacter.socialStanding]?.name || "Standing"}
+            </summary>
             <div className="fc-collapsible-content">
               <div className="fc-info-block">
-                <h4>{characterClasses[activeCharacter.class]?.name}</h4>
-                <p className="fc-motto">"{characterClasses[activeCharacter.class]?.motto}"</p>
-                <p>{characterClasses[activeCharacter.class]?.description}</p>
+                <h4>{characterRoles[activeCharacter.role]?.name}</h4>
+                <p className="fc-motto">"{characterRoles[activeCharacter.role]?.motto}"</p>
+                <p>{characterRoles[activeCharacter.role]?.description}</p>
               </div>
               <div className="fc-info-block">
-                <h4>{characterRaces[activeCharacter.race]?.name}</h4>
-                <p className="fc-motto">"{characterRaces[activeCharacter.race]?.motto}"</p>
-                <p>{characterRaces[activeCharacter.race]?.description}</p>
+                <h4>{homelandOptions[activeCharacter.homeland]?.name}</h4>
+                <p className="fc-motto">"{homelandOptions[activeCharacter.homeland]?.motto}"</p>
+                <p>{homelandOptions[activeCharacter.homeland]?.description}</p>
+              </div>
+              <div className="fc-info-block">
+                <h4>{socialStandings[activeCharacter.socialStanding]?.name}</h4>
+                <p>{socialStandings[activeCharacter.socialStanding]?.description}</p>
+                <p><strong>Access:</strong> {socialStandings[activeCharacter.socialStanding]?.access}</p>
+                <p><strong>Obligation:</strong> {socialStandings[activeCharacter.socialStanding]?.obligation}</p>
               </div>
             </div>
           </details>
