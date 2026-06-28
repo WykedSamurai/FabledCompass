@@ -3,216 +3,216 @@ import type { ClassDefinition, RaceDefinition } from "./types";
 export const characterClasses: Record<string, ClassDefinition> = {
   fighter: {
     id: "fighter",
-    name: "Fighter",
+    name: "Man-at-Arms",
     icon: "⚔️",
-    description: "Master of weapons and armor, disciplined and tactical.",
+    description: "A drilled professional in pike, sword, and formation tactics.",
     primaryAbilities: ["strength", "constitution"],
     hitDie: 10,
     skillPoints: 2,
-    motto: "Discipline and steel shape victory."
+    motto: "Drill and steel hold the line."
   },
   rogue: {
     id: "rogue",
-    name: "Rogue",
+    name: "Courier-Spymaster",
     icon: "🗡️",
-    description: "Swift, cunning, and deadly. Expert in stealth and precision.",
+    description: "A fast mover of letters, secrets, and negotiated advantage.",
     primaryAbilities: ["dexterity", "charisma"],
     hitDie: 8,
     skillPoints: 8,
-    motto: "Shadows hide the sharpest blade."
+    motto: "Information arrives before armies."
   },
   wizard: {
     id: "wizard",
-    name: "Wizard",
-    icon: "🔮",
-    description: "Student of the arcane arts, wielding spells and ancient knowledge.",
+    name: "Natural Philosopher",
+    icon: "📚",
+    description: "A scholar of mathematics, astronomy, and practical experimentation.",
     primaryAbilities: ["intelligence", "wisdom"],
     hitDie: 6,
     skillPoints: 2,
-    motto: "Knowledge is the ultimate power."
+    motto: "Measured truth outlasts rumor."
   },
   cleric: {
     id: "cleric",
-    name: "Cleric",
-    icon: "✨",
-    description: "Channel divine power to heal and smite. Touched by the sacred.",
+    name: "Chaplain-Healer",
+    icon: "⛪",
+    description: "A caretaker of body and conscience serving parish, camp, and court.",
     primaryAbilities: ["wisdom", "strength"],
     hitDie: 8,
     skillPoints: 2,
-    motto: "Faith guides the hand of the healer."
+    motto: "Steady hands and steady hearts."
   },
   ranger: {
     id: "ranger",
-    name: "Ranger",
+    name: "Frontier Scout",
     icon: "🏹",
-    description: "Tracker and marksman. At home in the wilderness.",
+    description: "A tracker and guide for roads, forests, and contested borders.",
     primaryAbilities: ["dexterity", "wisdom"],
     hitDie: 10,
     skillPoints: 6,
-    motto: "Nature's secrets are mine to read."
+    motto: "Read the land before it reads you."
   },
   paladin: {
     id: "paladin",
-    name: "Paladin",
-    icon: "⚜️",
-    description: "Oath-bound warrior of conviction. Holy and righteous.",
+    name: "Knight-Errant",
+    icon: "🛡️",
+    description: "An oath-bound rider balancing honor, duty, and political reality.",
     primaryAbilities: ["strength", "charisma"],
     hitDie: 10,
     skillPoints: 2,
-    motto: "Conviction tempers the blade."
+    motto: "Honor is proven in service."
   },
   barbarian: {
     id: "barbarian",
-    name: "Barbarian",
+    name: "Free Company Veteran",
     icon: "🔥",
-    description: "Primal fury and raw power. Unstoppable force.",
+    description: "A hardened mercenary from rough campaigns and long roads.",
     primaryAbilities: ["strength", "constitution"],
     hitDie: 12,
     skillPoints: 2,
-    motto: "Rage is the truest strength."
+    motto: "Endurance wins wars of attrition."
   },
   bard: {
     id: "bard",
-    name: "Bard",
+    name: "Diplomat-Orator",
     icon: "🎵",
-    description: "Master of words, music, and magic. Inspiring and versatile.",
+    description: "A persuasive performer and negotiator shaping alliances and morale.",
     primaryAbilities: ["charisma", "intelligence"],
     hitDie: 8,
     skillPoints: 8,
-    motto: "Words and music move the world."
+    motto: "A well-placed word can move a kingdom."
   },
   druid: {
     id: "druid",
-    name: "Druid",
+    name: "Field Physick",
     icon: "🌿",
-    description: "One with nature. Shapeshifter and healer.",
+    description: "A practical herbalist and survival expert trained by hard seasons.",
     primaryAbilities: ["wisdom", "constitution"],
     hitDie: 8,
     skillPoints: 4,
-    motto: "The balance sustains all life."
+    motto: "Study the earth; preserve the people."
   },
   monk: {
     id: "monk",
-    name: "Monk",
+    name: "Monastic Scholar",
     icon: "✋",
-    description: "Disciplined martial artist. Mind and body as one.",
+    description: "A disciplined student of scripture, languages, and controlled movement.",
     primaryAbilities: ["dexterity", "wisdom"],
     hitDie: 8,
     skillPoints: 4,
-    motto: "The body is a temple of discipline."
+    motto: "Discipline sharpens every craft."
   },
   sorcerer: {
     id: "sorcerer",
-    name: "Sorcerer",
-    icon: "⚡",
-    description: "Magic courses through your blood. Innate power.",
+    name: "Master Artisan",
+    icon: "⚙️",
+    description: "A gifted craft specialist whose workshop output reshapes entire towns.",
     primaryAbilities: ["charisma", "constitution"],
     hitDie: 6,
     skillPoints: 2,
-    motto: "Power flows where it will."
+    motto: "Mastery turns skill into legacy."
   },
   warlock: {
     id: "warlock",
-    name: "Warlock",
-    icon: "👁️",
-    description: "Bound to eldritch power. Dangerous and enigmatic.",
+    name: "Court Strategist",
+    icon: "🏛️",
+    description: "An advisor skilled in patronage, policy, and high-risk political bargains.",
     primaryAbilities: ["charisma", "intelligence"],
     hitDie: 6,
     skillPoints: 2,
-    motto: "Knowledge and power exact their price."
+    motto: "Every alliance carries a cost."
   }
 };
 
 export const characterRaces: Record<string, RaceDefinition> = {
   human: {
     id: "human",
-    name: "Human",
+    name: "Kingdom Native",
     icon: "👤",
-    description: "Adaptable and ambitious. Born for greatness.",
+    description: "Raised in a local crown domain with broad practical expectations.",
     abilityBonuses: { strength: 1, dexterity: 1, constitution: 1, intelligence: 1, wisdom: 1, charisma: 1 },
     speed: 30,
-    motto: "We are limited only by our will."
+    motto: "Adapt and advance."
   },
   elf: {
     id: "elf",
-    name: "Elf",
-    icon: "🧝",
-    description: "Graceful and timeless. Keepers of ancient magic.",
+    name: "Merchant Republic Native",
+    icon: "⚓",
+    description: "From port cities where trade routes, credit, and diplomacy define status.",
     abilityBonuses: { dexterity: 2, intelligence: 1 },
     speed: 30,
-    motto: "Time reveals all truths."
+    motto: "Trade binds distant worlds."
   },
   dwarf: {
     id: "dwarf",
-    name: "Dwarf",
-    icon: "🧔",
-    description: "Sturdy and resolute. Masters of stone and steel.",
+    name: "Mountain March Native",
+    icon: "⛰️",
+    description: "From upland regions known for mining, metalwork, and defensive strongholds.",
     abilityBonuses: { constitution: 2, wisdom: 1 },
     speed: 25,
-    motto: "Stone endures. So do we."
+    motto: "Build to outlast the century."
   },
   halfling: {
     id: "halfling",
-    name: "Halfling",
-    icon: "🐹",
-    description: "Small in stature, great in spirit. Lucky and clever.",
+    name: "Market Town Native",
+    icon: "🧺",
+    description: "From close-knit trading towns where trust and reputation are currency.",
     abilityBonuses: { dexterity: 2, charisma: 1 },
     speed: 25,
-    motto: "Fortune favors the bold."
+    motto: "Community makes resilience."
   },
   gnome: {
     id: "gnome",
-    name: "Gnome",
-    icon: "🧙",
-    description: "Curious and inventive. Tinkerer of wonder.",
+    name: "University City Native",
+    icon: "🏫",
+    description: "From scholarly centers shaped by printing presses and public debate.",
     abilityBonuses: { intelligence: 2, wisdom: 1 },
     speed: 25,
-    motto: "Imagination is the only limit."
+    motto: "Curiosity opens every gate."
   },
   "half-orc": {
     id: "half-orc",
-    name: "Half-Orc",
-    icon: "🗡️",
-    description: "Fierce and powerful. Caught between two worlds.",
+    name: "Frontier Garrison Native",
+    icon: "🏹",
+    description: "Raised on contested borders where militia duty and survival are daily life.",
     abilityBonuses: { strength: 2, constitution: 1, charisma: -1 },
     speed: 30,
-    motto: "Strength and honor earn respect."
+    motto: "Hold fast at the edge."
   },
   "half-elf": {
     id: "half-elf",
-    name: "Half-Elf",
-    icon: "🌙",
-    description: "Bridging two worlds. Charming and diplomatic.",
+    name: "Cross-Border Native",
+    icon: "🧭",
+    description: "Shaped by multiple cultures, languages, and laws across shifting frontiers.",
     abilityBonuses: { charisma: 2, dexterity: 1, intelligence: 1 },
     speed: 30,
-    motto: "We walk between worlds."
+    motto: "Bridge the map, bridge the people."
   },
   tiefling: {
     id: "tiefling",
-    name: "Tiefling",
-    icon: "👹",
-    description: "Touched by infernal heritage. Exotic and mysterious.",
+    name: "Exile Community Native",
+    icon: "🕯️",
+    description: "From displaced communities that survive through craft, memory, and grit.",
     abilityBonuses: { charisma: 2, intelligence: 1, dexterity: 1 },
     speed: 30,
-    motto: "Destiny is written in blood."
+    motto: "Rebuild, even far from home."
   },
   dragonborn: {
     id: "dragonborn",
-    name: "Dragonborn",
-    icon: "🐉",
-    description: "Dragon-descended warrior. Proud and mighty.",
+    name: "Naval Port Native",
+    icon: "🚢",
+    description: "Raised in maritime cities where fleets, maps, and storms decide fortunes.",
     abilityBonuses: { strength: 2, charisma: 1 },
     speed: 30,
-    motto: "Dragon fire burns eternal."
+    motto: "The horizon rewards preparation."
   },
   aasimar: {
     id: "aasimar",
-    name: "Aasimar",
-    icon: "😇",
-    description: "Touched by celestial grace. Light-bringer.",
+    name: "Pilgrimage Route Native",
+    icon: "🛤️",
+    description: "From crossroads sustained by faith travelers, inns, and charitable orders.",
     abilityBonuses: { charisma: 2, wisdom: 1 },
     speed: 30,
-    motto: "Light shines through the darkness."
+    motto: "Service leaves the deepest mark."
   }
 };
 
