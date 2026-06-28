@@ -7,7 +7,7 @@ import AtlasSky from "../atlas/AtlasSky";
 import CommunicationHub from "./CommunicationHub";
 import SiteFooter from "./SiteFooter";
 
-type NavIcon = "compass" | "folio" | "jobs" | "applications" | "commons" | "network" | "groups" | "messages" | "challenges" | "assessments" | "competencies";
+type NavIcon = "compass" | "folio" | "jobs" | "applications" | "recruiters" | "commons" | "network" | "groups" | "messages" | "challenges" | "assessments" | "competencies";
 type NavItem = { href: string; label: string; icon: NavIcon };
 type NavGroup = { label: string; accent: "career" | "community" | "adventure"; items: NavItem[] };
 
@@ -26,6 +26,7 @@ const navigation = [
     label: "Allies",
     accent: "community",
     items: [
+      { href: "/recruiters", label: "Recruiters", icon: "recruiters" },
       { href: "/commons", label: "The Commons", icon: "commons" },
       { href: "/network", label: "Alliance Web", icon: "network" },
       { href: "/groups", label: "Guilds", icon: "groups" },
@@ -68,6 +69,13 @@ function NavGlyph({ icon }: { icon: NavIcon }) {
         <path d="M8 4.8h6.8l3 3V19H8z" />
         <path d="M14.8 4.8V8h3" />
         <path d="m10 13 1.7 1.7L15.5 11" />
+      </>
+    ),
+    recruiters: (
+      <>
+        <circle cx="12" cy="8" r="2.4" />
+        <path d="M8 18c.6-2.3 2.2-3.8 4-3.8s3.4 1.5 4 3.8" />
+        <path d="M17.8 8.8 19.2 10l1.9-2.4" />
       </>
     ),
     commons: (
