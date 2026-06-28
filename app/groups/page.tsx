@@ -1,7 +1,9 @@
  "use client";
 
-import { useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
+import { createClient } from "../../utils/supabase/client";
 
 type RoomMessage = {
   id: string;
@@ -20,46 +22,55 @@ type Room = {
   messages: RoomMessage[];
 };
 
-const initialRooms: Room[] = [
-  {
-    id: "customer-experience-circle",
-    name: "Customer Experience Circle",
-    focus: "Communication, empathy, escalation",
-    members: 42,
-    cadence: "Weekly debrief",
-    joined: true,
-    messages: [
-      { id: "m1", sender: "Facilitator", text: "Welcome back. Share one service recovery win this week.", when: "Now" },
-      { id: "m2", sender: "Lina", text: "I used de-escalation framing and turned around a difficult call.", when: "8m" }
-    ]
-  },
-  {
-    id: "career-transitions-network",
-    name: "Career Transitions Network",
-    focus: "Role changes and growth planning",
-    members: 58,
-    cadence: "Twice monthly",
-    joined: false,
-    messages: [{ id: "m1", sender: "Host", text: "Share one role transition goal for the next quarter.", when: "13m" }]
-  },
-  {
-    id: "leadership-signals-lab",
-    name: "Leadership Signals Lab",
-    focus: "Coaching and professionalism evidence",
-    members: 34,
-    cadence: "Weekly practice",
-    joined: false,
-    messages: [{ id: "m1", sender: "Coach", text: "This week: post a leadership story with measurable outcomes.", when: "25m" }]
-  }
-];
+type RoomRow = {
+  id: string;
+  name: string;
+  focus: string | null;
+  cadence: string | null;
+  created_at: string;
+};
 
-function makeRoomId(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || "new-room";
+type MembershipRow = {
+  room_id: string;
+  user_id: string;
+};
+
+type MessageRow = {
+  id: number;
+  room_id: string;
+  sender_id: string;
+  body: string;
+  created_at: string;
+};
+
+type ProfileNameRow = {
+  id: string;
+  display_name: string | null;
+};
+
+function relativeTimeLabel(timestamp: string): string {
+  const deltaMs = Date.now() - new Date(timestamp).getTime();
+  const deltaMinutes = Math.max(0, Math.floor(deltaMs / 60000));
+  if (deltaMinutes < 1) {
+    return "Now";
+  }
+  if (deltaMinutes < 60) {
+    return `${deltaMinutes}m`;
+  }
+  const deltaHours = Math.floor(deltaMinutes / 60);
+  if (deltaHours < 24) {
+    return `${deltaHours}h`;
+  }
+  return `${Math.floor(deltaHours / 24)}d`;
 }
 
 export default function GroupsPage() {
-  const [rooms, setRooms] = useState<Room[]>(initialRooms);
-  const [activeRoomId, setActiveRoomId] = useState(initialRooms[0].id);
+  const router = useRouter();
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [activeRoomId, setActiveRoomId] = useState("");
+  const [userId, setUserId] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
+  const [workspaceMessage, setWorkspaceMessage] = useState("Loading chatrooms...");
   const [newRoomName, setNewRoomName] = useState("");
   const [newRoomFocus, setNewRoomFocus] = useState("");
   const [draftMessage, setDraftMessage] = useState("");
@@ -74,71 +85,251 @@ export default function GroupsPage() {
     [rooms]
   );
 
-  function joinRoom(roomId: string): void {
-    setRooms((current) =>
-      current.map((room) =>
-        room.id === roomId && !room.joined
-          ? { ...room, joined: true, members: room.members + 1 }
-          : room
-      )
+  const loadRooms = useCallback(async () => {
+    const supabase = createClient();
+    const { data: authData } = await supabase.auth.getUser();
+    const user = authData.user;
+    if (!user) {
+      router.replace("/login?next=/groups");
+      return;
+    }
+
+    setUserId(user.id);
+
+    const { data: roomData, error: roomError } = await supabase
+      .from("chat_rooms")
+      .select("id, name, focus, cadence, created_at")
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (roomError) {
+      setWorkspaceMessage(`Chat backend is not ready yet: ${roomError.message}`);
+      setRooms([]);
+      setAuthLoading(false);
+      return;
+    }
+
+    const roomsList = (roomData ?? []) as RoomRow[];
+    if (roomsList.length === 0) {
+      setWorkspaceMessage("No chatrooms yet. Create the first one.");
+      setRooms([]);
+      setActiveRoomId("");
+      setAuthLoading(false);
+      return;
+    }
+
+    const roomIds = roomsList.map((room) => room.id);
+    const [membershipResult, messageResult] = await Promise.all([
+      supabase.from("chat_room_memberships").select("room_id, user_id").in("room_id", roomIds),
+      supabase
+        .from("chat_room_messages")
+        .select("id, room_id, sender_id, body, created_at")
+        .in("room_id", roomIds)
+        .order("created_at", { ascending: true })
+        .limit(500)
+    ]);
+
+    if (membershipResult.error) {
+      setWorkspaceMessage(`Failed to load room memberships: ${membershipResult.error.message}`);
+      setRooms([]);
+      setAuthLoading(false);
+      return;
+    }
+
+    if (messageResult.error) {
+      setWorkspaceMessage(`Failed to load room messages: ${messageResult.error.message}`);
+      setRooms([]);
+      setAuthLoading(false);
+      return;
+    }
+
+    const membershipRows = (membershipResult.data ?? []) as MembershipRow[];
+    const messageRows = (messageResult.data ?? []) as MessageRow[];
+    const senderIds = Array.from(new Set(messageRows.map((message) => message.sender_id)));
+    const profileLookup = new Map<string, string>();
+
+    if (senderIds.length > 0) {
+      const { data: profileRows, error: profileError } = await supabase
+        .from("profiles")
+        .select("id, display_name")
+        .in("id", senderIds);
+
+      if (!profileError) {
+        for (const profile of (profileRows ?? []) as ProfileNameRow[]) {
+          profileLookup.set(profile.id, profile.display_name || "Member");
+        }
+      }
+    }
+
+    const memberCountByRoom = membershipRows.reduce<Record<string, number>>((acc, membership) => {
+      acc[membership.room_id] = (acc[membership.room_id] ?? 0) + 1;
+      return acc;
+    }, {});
+
+    const joinedRoomIds = new Set(
+      membershipRows.filter((membership) => membership.user_id === user.id).map((membership) => membership.room_id)
     );
+
+    const messagesByRoom = messageRows.reduce<Record<string, RoomMessage[]>>((acc, message) => {
+      const sender = message.sender_id === user.id ? "You" : profileLookup.get(message.sender_id) || "Member";
+      const nextMessage: RoomMessage = {
+        id: String(message.id),
+        sender,
+        text: message.body,
+        when: relativeTimeLabel(message.created_at)
+      };
+      if (!acc[message.room_id]) {
+        acc[message.room_id] = [];
+      }
+      acc[message.room_id].push(nextMessage);
+      return acc;
+    }, {});
+
+    const nextRooms = roomsList.map((room) => ({
+      id: room.id,
+      name: room.name,
+      focus: room.focus || "Professional discussion",
+      members: memberCountByRoom[room.id] ?? 0,
+      cadence: room.cadence || "Open discussion",
+      joined: joinedRoomIds.has(room.id),
+      messages: messagesByRoom[room.id] ?? []
+    }));
+
+    setRooms(nextRooms);
+    setActiveRoomId((current) => (current && nextRooms.some((room) => room.id === current) ? current : nextRooms[0].id));
+    setWorkspaceMessage("");
+    setAuthLoading(false);
+  }, [router]);
+
+  useEffect(() => {
+    void loadRooms();
+  }, [loadRooms]);
+
+  async function joinRoom(roomId: string): Promise<void> {
+    if (!userId) {
+      return;
+    }
+    const supabase = createClient();
+    const { error } = await supabase
+      .from("chat_room_memberships")
+      .upsert({ room_id: roomId, user_id: userId }, { onConflict: "room_id,user_id" });
+
+    if (error) {
+      setWorkspaceMessage(`Could not join room: ${error.message}`);
+      return;
+    }
+
+    await loadRooms();
   }
 
-  function createRoom(): void {
+  async function createRoom(): Promise<void> {
     const name = newRoomName.trim();
     const focus = newRoomFocus.trim();
     if (!name || !focus) {
       return;
     }
 
-    const roomId = makeRoomId(name);
-    setRooms((current) => {
-      if (current.some((room) => room.id === roomId)) {
-        return current;
-      }
-      return [
-        {
-          id: roomId,
-          name,
-          focus,
-          members: 1,
-          cadence: "Open discussion",
-          joined: true,
-          messages: [{ id: "m1", sender: "System", text: "Room created. Introduce your goals and invite peers.", when: "Now" }]
-        },
-        ...current
-      ];
-    });
-    setActiveRoomId(roomId);
+    if (!userId) {
+      setWorkspaceMessage("Sign in before creating rooms.");
+      return;
+    }
+
+    const supabase = createClient();
+    const { data: roomInsert, error: roomError } = await supabase
+      .from("chat_rooms")
+      .insert({
+        name,
+        focus,
+        cadence: "Open discussion",
+        created_by: userId
+      })
+      .select("id")
+      .single();
+
+    if (roomError || !roomInsert) {
+      setWorkspaceMessage(`Could not create room: ${roomError?.message || "Unknown error"}`);
+      return;
+    }
+
+    const { error: membershipError } = await supabase
+      .from("chat_room_memberships")
+      .upsert({ room_id: roomInsert.id, user_id: userId }, { onConflict: "room_id,user_id" });
+
+    if (membershipError) {
+      setWorkspaceMessage(`Room created, but join failed: ${membershipError.message}`);
+      return;
+    }
+
     setNewRoomName("");
     setNewRoomFocus("");
+    await loadRooms();
+    setActiveRoomId(roomInsert.id);
   }
 
-  function sendMessage(): void {
+  async function sendMessage(event?: FormEvent): Promise<void> {
+    event?.preventDefault();
     const text = draftMessage.trim();
     if (!text || !activeRoom) {
       return;
     }
 
-    setRooms((current) =>
-      current.map((room) =>
-        room.id === activeRoom.id
-          ? {
-              ...room,
-              messages: [
-                ...room.messages,
-                {
-                  id: `m${room.messages.length + 1}`,
-                  sender: "You",
-                  text,
-                  when: "Now"
-                }
-              ]
-            }
-          : room
-      )
-    );
+    if (!activeRoom.joined) {
+      setWorkspaceMessage("Join this room before sending messages.");
+      return;
+    }
+
+    if (!userId) {
+      setWorkspaceMessage("Sign in before sending messages.");
+      return;
+    }
+
+    const supabase = createClient();
+    const { data: insertedMessage, error } = await supabase
+      .from("chat_room_messages")
+      .insert({
+        room_id: activeRoom.id,
+        sender_id: userId,
+        body: text
+      })
+      .select("id, created_at")
+      .single();
+
+    if (error) {
+      setWorkspaceMessage(`Could not send message: ${error.message}`);
+      return;
+    }
+
+    setRooms((current) => current.map((room) => (
+      room.id === activeRoom.id
+        ? {
+            ...room,
+            messages: [
+              ...room.messages,
+              {
+                id: String(insertedMessage.id),
+                sender: "You",
+                text,
+                when: relativeTimeLabel(insertedMessage.created_at)
+              }
+            ]
+          }
+        : room
+    )));
     setDraftMessage("");
+    setWorkspaceMessage("");
+  }
+
+  if (authLoading) {
+    return (
+      <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
+        <PrototypeWatermark />
+        <section className="fc-workspace-hero">
+          <p className="fc-eyebrow">Alliance Journey</p>
+          <h1>Guild Chatrooms</h1>
+          <p>Loading chatroom workspace...</p>
+        </section>
+      </div>
+    );
   }
 
   return (
@@ -181,11 +372,18 @@ export default function GroupsPage() {
               </label>
             </div>
             <div className="fc-action-row">
-              <button className="fc-button" type="button" onClick={createRoom}>
+              <button className="fc-button" type="button" onClick={() => void createRoom()}>
                 Create Room
               </button>
             </div>
+            {workspaceMessage && <p className="form-message">{workspaceMessage}</p>}
           </article>
+
+          {rooms.length === 0 && (
+            <article className="fc-card">
+              <p className="fc-muted">No rooms are available yet. Create the first chatroom to start networking.</p>
+            </article>
+          )}
 
           {rooms.map((room) => (
             <article className="fc-card" key={room.id}>
@@ -197,7 +395,7 @@ export default function GroupsPage() {
               <p>{room.members} members • {room.cadence}</p>
               <div className="fc-action-row">
                 {!room.joined && (
-                  <button className="fc-button" type="button" onClick={() => joinRoom(room.id)}>
+                  <button className="fc-button" type="button" onClick={() => void joinRoom(room.id)}>
                     Join Room
                   </button>
                 )}
@@ -222,6 +420,7 @@ export default function GroupsPage() {
               <p className="fc-muted">{activeRoom.focus}</p>
 
               <div className="fc-chat-log">
+                {activeRoom.messages.length === 0 && <p>No messages yet. Start the conversation.</p>}
                 {activeRoom.messages.map((message) => (
                   <p key={`${activeRoom.id}-${message.id}`}>
                     <strong>{message.sender}:</strong> {message.text}
@@ -232,17 +431,18 @@ export default function GroupsPage() {
               <form
                 className="fc-comms-compose"
                 onSubmit={(event) => {
-                  event.preventDefault();
-                  sendMessage();
+                  void sendMessage(event);
                 }}
               >
                 <input
                   value={draftMessage}
                   placeholder={`Message ${activeRoom.name}...`}
                   onChange={(event) => setDraftMessage(event.target.value)}
+                  disabled={!activeRoom.joined}
                 />
-                <button type="submit">Send</button>
+                <button type="submit" disabled={!activeRoom.joined}>Send</button>
               </form>
+              {!activeRoom.joined && <p className="form-message">Join this room to send messages.</p>}
             </>
           )}
         </aside>
