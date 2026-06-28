@@ -4,7 +4,11 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../utils/supabase/client";
-import { normalizeAccountType, normalizeProfileVisibility } from "../../../utils/account/types";
+import {
+  normalizeAccountType,
+  normalizeHumanVerificationStatus,
+  normalizeProfileVisibility
+} from "../../../utils/account/types";
 
 export default function ConfirmPage() {
   const router = useRouter();
@@ -25,13 +29,21 @@ export default function ConfirmPage() {
         const user = data.session.user;
         const hasAccountType = typeof user.user_metadata.account_type === "string";
         const hasVisibility = typeof user.user_metadata.profile_visibility === "string";
+        const currentVerification = normalizeHumanVerificationStatus(user.user_metadata.human_verification_status);
+        const hasVerification = typeof user.user_metadata.human_verification_status === "string";
+        const baselineVerification = user.email_confirmed_at ? "email_verified" : "unverified";
+        const nextVerification =
+          currentVerification === "human_verified"
+            ? "human_verified"
+            : baselineVerification;
 
-        if (!hasAccountType || !hasVisibility) {
+        if (!hasAccountType || !hasVisibility || !hasVerification || currentVerification !== nextVerification) {
           await supabase.auth.updateUser({
             data: {
               ...user.user_metadata,
               account_type: normalizeAccountType(user.user_metadata.account_type),
-              profile_visibility: normalizeProfileVisibility(user.user_metadata.profile_visibility)
+              profile_visibility: normalizeProfileVisibility(user.user_metadata.profile_visibility),
+              human_verification_status: nextVerification
             }
           });
         }

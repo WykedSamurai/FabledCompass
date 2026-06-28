@@ -3,6 +3,8 @@ export type AccountType = (typeof accountTypes)[number];
 
 export const profileVisibilityOptions = ["private", "recruiters_only", "public"] as const;
 export type ProfileVisibility = (typeof profileVisibilityOptions)[number];
+export const humanVerificationStatuses = ["unverified", "email_verified", "human_verified"] as const;
+export type HumanVerificationStatus = (typeof humanVerificationStatuses)[number];
 export const MAX_COMPANY_RECRUITER_ACCOUNTS = 3;
 
 export interface CompanyNarrative {
@@ -29,6 +31,17 @@ export function normalizeProfileVisibility(value: unknown): ProfileVisibility {
 
 export function canAccessRecruiterWorkspace(accountType: AccountType): boolean {
   return accountType === "recruiter" || accountType === "company_admin";
+}
+
+export function normalizeHumanVerificationStatus(value: unknown): HumanVerificationStatus {
+  if (value === "email_verified" || value === "human_verified") {
+    return value;
+  }
+  return "unverified";
+}
+
+export function isHumanVerified(value: unknown): boolean {
+  return normalizeHumanVerificationStatus(value) === "human_verified";
 }
 
 export function normalizeCompanyNarrative(value: unknown): CompanyNarrative {

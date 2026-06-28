@@ -1025,10 +1025,30 @@ button { cursor: pointer; }
   font-size: .78rem;
 }
 
+.fc-aol-member-btn {
+  width: 100%;
+  text-align: left;
+  border: 1px solid rgba(94, 126, 170, .42);
+  border-radius: 4px;
+  background: rgba(12, 22, 39, .72);
+  color: #bdd2ee;
+  font-size: .78rem;
+  padding: .28rem .34rem;
+}
+
+.fc-aol-member-btn.is-active {
+  border-color: rgba(45, 212, 243, .58);
+  background: rgba(45, 212, 243, .16);
+}
+
 .fc-aol-actions {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: .2rem;
+}
+
+.fc-aol-actions button:disabled {
+  opacity: .52;
 }
 
 .fc-group-grid {

@@ -1,26 +1,59 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { commonsComingLater, commonsPrinciples, fires } from "../../lib/commons";
+import { isHumanVerified } from "../../utils/account/types";
+import { createClient } from "../../utils/supabase/client";
 
 export default function CommonsPage() {
   const router = useRouter();
   const [selectedRoomSlug, setSelectedRoomSlug] = useState("");
+  const [canEnterCommons, setCanEnterCommons] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   const selectedRoom = fires.find((fire) => fire.slug === selectedRoomSlug);
 
-  function isRoomFull(slug: string, travelers: number): boolean {
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) {
+        setCanEnterCommons(false);
+        setAuthChecked(true);
+        return;
+      }
+      setCanEnterCommons(isHumanVerified(data.user.user_metadata.human_verification_status));
+      setAuthChecked(true);
+    });
+  }, []);
+
+  function roomPopulation(slug: string): number {
+    const room = fires.find((item) => item.slug === slug);
+    if (!room) {
+      return 0;
+    }
+    return room.travelerVoices.length;
+  }
+
+  function isRoomFull(slug: string): boolean {
     if (slug === "great-hall") {
       return false;
     }
-    return travelers >= 20;
+    return roomPopulation(slug) >= 20;
   }
 
   function enterSelectedRoom(): void {
     if (!selectedRoom) {
       return;
     }
-    if (isRoomFull(selectedRoom.slug, selectedRoom.travelers)) {
+    if (!authChecked) {
+      return;
+    }
+    if (!canEnterCommons) {
+      window.alert("Only verified people can join rooms. Complete verification in Account settings first.");
+      router.push("/account");
+      return;
+    }
+    if (isRoomFull(selectedRoom.slug)) {
       window.alert("This room is full (20/20). Please choose another room or start a new one.");
       return;
     }
@@ -50,7 +83,7 @@ export default function CommonsPage() {
                     <h3>{fire.name}</h3>
                   </div>
                   <span className="fc-status-pill">
-                    {isRoomFull(fire.slug, fire.travelers) ? "Room Full" : `${fire.travelers} Travelers`}
+                    {isRoomFull(fire.slug) ? "Room Full" : `${roomPopulation(fire.slug)} Travelers`}
                   </span>
                 </div>
                 <p className="fc-muted">{fire.description}</p>
@@ -74,7 +107,7 @@ export default function CommonsPage() {
             <button
               className="fc-button"
               type="button"
-              disabled={!selectedRoom}
+              disabled={!selectedRoom || !authChecked}
               onClick={enterSelectedRoom}
             >
               {selectedRoom ? `Enter ${selectedRoom.name}` : "Select a room to enter"}
