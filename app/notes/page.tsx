@@ -1,4 +1,5 @@
 import { createClient } from "../../utils/supabase/server";
+import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
 
 type Note = {
   id: number;
@@ -17,7 +18,8 @@ export default async function NotesPage() {
 
     if (error) {
       return (
-        <div className="fc-page-stack fc-workspace-page">
+        <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
+          <PrototypeWatermark />
           <section className="fc-workspace-hero">
             <p className="fc-eyebrow">Supabase Connection Test</p>
             <h1>Database connected, but the notes query failed.</h1>
@@ -33,7 +35,8 @@ export default async function NotesPage() {
     const notes = (data ?? []) as Note[];
 
     return (
-      <div className="fc-page-stack fc-workspace-page">
+      <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
+        <PrototypeWatermark />
         <section className="fc-workspace-hero">
           <p className="fc-eyebrow">Supabase Connection Test</p>
           <h1>Fabled Compass is reading from Supabase.</h1>
@@ -59,7 +62,8 @@ export default async function NotesPage() {
     const message = error instanceof Error ? error.message : "Unknown Supabase configuration error.";
 
     return (
-      <div className="fc-page-stack fc-workspace-page">
+      <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
+        <PrototypeWatermark />
         <section className="fc-workspace-hero">
           <p className="fc-eyebrow">Supabase Connection Test</p>
           <h1>Supabase is not available in this deployment yet.</h1>
