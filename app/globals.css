@@ -986,6 +986,17 @@ button { cursor: pointer; }
   line-height: 1.4;
 }
 
+.fc-aol-log a,
+.fc-aol-user-list a {
+  color: #d7e7fc;
+  text-decoration: underline;
+}
+
+.fc-aol-log a:hover,
+.fc-aol-user-list a:hover {
+  color: #8ddaff;
+}
+
 .fc-aol-compose {
   display: grid;
   grid-template-columns: 1fr auto auto;
