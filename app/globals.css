@@ -795,6 +795,75 @@ button { cursor: pointer; }
   padding: .58rem .68rem;
 }
 
+.fc-competency-summary {
+  display: grid;
+  gap: .45rem;
+  align-content: start;
+}
+
+.fc-next-rail {
+  gap: .45rem;
+}
+
+.fc-next-rail .fc-guidance-list {
+  margin-top: .15rem;
+}
+
+.fc-competency-board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .65rem;
+}
+
+.fc-competency-node {
+  display: grid;
+  gap: .5rem;
+  align-content: start;
+}
+
+.fc-rank-pill {
+  border: 1px solid rgba(45, 212, 243, .38);
+  border-radius: 999px;
+  padding: .18rem .52rem;
+  font-size: .72rem;
+  color: #b6d8ff;
+  background: rgba(45, 212, 243, .09);
+  height: fit-content;
+}
+
+.fc-competency-metrics {
+  display: flex;
+  justify-content: space-between;
+  gap: .7rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.fc-competency-metrics p {
+  margin: 0;
+  color: #9fb2cf;
+  font-size: .82rem;
+}
+
+.fc-competency-metrics strong {
+  color: #d7e4f9;
+  font-size: .95rem;
+}
+
+.fc-evidence-source-list {
+  border-top: 1px solid rgba(148, 163, 184, .14);
+  padding-top: .45rem;
+}
+
+.fc-evidence-source-list .fc-guidance-list {
+  margin-top: .1rem;
+}
+
+.fc-next-action {
+  border-top: 1px solid rgba(148, 163, 184, .14);
+  padding-top: .45rem;
+}
+
 .fc-assessment-options {
   display: grid;
   gap: .45rem;
@@ -1055,6 +1124,10 @@ button { cursor: pointer; }
   }
 
   .fc-trade-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .fc-competency-board {
     grid-template-columns: 1fr;
   }
 
