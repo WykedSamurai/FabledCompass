@@ -1,35 +1,44 @@
 import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
 
+const sixAttributes = [
+  "Leadership",
+  "Communication",
+  "Problem Solving",
+  "Professionalism",
+  "Adaptability",
+  "Collaboration"
+] as const;
+
 const recruiters = [
   {
     name: "Mira of Northstar",
     focus: "Customer leadership and frontline coaching",
-    lookingFor: ["Service recovery proof", "Leadership signals", "Team support stories"],
+    lookingFor: ["Leadership", "Communication", "Adaptability", "Service recovery proof"],
     status: "Reviewing candidates"
   },
   {
     name: "Jonas of Brightpath",
     focus: "Training, onboarding, and learning design",
-    lookingFor: ["Communication strength", "Teaching examples", "Structured thinking"],
+    lookingFor: ["Communication", "Problem Solving", "Collaboration", "Teaching examples"],
     status: "Open to introductions"
   },
   {
     name: "Elara of Harbor & Pine",
     focus: "People operations and hospitality systems",
-    lookingFor: ["Professionalism", "Documentation habits", "Reliability evidence"],
+    lookingFor: ["Professionalism", "Collaboration", "Leadership", "Reliability evidence"],
     status: "Building talent bench"
   }
 ] as const;
 
 const recruiterActions = [
-  "Share one Chronicle story tied to a real result.",
-  "Pin one roleplay or challenge result recruiters can understand quickly.",
-  "Keep one short introduction ready for outreach or follow-up."
+  "Tie one Chronicle entry to each of the six core attributes.",
+  "Pin one challenge result that demonstrates composure under pressure.",
+  "Keep one short professional introduction ready for outreach or follow-up."
 ];
 
 const comingLater = [
   "Recruiter profiles and verification",
-  "Quest posting tools",
+  "Job posting tools",
   "Candidate shortlists",
   "Private recruiter messages",
   "Evidence-based candidate matching"
@@ -42,7 +51,7 @@ export default function RecruitersPage() {
       <section className="fc-workspace-hero">
         <p className="fc-eyebrow">Recruiters Guild</p>
         <h1>Recruiters</h1>
-        <p>A prototype guild space where Travelers can understand what recruiters seek and how to become easier to believe.</p>
+        <p>A prototype hiring space where companies can find evidence-backed candidates from the Fabled Compass job board.</p>
       </section>
 
       <section className="fc-workspace-grid">
@@ -50,10 +59,10 @@ export default function RecruitersPage() {
           <article className="fc-card">
             <div className="fc-card-header-row">
               <div>
-                <p className="fc-eyebrow">Guild Board</p>
+                <p className="fc-eyebrow">Hiring Board</p>
                 <h2>Active recruiters</h2>
               </div>
-              <span className="fc-muted">{recruiters.length} scouts in view</span>
+              <span className="fc-muted">{recruiters.length} hiring leads in view</span>
             </div>
             <div className="fc-group-grid">
               {recruiters.map((recruiter) => (
@@ -83,14 +92,23 @@ export default function RecruitersPage() {
             <p className="fc-eyebrow">What recruiters need</p>
             <h2>Believable proof over vague claims</h2>
             <ul className="fc-guidance-list">
-              <li>Clear role-aligned evidence from your Chronicle, trials, and quest outcomes.</li>
+              <li>Clear role-aligned evidence from your Chronicle and assessments.</li>
               <li>Concise summaries that explain what you handled, improved, or delivered.</li>
-              <li>Signals of reliability, communication, and growth — not just keywords.</li>
+              <li>Signals across all six attributes — not just keywords.</li>
             </ul>
           </article>
         </div>
 
         <aside className="fc-page-stack">
+          <article className="fc-card fc-side-card">
+            <p className="fc-eyebrow">Six Attribute Signals</p>
+            <div className="fc-inline-tags">
+              {sixAttributes.map((attribute) => (
+                <span key={attribute}>{attribute}</span>
+              ))}
+            </div>
+          </article>
+
           <article className="fc-card fc-side-card">
             <p className="fc-eyebrow">Next Actions</p>
             <ul className="fc-guidance-list">
