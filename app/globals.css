@@ -677,12 +677,24 @@ button { cursor: pointer; }
 }
 
 .fc-auth-form input,
-.fc-auth-form select {
+.fc-auth-form select,
+.fc-auth-form textarea {
   border: 1px solid var(--fc-border-soft);
   border-radius: 10px;
   background: rgba(16, 22, 29, .36);
   color: #d5e3f7;
   padding: .5rem .62rem;
+}
+
+.fc-auth-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.fc-auth-form h3 {
+  margin: .35rem 0 0;
+  color: #d7e4f9;
+  font-size: .98rem;
 }
 
 .fc-auth-tabs {
