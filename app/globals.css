@@ -836,135 +836,188 @@ button { cursor: pointer; }
   font-size: .78rem;
 }
 
-.fc-chatroom-shell {
-  display: grid;
-  grid-template-columns: minmax(180px, .62fr) minmax(0, 1.7fr) minmax(220px, .68fr);
-  gap: .65rem;
-}
-
-.fc-chatroom-rooms,
-.fc-chatroom-members,
-.fc-chatroom-main {
-  min-height: 520px;
-}
-
-.fc-chatroom-rooms-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: .45rem;
-}
-
-.fc-chatroom-room-list {
-  margin-top: .6rem;
-  display: grid;
-  gap: .35rem;
-}
-
-.fc-chatroom-room-item {
-  border: 1px solid var(--fc-border-soft);
-  border-radius: 9px;
-  background: rgba(16, 22, 29, .3);
-  padding: .42rem .52rem;
-  text-decoration: none;
-  display: grid;
-  gap: .1rem;
-}
-
-.fc-chatroom-room-item strong {
-  color: #d4e3f8;
-  font-size: .82rem;
-}
-
-.fc-chatroom-room-item span {
-  color: #9bb0cc;
-  font-size: .73rem;
-}
-
-.fc-chatroom-room-item.is-active {
-  border-color: rgba(45, 212, 243, .45);
-  background: rgba(45, 212, 243, .12);
-}
-
-.fc-chatroom-main {
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: .55rem;
-}
-
-.fc-chatroom-main-head {
-  display: flex;
-  justify-content: space-between;
-  gap: .6rem;
-  align-items: flex-start;
-}
-
-.fc-chatroom-main-head h1 {
-  margin: .05rem 0;
-  font-size: 1.4rem;
-}
-
-.fc-chatroom-topic {
-  border: 1px solid var(--fc-border-soft);
-  border-radius: 9px;
-  background: rgba(16, 22, 29, .28);
-  color: #b8cbe5;
-  font-size: .82rem;
-  padding: .42rem .52rem;
-}
-
-.fc-chatroom-feed {
-  border: 1px solid var(--fc-border-soft);
-  border-radius: 10px;
-  background: rgba(16, 22, 29, .34);
-  padding: .52rem .58rem;
-  overflow: auto;
-  display: grid;
-  gap: .32rem;
-}
-
-.fc-chatroom-feed p {
-  margin: 0;
-  color: #c2d4ea;
-  font-size: .82rem;
-  line-height: 1.45;
-}
-
 .fc-chatroom-time {
   color: #92a8c7;
   font-size: .74rem;
 }
 
-.fc-chatroom-compose {
-  margin-top: 0;
-}
-
-.fc-chatroom-members {
+.fc-aol-shell {
   display: grid;
-  align-content: start;
-  gap: .48rem;
+  grid-template-columns: minmax(180px, .7fr) minmax(0, 1.85fr) minmax(200px, .75fr);
+  grid-template-rows: auto 1fr;
+  gap: .5rem;
 }
 
-.fc-chatroom-member-list {
-  display: grid;
-  gap: .3rem;
-}
-
-.fc-chatroom-member-list p {
-  margin: 0;
-  border: 1px solid var(--fc-border-soft);
+.fc-aol-titlebar {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: space-between;
+  gap: .5rem;
+  align-items: center;
+  border: 1px solid rgba(94, 126, 170, .55);
   border-radius: 8px;
-  background: rgba(16, 22, 29, .28);
-  color: #b8cbe5;
+  background: linear-gradient(180deg, rgba(48, 74, 120, .6), rgba(20, 36, 66, .62));
+  color: #d7e8ff;
+  padding: .35rem .55rem;
   font-size: .8rem;
+}
+
+.fc-aol-panel {
+  border: 1px solid rgba(94, 126, 170, .52);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(26, 42, 68, .7), rgba(14, 24, 43, .72));
+  min-height: 520px;
+  padding: .45rem;
+}
+
+.fc-aol-panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .45rem;
+  border: 1px solid rgba(94, 126, 170, .46);
+  border-radius: 6px;
+  background: rgba(15, 27, 49, .74);
+  padding: .28rem .4rem;
+}
+
+.fc-aol-panel-head p {
+  margin: 0;
+  color: #d5e6fd;
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.fc-aol-panel-head span {
+  color: #9db4d7;
+  font-size: .72rem;
+}
+
+.fc-aol-search {
+  margin-top: .4rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: .25rem;
+}
+
+.fc-aol-search input,
+.fc-aol-compose input {
+  border: 1px solid rgba(111, 137, 175, .6);
+  border-radius: 4px;
+  background: rgba(6, 14, 30, .72);
+  color: #d5e6fd;
+  padding: .33rem .45rem;
+  font-size: .78rem;
+}
+
+.fc-aol-search button,
+.fc-aol-compose button,
+.fc-aol-actions button {
+  border: 1px solid rgba(111, 137, 175, .68);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(62, 94, 144, .6), rgba(36, 60, 98, .65));
+  color: #deebff;
+  padding: .28rem .46rem;
+  font-size: .74rem;
+}
+
+.fc-aol-list {
+  margin-top: .42rem;
+  display: grid;
+  gap: .2rem;
+}
+
+.fc-aol-room {
+  border: 1px solid rgba(94, 126, 170, .36);
+  border-radius: 4px;
+  background: rgba(14, 26, 45, .68);
+  text-decoration: none;
+  display: grid;
+  gap: .03rem;
+  padding: .3rem .38rem;
+}
+
+.fc-aol-room strong {
+  color: #d3e5fc;
+  font-size: .77rem;
+}
+
+.fc-aol-room span {
+  color: #98b0d2;
+  font-size: .7rem;
+}
+
+.fc-aol-room.is-active {
+  border-color: rgba(45, 212, 243, .5);
+  background: rgba(45, 212, 243, .16);
+}
+
+.fc-aol-chat {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: .38rem;
+}
+
+.fc-aol-topic {
+  border: 1px solid rgba(94, 126, 170, .44);
+  border-radius: 4px;
+  background: rgba(11, 21, 38, .72);
+  color: #b6cced;
+  font-size: .78rem;
   padding: .34rem .45rem;
 }
 
-.fc-chatroom-divider {
-  width: 100%;
-  border: 0;
-  border-top: 1px solid var(--fc-border-soft);
-  margin: .1rem 0;
+.fc-aol-log {
+  border: 1px solid rgba(94, 126, 170, .46);
+  border-radius: 4px;
+  background: rgba(4, 10, 23, .76);
+  padding: .38rem .42rem;
+  overflow: auto;
+  display: grid;
+  gap: .23rem;
+}
+
+.fc-aol-log p {
+  margin: 0;
+  color: #c6d8ef;
+  font-size: .8rem;
+  line-height: 1.4;
+}
+
+.fc-aol-compose {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: .25rem;
+}
+
+.fc-aol-users {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: .38rem;
+}
+
+.fc-aol-user-list {
+  border: 1px solid rgba(94, 126, 170, .44);
+  border-radius: 4px;
+  background: rgba(8, 16, 31, .75);
+  overflow: auto;
+  display: grid;
+  gap: .2rem;
+  padding: .32rem .36rem;
+}
+
+.fc-aol-user-list p {
+  margin: 0;
+  color: #bdd2ee;
+  font-size: .78rem;
+}
+
+.fc-aol-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .2rem;
 }
 
 .fc-group-grid {
@@ -1319,13 +1372,11 @@ button { cursor: pointer; }
     grid-template-columns: 1fr;
   }
 
-  .fc-chatroom-shell {
+  .fc-aol-shell {
     grid-template-columns: 1fr;
   }
 
-  .fc-chatroom-rooms,
-  .fc-chatroom-members,
-  .fc-chatroom-main {
+  .fc-aol-panel {
     min-height: auto;
   }
 
