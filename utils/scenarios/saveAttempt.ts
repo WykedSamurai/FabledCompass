@@ -61,7 +61,7 @@ export async function saveDifficultCustomerAttempt(result: ScenarioResultRecord)
         overall_score: result.overall,
         badge_slug: definition.badge_slug,
         badge_name: definition.badge_name,
-        source_scenario: "The Difficult Customer",
+        source_scenario: "Service Recovery Constellation",
         badge_version: definition.version
       },
       { onConflict: "user_id,badge_slug,badge_version" }

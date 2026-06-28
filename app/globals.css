@@ -155,6 +155,15 @@ button { cursor: pointer; }
   font-weight: 850;
   background: rgba(16, 22, 29, .35);
 }
+.fc-nav-icon svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .fc-nav-label { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fc-nav-link:hover {
   color: var(--fc-text);
@@ -180,6 +189,7 @@ button { cursor: pointer; }
 .is-sidebar-collapsed .fc-sidebar-toggle { width: 34px; height: 24px; }
 .is-sidebar-collapsed .fc-nav-link { justify-content: center; padding: .45rem; }
 .is-sidebar-collapsed .fc-nav-icon { width: 34px; height: 34px; border-radius: 11px; }
+.is-sidebar-collapsed .fc-nav-icon svg { width: 18px; height: 18px; }
 
 .fc-workspace { min-width: 0; }
 .fc-topbar {

@@ -129,8 +129,8 @@ export default function DashboardPage() {
 
         <details className="fc-sheet-section">
           <summary>Next Challenge <span>Ready</span></summary>
-          <p className="fc-muted">Customer Recovery is ready to continue building evidence.</p>
-          <AtlasButton href="/adventures/difficult-customer">Begin Challenge</AtlasButton>
+          <p className="fc-muted">Service Recovery Constellation is ready to continue building evidence.</p>
+          <AtlasButton href="/assessments/service-recovery-constellation">Begin Challenge</AtlasButton>
         </details>
       </section>
     </div>

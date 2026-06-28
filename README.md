@@ -21,7 +21,7 @@ The first release must allow a user to:
 5. Receive structured feedback.
 6. Earn a badge displayed on their profile.
 
-The first scenario is **The Difficult Customer**, which awards the **Customer Service Foundations** badge when its requirements are met.
+The first scenario is **Service Recovery Constellation**, which awards the **Customer Service Foundations** badge when its requirements are met.
 
 ## Initial Technology Direction
 

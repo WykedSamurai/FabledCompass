@@ -29,7 +29,7 @@ Prove that a user can discover jobs, complete a workplace scenario, receive usef
 
 ### Scenario System
 - Scenario library
-- One branching scenario: The Difficult Customer
+- One branching scenario: Service Recovery Constellation
 - Authored choices
 - Transparent scoring
 - Results screen

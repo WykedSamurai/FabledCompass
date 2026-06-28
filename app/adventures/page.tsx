@@ -13,28 +13,26 @@ export default function AdventuresPage() {
         <article className="fc-card fc-adventure-card">
           <div className="fc-card-header-row">
             <div>
-              <p className="fc-eyebrow">Foundational Challenge</p>
-              <h2>The Difficult Customer</h2>
+              <p className="fc-eyebrow">Adventure Update</p>
+              <h2>Scenario challenges moved to Assessments</h2>
             </div>
             <span className="fc-status-pill">Ready</span>
           </div>
-          <p className="fc-muted">A customer is frustrated with a purchase problem and demands an immediate solution. Clarify the issue, work within policy, and decide when escalation is appropriate.</p>
+          <p className="fc-muted">Your live scenario runs now launch from Assessments so roleplay quizzes and challenge scoring stay in one place.</p>
           <div className="fc-inline-tags">
-            <span>Communication</span>
-            <span>Empathy</span>
-            <span>Professionalism</span>
-            <span>Conflict Resolution</span>
-            <span>5–7 minutes</span>
+            <span>Assessments Hub</span>
+            <span>Roleplay Quizzes</span>
+            <span>Scenario Runs</span>
           </div>
           <div className="fc-action-row">
-            <Link className="fc-button" href="/adventures/difficult-customer">Start Challenge</Link>
+            <Link className="fc-button" href="/assessments">Open Assessments</Link>
           </div>
         </article>
 
         <aside className="fc-card fc-side-card">
-          <p className="fc-eyebrow">Badge Reward</p>
-          <h3>Customer Service Foundations</h3>
-          <p className="fc-muted">Earned by completing the scenario with passing competency thresholds.</p>
+          <p className="fc-eyebrow">Now Featured</p>
+          <h3>Service Recovery Constellation</h3>
+          <p className="fc-muted">The first live scenario now sits in Assessments with the rest of your roleplay tracks.</p>
           <div className="fc-badge-seal" aria-hidden="true">✦</div>
         </aside>
       </section>

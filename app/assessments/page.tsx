@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
 
 type Dimension = "energy" | "information" | "decision" | "structure";
@@ -396,6 +397,28 @@ export default function AssessmentsPage() {
         <p className="fc-eyebrow">Adventure Journey</p>
         <h1>Personality Style Assessment</h1>
         <p>Roleplay quiz assessments for workstyle insight and trade-readiness coaching.</p>
+      </section>
+
+      <section className="fc-workspace-grid">
+        <article className="fc-card fc-adventure-card">
+          <div className="fc-card-header-row">
+            <div>
+              <p className="fc-eyebrow">Featured Scenario Assessment</p>
+              <h2>Service Recovery Constellation</h2>
+            </div>
+            <span className="fc-status-pill">Ready</span>
+          </div>
+          <p className="fc-muted">Navigate a tense client-support moment with empathy, policy accuracy, and clean escalation choices.</p>
+          <div className="fc-inline-tags">
+            <span>Communication</span>
+            <span>Empathy</span>
+            <span>Policy Awareness</span>
+            <span>5-7 minutes</span>
+          </div>
+          <div className="fc-action-row">
+            <Link className="fc-button" href="/assessments/service-recovery-constellation">Start Scenario</Link>
+          </div>
+        </article>
       </section>
 
       {!workstyleComplete && (
