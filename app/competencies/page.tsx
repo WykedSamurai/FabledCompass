@@ -12,7 +12,7 @@ const coreTrack: CompetencyId[] = [
 
 const levelBands = [
   { threshold: 0, label: "Initiate" },
-  { threshold: 25, label: "Pathfinder" },
+  { threshold: 25, label: "Wayfinder" },
   { threshold: 50, label: "Trailblazer" },
   { threshold: 70, label: "Vanguard" },
   { threshold: 85, label: "Legend" }

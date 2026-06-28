@@ -13,7 +13,7 @@ import {
   type CharacterClass,
   type CharacterRace,
   type AbilityScores
-} from "../../lib/pathfinder";
+} from "../../lib/wayfinder";
 
 const abilityLabels: Record<keyof AbilityScores, string> = {
   strength: "Strength",
@@ -127,11 +127,11 @@ export default function SanctuumPage() {
     return (
       <div className="fc-page-stack">
         <div className="fc-page-header">
-          <h1>⚔️ The Sanctum</h1>
-          <p className="fc-eyebrow">Your Private Realm of Adventure</p>
+          <h1>The Sanctum</h1>
+          <p className="fc-eyebrow">Your Private Wayfinder Campaign</p>
         </div>
         <div className="fc-section">
-          <p>No characters yet. Create your first adventurer to begin.</p>
+          <p>No characters yet. Create your first wayfinder to begin.</p>
           <AtlasButton onClick={handleCreateCharacter} variant="primary">
             Create Character
           </AtlasButton>
@@ -149,8 +149,8 @@ export default function SanctuumPage() {
             {characterClasses[activeCharacter.class]?.icon || "⚔️"}
           </div>
           <div>
-            <p className="fc-eyebrow">⚔️ The Sanctum</p>
-            <h1>Private Realm</h1>
+            <p className="fc-eyebrow">The Sanctum</p>
+            <h1>Wayfinder's Chamber</h1>
             <p className="fc-identity-name">{activeCharacter.name}</p>
             <p className="fc-identity-title">
               Level {activeCharacter.level} {characterClasses[activeCharacter.class]?.name || "Adventurer"} •{" "}
@@ -176,7 +176,7 @@ export default function SanctuumPage() {
 
       {/* Core Abilities */}
       <section className="fc-section">
-        <h2>⭐ Core Abilities</h2>
+        <h2>Core Attributes</h2>
         <div className="fc-abilities-grid">
           {(Object.keys(abilityLabels) as Array<keyof AbilityScores>).map((ability) => {
             const score = activeCharacter.abilityScores[ability];
@@ -238,12 +238,12 @@ export default function SanctuumPage() {
               </div>
             </div>
             <div className="fc-form-group">
-              <label>Personal Legend</label>
+              <label>Personal Quest</label>
               <textarea
                 value={activeCharacter.personalLegend || ""}
                 onChange={(e) => handleUpdateCharacter({ personalLegend: e.target.value })}
                 className="fc-textarea"
-                placeholder="What is your character's defining story?"
+                placeholder="What is your character's defining quest or legend?"
                 rows={2}
               />
             </div>
@@ -263,7 +263,7 @@ export default function SanctuumPage() {
 
       {/* Character Selector & Actions */}
       <section className="fc-section">
-        <h3>Your Characters</h3>
+        <h3>Your Wayfinders</h3>
         <div className="fc-character-list">
           {characters.map((char) => (
             <div
