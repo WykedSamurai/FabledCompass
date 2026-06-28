@@ -56,7 +56,10 @@ export default async function FireRoomPage({ params }: FireRoomPageProps) {
             {fire.travelerVoices.map((voice, index) => (
               <p key={`${voice.name}-${voice.message}`}>
                 <span className="fc-chatroom-time">[{`12:${String(10 + index * 3).padStart(2, "0")}`}]</span>{" "}
-                <strong>{voice.name}</strong> <span className="fc-fire-role">&lt;{voice.role}&gt;</span>: {voice.message}
+                <strong>
+                  <Link href={`/profile?traveler=${encodeURIComponent(voice.name)}`}>{voice.name}</Link>
+                </strong>{" "}
+                <span className="fc-fire-role">&lt;{voice.role}&gt;</span>: {voice.message}
               </p>
             ))}
           </div>
@@ -76,11 +79,20 @@ export default async function FireRoomPage({ params }: FireRoomPageProps) {
           <div className="fc-aol-user-list">
             {fire.travelerVoices.map((voice) => (
               <p key={`member-${voice.name}`}>
-                <strong>{voice.name}</strong> <span className="fc-fire-role">{voice.role}</span>
+                <strong>
+                  <Link href={`/profile?traveler=${encodeURIComponent(voice.name)}`}>{voice.name}</Link>
+                </strong>{" "}
+                <span className="fc-fire-role">{voice.role}</span>
               </p>
             ))}
-            <p><strong>Room Keeper</strong> <span className="fc-fire-role">{fire.keeperPresent ? "Online" : "Away"}</span></p>
-            <p><strong>Mentor</strong> <span className="fc-fire-role">{fire.mentorPresent ? "Online" : "Away"}</span></p>
+            <p>
+              <strong><Link href="/profile?traveler=Room%20Keeper">Room Keeper</Link></strong>{" "}
+              <span className="fc-fire-role">{fire.keeperPresent ? "Online" : "Away"}</span>
+            </p>
+            <p>
+              <strong><Link href="/profile?traveler=Mentor">Mentor</Link></strong>{" "}
+              <span className="fc-fire-role">{fire.mentorPresent ? "Online" : "Away"}</span>
+            </p>
           </div>
           <div className="fc-aol-actions">
             <button type="button">Whisper</button>

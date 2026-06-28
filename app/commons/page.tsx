@@ -1,7 +1,32 @@
-import Link from "next/link";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { commonsComingLater, commonsPrinciples, fires } from "../../lib/commons";
 
 export default function CommonsPage() {
+  const router = useRouter();
+  const [selectedRoomSlug, setSelectedRoomSlug] = useState("");
+  const selectedRoom = fires.find((fire) => fire.slug === selectedRoomSlug);
+
+  function isRoomFull(slug: string, travelers: number): boolean {
+    if (slug === "great-hall") {
+      return false;
+    }
+    return travelers >= 20;
+  }
+
+  function enterSelectedRoom(): void {
+    if (!selectedRoom) {
+      return;
+    }
+    if (isRoomFull(selectedRoom.slug, selectedRoom.travelers)) {
+      window.alert("This room is full (20/20). Please choose another room or start a new one.");
+      return;
+    }
+    router.push(`/commons/${selectedRoom.slug}`);
+  }
+
   return (
     <div className="fc-page-stack fc-workspace-page">
       <section className="fc-workspace-hero">
@@ -24,7 +49,9 @@ export default function CommonsPage() {
                     <p className="fc-eyebrow">Fire</p>
                     <h3>{fire.name}</h3>
                   </div>
-                  <span className="fc-status-pill">{fire.travelers} Travelers</span>
+                  <span className="fc-status-pill">
+                    {isRoomFull(fire.slug, fire.travelers) ? "Room Full" : `${fire.travelers} Travelers`}
+                  </span>
                 </div>
                 <p className="fc-muted">{fire.description}</p>
                 <div className="fc-inline-tags">
@@ -32,10 +59,26 @@ export default function CommonsPage() {
                   <span>{fire.mentorPresent ? "Mentor present" : "Mentor away"}</span>
                 </div>
                 <div className="fc-action-row">
-                  <Link className="fc-button" href={`/commons/${fire.slug}`}>Enter Fire</Link>
+                  <button
+                    className="fc-button"
+                    type="button"
+                    onClick={() => setSelectedRoomSlug(fire.slug)}
+                  >
+                    {selectedRoomSlug === fire.slug ? "Selected" : "Select Room"}
+                  </button>
                 </div>
               </article>
             ))}
+          </div>
+          <div className="fc-action-row">
+            <button
+              className="fc-button"
+              type="button"
+              disabled={!selectedRoom}
+              onClick={enterSelectedRoom}
+            >
+              {selectedRoom ? `Enter ${selectedRoom.name}` : "Select a room to enter"}
+            </button>
           </div>
         </article>
 
