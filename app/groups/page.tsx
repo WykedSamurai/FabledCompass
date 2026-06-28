@@ -15,19 +15,25 @@ type RoomMessage = {
 
 type Room = {
   id: string;
+  slug: string;
   name: string;
   focus: string;
   members: number;
   cadence: string;
+  roomCapacity: number;
+  isLobby: boolean;
   joined: boolean;
   messages: RoomMessage[];
 };
 
 type RoomRow = {
   id: string;
+  slug: string;
   name: string;
   focus: string | null;
   cadence: string | null;
+  room_capacity: number | null;
+  is_lobby: boolean | null;
   created_at: string;
 };
 
@@ -63,6 +69,10 @@ function relativeTimeLabel(timestamp: string): string {
     return `${deltaHours}h`;
   }
   return `${Math.floor(deltaHours / 24)}d`;
+}
+
+function makeSlug(name: string): string {
+  return `${name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")}-${Date.now()}`;
 }
 
 export default function GroupsPage() {
@@ -105,7 +115,9 @@ export default function GroupsPage() {
 
     const { data: roomData, error: roomError } = await supabase
       .from("chat_rooms")
-      .select("id, name, focus, cadence, created_at")
+      .select("id, slug, name, focus, cadence, room_capacity, is_lobby, created_at")
+      .eq("room_kind", "groups")
+      .eq("is_active", true)
       .order("created_at", { ascending: false })
       .limit(100);
 
@@ -194,10 +206,13 @@ export default function GroupsPage() {
 
     const nextRooms = roomsList.map((room) => ({
       id: room.id,
+      slug: room.slug,
       name: room.name,
       focus: room.focus || "Professional discussion",
       members: memberCountByRoom[room.id] ?? 0,
       cadence: room.cadence || "Open discussion",
+      roomCapacity: room.room_capacity ?? 20,
+      isLobby: Boolean(room.is_lobby),
       joined: joinedRoomIds.has(room.id),
       messages: messagesByRoom[room.id] ?? []
     }));
@@ -242,12 +257,17 @@ export default function GroupsPage() {
     }
 
     const supabase = createClient();
+    const slug = makeSlug(name);
     const { data: roomInsert, error: roomError } = await supabase
       .from("chat_rooms")
       .insert({
+        slug,
         name,
         focus,
         cadence: "Open discussion",
+        room_kind: "groups",
+        room_capacity: 20,
+        is_lobby: false,
         created_by: userId
       })
       .select("id")
@@ -396,13 +416,20 @@ export default function GroupsPage() {
             <article className="fc-card" key={room.id}>
               <div className="fc-card-header-row">
                 <h2>{room.name}</h2>
-                <span className="fc-status-pill">{room.joined ? "Joined" : "Suggested"}</span>
+                <span className="fc-status-pill">
+                  {!room.isLobby && room.members >= room.roomCapacity ? "Room Full" : room.joined ? "Joined" : "Suggested"}
+                </span>
               </div>
               <p className="fc-muted">{room.focus}</p>
-              <p>{room.members} members • {room.cadence}</p>
+              <p>{room.members}/{room.roomCapacity} members • {room.cadence}</p>
               <div className="fc-action-row">
                 {!room.joined && (
-                  <button className="fc-button" type="button" onClick={() => void joinRoom(room.id)}>
+                  <button
+                    className="fc-button"
+                    type="button"
+                    disabled={!room.isLobby && room.members >= room.roomCapacity}
+                    onClick={() => void joinRoom(room.id)}
+                  >
                     Join Room
                   </button>
                 )}
