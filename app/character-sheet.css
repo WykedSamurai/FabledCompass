@@ -270,3 +270,132 @@
     grid-column: span 1;
   }
 }
+
+.fc-character-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: .55rem;
+}
+
+.fc-character-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: .5rem;
+  align-items: center;
+  padding: .55rem .62rem;
+  border: 1px solid var(--fc-border-soft);
+  border-radius: 10px;
+  background: rgba(16, 22, 29, .3);
+  cursor: pointer;
+  transition: border-color .18s ease, transform .18s ease, background .18s ease;
+}
+
+.fc-character-card:hover,
+.fc-character-card:focus-within,
+.fc-character-card.active {
+  border-color: rgba(45, 212, 243, .45);
+  background: rgba(31, 58, 90, .28);
+  transform: translateY(-1px);
+}
+
+.fc-character-slot-empty {
+  cursor: default;
+  opacity: .75;
+  border-style: dashed;
+}
+
+.fc-card-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid rgba(45, 212, 243, .38);
+  background: rgba(45, 212, 243, .1);
+  font-size: 1rem;
+}
+
+.fc-card-content {
+  min-width: 0;
+}
+
+.fc-card-name {
+  color: #d2e4ff;
+  font-size: .88rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.fc-card-meta {
+  color: #99abc8;
+  font-size: .76rem;
+  line-height: 1.3;
+}
+
+.fc-character-hover-card {
+  position: absolute;
+  top: calc(100% + .45rem);
+  left: .35rem;
+  right: .35rem;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  padding: .5rem .58rem;
+  border: 1px solid rgba(45, 212, 243, .32);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(18, 32, 52, .95), rgba(8, 18, 32, .95));
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .35);
+  transition: opacity .14s ease;
+}
+
+.fc-character-card:hover .fc-character-hover-card,
+.fc-character-card:focus-within .fc-character-hover-card,
+.fc-character-card.active .fc-character-hover-card {
+  opacity: 1;
+  visibility: visible;
+}
+
+.fc-hover-title {
+  margin: 0 0 .25rem;
+  color: #d8e8ff;
+  font-size: .84rem;
+  font-weight: 700;
+}
+
+.fc-character-hover-card p {
+  margin: .15rem 0;
+  color: #a9b9d3;
+  font-size: .72rem;
+  line-height: 1.3;
+}
+
+.fc-delete-btn {
+  border: 1px solid rgba(244, 114, 182, .42);
+  border-radius: 8px;
+  background: rgba(190, 24, 93, .16);
+  color: #f8bfd8;
+  width: 24px;
+  height: 24px;
+  line-height: 1;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.fc-delete-btn:hover {
+  background: rgba(190, 24, 93, .3);
+}
+
+.fc-button-row {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: .55rem;
+}
+
+.fc-slot-limit-note {
+  margin: 0;
+  color: #9aabc9;
+  font-size: .78rem;
+}

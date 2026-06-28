@@ -5,7 +5,6 @@ import { AtlasButton } from "../../components/atlas";
 import {
   characterClasses,
   characterRaces,
-  baseAbilityScore,
   rollAbilityScore,
   calculateModifier,
   getModifierSign,
@@ -14,6 +13,9 @@ import {
   type CharacterRace,
   type AbilityScores
 } from "../../lib/wayfinder";
+
+const MAX_CHARACTER_SLOTS = 3;
+const ACCOUNT_PLAYER_NAME = "Atlas Professional";
 
 const abilityLabels: Record<keyof AbilityScores, string> = {
   strength: "Strength",
@@ -94,15 +96,17 @@ export default function SanctuumPage() {
   ]);
 
   const [activeCharacterId, setActiveCharacterId] = useState(characters[0]?.id || null);
-  const [creationMode, setCreationMode] = useState(false);
-
   const activeCharacter = characters.find((c) => c.id === activeCharacterId);
+  const canCreateCharacter = characters.length < MAX_CHARACTER_SLOTS;
 
   function handleCreateCharacter() {
+    if (!canCreateCharacter) {
+      return;
+    }
+
     const newChar = createNewCharacter();
     setCharacters([...characters, newChar]);
     setActiveCharacterId(newChar.id);
-    setCreationMode(false);
   }
 
   function handleUpdateCharacter(updates: Partial<PlayableCharacter>) {
@@ -263,13 +267,21 @@ export default function SanctuumPage() {
 
       {/* Character Selector & Actions */}
       <section className="fc-section">
-        <h3>Your Wayfinders</h3>
+        <h3>Your Wayfinders ({characters.length}/{MAX_CHARACTER_SLOTS})</h3>
         <div className="fc-character-list">
           {characters.map((char) => (
             <div
               key={char.id}
               className={`fc-character-card ${activeCharacterId === char.id ? "active" : ""}`}
               onClick={() => setActiveCharacterId(char.id)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setActiveCharacterId(char.id);
+                }
+              }}
             >
               <div className="fc-card-icon">{characterClasses[char.class]?.icon || "⚔️"}</div>
               <div className="fc-card-content">
@@ -277,6 +289,13 @@ export default function SanctuumPage() {
                 <div className="fc-card-meta">
                   Level {char.level} {characterClasses[char.class]?.name} • {characterRaces[char.race]?.name}
                 </div>
+              </div>
+              <div className="fc-character-hover-card" role="status" aria-live="polite">
+                <p className="fc-hover-title">{char.name}</p>
+                <p>Class: {characterClasses[char.class]?.name}</p>
+                <p>Ancestry: {characterRaces[char.race]?.name}</p>
+                <p>Level {char.level} • HP {char.hitPoints} • AC {char.armor}</p>
+                <p>Played by: {ACCOUNT_PLAYER_NAME}</p>
               </div>
               {characters.length > 1 && activeCharacterId === char.id && (
                 <button
@@ -292,11 +311,23 @@ export default function SanctuumPage() {
               )}
             </div>
           ))}
+          {Array.from({ length: Math.max(MAX_CHARACTER_SLOTS - characters.length, 0) }).map((_, index) => (
+            <div key={`empty-slot-${index}`} className="fc-character-card fc-character-slot-empty">
+              <div className="fc-card-icon">✦</div>
+              <div className="fc-card-content">
+                <div className="fc-card-name">Empty Slot</div>
+                <div className="fc-card-meta">Create a new wayfinder for this account</div>
+              </div>
+            </div>
+          ))}
         </div>
         <div className="fc-button-row">
           <AtlasButton onClick={handleCreateCharacter} variant="ghost">
             + Create Character
           </AtlasButton>
+          {!canCreateCharacter && (
+            <p className="fc-slot-limit-note">All 3 character slots are in use for this account.</p>
+          )}
         </div>
       </section>
 
