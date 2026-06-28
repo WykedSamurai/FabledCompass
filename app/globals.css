@@ -729,6 +729,54 @@ button { cursor: pointer; }
   gap: .65rem;
 }
 
+.fc-recruiter-browser-grid {
+  grid-template-columns: minmax(0, 1.55fr) minmax(280px, .6fr);
+}
+
+.fc-recruiter-filter-grid {
+  margin-top: .6rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fc-candidate-list {
+  margin-top: .7rem;
+  display: grid;
+  gap: .55rem;
+}
+
+.fc-candidate-card {
+  padding: .85rem .95rem;
+}
+
+.fc-recruiter-attribute-bars {
+  list-style: none;
+  margin: .55rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: .3rem;
+}
+
+.fc-recruiter-attribute-bars li {
+  display: flex;
+  justify-content: space-between;
+  gap: .5rem;
+  align-items: center;
+  border: 1px solid var(--fc-border-soft);
+  border-radius: 9px;
+  background: rgba(16, 22, 29, .3);
+  padding: .34rem .5rem;
+}
+
+.fc-recruiter-attribute-bars li span {
+  color: #a8bbd8;
+  font-size: .78rem;
+}
+
+.fc-recruiter-attribute-bars li strong {
+  color: #d7e6fb;
+  font-size: .82rem;
+}
+
 .fc-thread-list {
   margin-top: .6rem;
   display: grid;
@@ -1121,6 +1169,10 @@ button { cursor: pointer; }
 
 @media (max-width: 900px) {
   .fc-workspace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fc-recruiter-filter-grid {
     grid-template-columns: 1fr;
   }
 

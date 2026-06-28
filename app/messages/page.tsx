@@ -1,6 +1,6 @@
 import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
 
-const threads = [
+const baseThreads = [
   {
     name: "Compass Coach",
     context: "Portfolio guidance",
@@ -21,7 +21,30 @@ const threads = [
   }
 ];
 
-export default function MessagesPage() {
+export default async function MessagesPage({
+  searchParams
+}: {
+  searchParams?: Promise<{ candidateId?: string; candidateName?: string }>;
+}) {
+  const query = (await searchParams) ?? {};
+  const candidateId = query.candidateId;
+  const candidateName = query.candidateName;
+
+  const recruiterThread =
+    candidateId && candidateName
+      ? {
+          name: candidateName,
+          context: `Recruiter outreach · Candidate ${candidateId}`,
+          preview: "Start your first contact message with role context and interview timeline.",
+          when: "Now"
+        }
+      : null;
+
+  const threads = recruiterThread ? [recruiterThread, ...baseThreads] : baseThreads;
+  const composePlaceholder = recruiterThread
+    ? `Message ${candidateName} about the opportunity...`
+    : "Send a raven reply...";
+
   return (
     <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
       <PrototypeWatermark />
@@ -43,7 +66,7 @@ export default function MessagesPage() {
 
             <div className="fc-thread-list">
               {threads.map((thread) => (
-                <button className="fc-thread-item" key={thread.name} type="button">
+                <button className="fc-thread-item" key={`${thread.name}-${thread.context}`} type="button">
                   <div>
                     <strong>{thread.name}</strong>
                     <p>{thread.context}</p>
@@ -57,16 +80,35 @@ export default function MessagesPage() {
 
           <article className="fc-card">
             <div className="fc-card-header-row">
-              <h2>Compass Guide</h2>
+              <h2>{recruiterThread ? "Recruiter Outreach Thread" : "Compass Guide"}</h2>
               <span className="fc-status-pill">Online</span>
             </div>
             <div className="fc-chat-log">
-              <p><strong>Guide:</strong> You are one strong interview story away from a stronger application package.</p>
-              <p><strong>You:</strong> What should I prepare first?</p>
-              <p><strong>Guide:</strong> Use your Customer Recovery scenario result and connect it to a real workplace example.</p>
+              {recruiterThread ? (
+                <>
+                  <p>
+                    <strong>Recruiter:</strong> Hi {candidateName}, I reviewed your portfolio and wanted to discuss a role match.
+                  </p>
+                  <p>
+                    <strong>Draft:</strong> Start by referencing one evidence highlight and expected timeline.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p>
+                    <strong>Guide:</strong> You are one strong interview story away from a stronger application package.
+                  </p>
+                  <p>
+                    <strong>You:</strong> What should I prepare first?
+                  </p>
+                  <p>
+                    <strong>Guide:</strong> Use your Customer Recovery scenario result and connect it to a real workplace example.
+                  </p>
+                </>
+              )}
             </div>
             <form className="fc-comms-compose">
-              <input placeholder="Send a raven reply..." />
+              <input placeholder={composePlaceholder} />
               <button type="button">Send</button>
             </form>
           </article>
