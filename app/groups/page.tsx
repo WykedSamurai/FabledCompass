@@ -4,6 +4,7 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
 import { createClient } from "../../utils/supabase/client";
+import { isHumanVerified } from "../../utils/account/types";
 
 type RoomMessage = {
   id: string;
@@ -91,6 +92,12 @@ export default function GroupsPage() {
     const user = authData.user;
     if (!user) {
       router.replace("/login?next=/groups");
+      return;
+    }
+    if (!isHumanVerified(user.user_metadata.human_verification_status)) {
+      setWorkspaceMessage("Only verified people can access chatrooms. Verify your account in Navigator Center.");
+      setRooms([]);
+      setAuthLoading(false);
       return;
     }
 

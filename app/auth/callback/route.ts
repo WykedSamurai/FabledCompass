@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../utils/supabase/server";
-import { normalizeAccountType, normalizeProfileVisibility } from "../../../utils/account/types";
+import {
+  normalizeAccountType,
+  normalizeHumanVerificationStatus,
+  normalizeProfileVisibility
+} from "../../../utils/account/types";
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -20,15 +24,23 @@ export async function GET(request: Request) {
     if (userData.user) {
       const currentAccountType = normalizeAccountType(userData.user.user_metadata.account_type);
       const currentVisibility = normalizeProfileVisibility(userData.user.user_metadata.profile_visibility);
+      const currentVerification = normalizeHumanVerificationStatus(userData.user.user_metadata.human_verification_status);
       const hasAccountType = typeof userData.user.user_metadata.account_type === "string";
       const hasVisibility = typeof userData.user.user_metadata.profile_visibility === "string";
+      const hasVerification = typeof userData.user.user_metadata.human_verification_status === "string";
+      const baselineVerification = userData.user.email_confirmed_at ? "email_verified" : "unverified";
+      const nextVerification =
+        currentVerification === "human_verified"
+          ? "human_verified"
+          : baselineVerification;
 
-      if (!hasAccountType || !hasVisibility) {
+      if (!hasAccountType || !hasVisibility || !hasVerification || currentVerification !== nextVerification) {
         await supabase.auth.updateUser({
           data: {
             ...userData.user.user_metadata,
             account_type: currentAccountType,
-            profile_visibility: currentVisibility
+            profile_visibility: currentVisibility,
+            human_verification_status: nextVerification
           }
         });
       }

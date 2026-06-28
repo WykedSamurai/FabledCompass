@@ -9,11 +9,13 @@ import {
   accountTypes,
   normalizeCompanyNarrative,
   normalizeAccountType,
+  normalizeHumanVerificationStatus,
   normalizeProfileVisibility,
   normalizeRecruiterSeatEmails,
   profileVisibilityOptions,
   type CompanyNarrative,
   type AccountType,
+  type HumanVerificationStatus,
   type ProfileVisibility
 } from "../../utils/account/types";
 
@@ -34,6 +36,8 @@ export default function AccountPage() {
   const [recruiterSeats, setRecruiterSeats] = useState<string[]>(
     Array.from({ length: MAX_COMPANY_RECRUITER_ACCOUNTS }, () => "")
   );
+  const [humanVerificationStatus, setHumanVerificationStatus] = useState<HumanVerificationStatus>("unverified");
+  const [attestHumanVerification, setAttestHumanVerification] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -47,6 +51,9 @@ export default function AccountPage() {
       setProfileVisibility(normalizeProfileVisibility(data.user.user_metadata.profile_visibility));
       setCompanyNarrative(normalizeCompanyNarrative(data.user.user_metadata.company_narrative));
       setRecruiterSeats(normalizeRecruiterSeatEmails(data.user.user_metadata.company_recruiter_accounts));
+      const loadedVerificationStatus = normalizeHumanVerificationStatus(data.user.user_metadata.human_verification_status);
+      setHumanVerificationStatus(loadedVerificationStatus);
+      setAttestHumanVerification(loadedVerificationStatus === "human_verified");
       setMessage("");
     });
   }, [router]);
@@ -63,15 +70,26 @@ export default function AccountPage() {
       .map((entry) => entry.trim())
       .filter((entry, index, array) => Boolean(entry) && array.indexOf(entry) === index)
       .slice(0, MAX_COMPANY_RECRUITER_ACCOUNTS);
+    const nextVerificationStatus: HumanVerificationStatus = attestHumanVerification
+      ? "human_verified"
+      : humanVerificationStatus === "email_verified"
+        ? "email_verified"
+        : "unverified";
     const { error } = await supabase.auth.updateUser({
       data: {
         account_type: accountType,
         profile_visibility: profileVisibility,
         company_narrative: companyNarrative,
-        company_recruiter_accounts: normalizedSeats
+        company_recruiter_accounts: normalizedSeats,
+        human_verification_status: nextVerificationStatus,
+        human_verified_at: nextVerificationStatus === "human_verified" ? new Date().toISOString() : null,
+        human_verification_method: nextVerificationStatus === "human_verified" ? "starter_self_attestation_v1" : null
       }
     });
     setSaving(false);
+    if (!error) {
+      setHumanVerificationStatus(nextVerificationStatus);
+    }
     setMessage(error ? error.message : "Account settings saved.");
   }
 
@@ -105,6 +123,22 @@ export default function AccountPage() {
           <h2>Access Settings</h2>
           <p className="fc-muted">Choose how this account is treated across job seeker and recruiter surfaces.</p>
           <div className="fc-auth-form">
+            <label>
+              Human verification status
+              <input
+                type="text"
+                value={humanVerificationStatus === "human_verified" ? "Verified person" : humanVerificationStatus === "email_verified" ? "Email verified (needs person attestation)" : "Unverified"}
+                readOnly
+              />
+            </label>
+            <label>
+              <input
+                type="checkbox"
+                checked={attestHumanVerification}
+                onChange={(event) => setAttestHumanVerification(event.target.checked)}
+              />
+              I confirm this account represents a real person and authentic identity.
+            </label>
             <label>
               Account type
               <select value={accountType} onChange={(event) => setAccountType(event.target.value as AccountType)}>
