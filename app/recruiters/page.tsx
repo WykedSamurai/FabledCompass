@@ -4,15 +4,21 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
 import { createClient } from "../../utils/supabase/client";
-import { canAccessRecruiterWorkspace, normalizeAccountType, type AccountType } from "../../utils/account/types";
+import {
+  canAccessRecruiterWorkspace,
+  normalizeAccountType,
+  normalizeCompanyNarrative,
+  normalizeRecruiterSeatEmails,
+  type AccountType
+} from "../../utils/account/types";
 
 const sixAttributes = [
-  { label: "Leadership", key: "leadership" },
-  { label: "Communication", key: "communication" },
-  { label: "Problem Solving", key: "problemSolving" },
-  { label: "Professionalism", key: "professionalism" },
-  { label: "Adaptability", key: "adaptability" },
-  { label: "Collaboration", key: "collaboration" }
+  { label: "Policy Alignment", key: "leadership" },
+  { label: "Respectful Outreach", key: "communication" },
+  { label: "Evidence Discipline", key: "problemSolving" },
+  { label: "Professional Conduct", key: "professionalism" },
+  { label: "Workflow Compliance", key: "adaptability" },
+  { label: "Community Focus", key: "collaboration" }
 ] as const;
 
 type AttributeKey = (typeof sixAttributes)[number]["key"];
@@ -70,6 +76,14 @@ function clampPercentage(value: number): number {
   return Math.max(0, Math.min(100, Math.round(value)));
 }
 
+function completionScore(values: string[]): number {
+  if (values.length === 0) {
+    return 0;
+  }
+  const filled = values.filter((value) => value.trim().length > 0).length;
+  return clampPercentage((filled / values.length) * 100);
+}
+
 function buildAttributes(portfolioStrength: number, passRate: number): Record<AttributeKey, number> {
   return {
     leadership: clampPercentage(portfolioStrength * 0.95 + passRate * 0.2),
@@ -91,6 +105,12 @@ export default function RecruitersPage() {
   const [minimumScore, setMinimumScore] = useState(0);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [candidateMessage, setCandidateMessage] = useState("Loading candidate browser...");
+  const [policyAdherenceScore, setPolicyAdherenceScore] = useState(60);
+  const [communityFocusScore, setCommunityFocusScore] = useState(55);
+  const [filterInteractions, setFilterInteractions] = useState(0);
+  const [portfolioViews, setPortfolioViews] = useState(0);
+  const [resumeViews, setResumeViews] = useState(0);
+  const [contactActions, setContactActions] = useState(0);
 
   useEffect(() => {
     async function loadAccessAndCandidates() {
@@ -107,6 +127,22 @@ export default function RecruitersPage() {
         setAuthLoading(false);
         return;
       }
+
+      const companyNarrative = normalizeCompanyNarrative(authData.user.user_metadata.company_narrative);
+      const recruiterSeats = normalizeRecruiterSeatEmails(authData.user.user_metadata.company_recruiter_accounts);
+      const narrativeCompletion = completionScore([
+        companyNarrative.who,
+        companyNarrative.what,
+        companyNarrative.why,
+        companyNarrative.where,
+        companyNarrative.how_future_focus
+      ]);
+      const seatsConfigured = recruiterSeats.filter((entry) => entry.length > 0).length;
+      const seatsCompletion = clampPercentage((seatsConfigured / recruiterSeats.length) * 100);
+      const baselinePolicy = userType === "company_admin" ? 55 : 70;
+
+      setPolicyAdherenceScore(clampPercentage((baselinePolicy + narrativeCompletion * 0.3 + seatsCompletion * 0.15)));
+      setCommunityFocusScore(clampPercentage(narrativeCompletion * 0.7 + seatsCompletion * 0.3));
 
       const [profileResult, attemptResult, badgeResult] = await Promise.all([
         supabase
@@ -184,33 +220,44 @@ export default function RecruitersPage() {
   }, [router]);
 
   const recruiterOverallScore = useMemo(() => {
-    if (candidates.length === 0) {
-      return 0;
-    }
-    return clampPercentage(candidates.reduce((sum, candidate) => sum + candidate.portfolioStrength, 0) / candidates.length);
-  }, [candidates]);
+    const platformPlayScore = clampPercentage(
+      45 +
+        filterInteractions * 4 +
+        portfolioViews * 6 +
+        resumeViews * 6 +
+        contactActions * 10
+    );
+    return clampPercentage(policyAdherenceScore * 0.6 + platformPlayScore * 0.4);
+  }, [contactActions, filterInteractions, policyAdherenceScore, portfolioViews, resumeViews]);
 
   const recruiterScorecard: Record<AttributeKey, number> = useMemo(() => {
-    if (candidates.length === 0) {
-      return {
-        leadership: 0,
-        communication: 0,
-        problemSolving: 0,
-        professionalism: 0,
-        adaptability: 0,
-        collaboration: 0
-      };
-    }
-
+    const platformPlayScore = clampPercentage(
+      45 +
+        filterInteractions * 4 +
+        portfolioViews * 6 +
+        resumeViews * 6 +
+        contactActions * 10
+    );
+    const evidenceDiscipline = clampPercentage(
+      55 +
+        portfolioViews * 8 +
+        resumeViews * 8 +
+        (candidates.length > 0 ? 10 : 0)
+    );
+    const respectfulContact = clampPercentage(
+      50 +
+        contactActions * 12 +
+        Math.min(portfolioViews + resumeViews, 5) * 5
+    );
     return {
-      leadership: clampPercentage(candidates.reduce((sum, candidate) => sum + candidate.attributes.leadership, 0) / candidates.length),
-      communication: clampPercentage(candidates.reduce((sum, candidate) => sum + candidate.attributes.communication, 0) / candidates.length),
-      problemSolving: clampPercentage(candidates.reduce((sum, candidate) => sum + candidate.attributes.problemSolving, 0) / candidates.length),
-      professionalism: clampPercentage(candidates.reduce((sum, candidate) => sum + candidate.attributes.professionalism, 0) / candidates.length),
-      adaptability: clampPercentage(candidates.reduce((sum, candidate) => sum + candidate.attributes.adaptability, 0) / candidates.length),
-      collaboration: clampPercentage(candidates.reduce((sum, candidate) => sum + candidate.attributes.collaboration, 0) / candidates.length)
+      leadership: clampPercentage(policyAdherenceScore * 0.7 + platformPlayScore * 0.3),
+      communication: respectfulContact,
+      problemSolving: clampPercentage(policyAdherenceScore * 0.35 + evidenceDiscipline * 0.65),
+      professionalism: clampPercentage(policyAdherenceScore * 0.8 + platformPlayScore * 0.2),
+      adaptability: platformPlayScore,
+      collaboration: clampPercentage(communityFocusScore * 0.55 + platformPlayScore * 0.45)
     };
-  }, [candidates]);
+  }, [candidates.length, communityFocusScore, contactActions, filterInteractions, policyAdherenceScore, portfolioViews, resumeViews]);
 
   const locationFilters = useMemo(() => {
     const unique = Array.from(new Set(candidates.map((candidate) => candidate.location)));
@@ -285,12 +332,21 @@ export default function RecruitersPage() {
                   type="text"
                   value={searchText}
                   placeholder="Name, title, evidence keyword"
-                  onChange={(event) => setSearchText(event.target.value)}
+                  onChange={(event) => {
+                    setSearchText(event.target.value);
+                    setFilterInteractions((current) => current + 1);
+                  }}
                 />
               </label>
               <label>
                 Role fit
-                <select value={roleFilter} onChange={(event) => setRoleFilter(event.target.value as (typeof roleFilters)[number])}>
+                <select
+                  value={roleFilter}
+                  onChange={(event) => {
+                    setRoleFilter(event.target.value as (typeof roleFilters)[number]);
+                    setFilterInteractions((current) => current + 1);
+                  }}
+                >
                   {roleFilters.map((filter) => (
                     <option key={filter} value={filter}>
                       {filter}
@@ -300,7 +356,13 @@ export default function RecruitersPage() {
               </label>
               <label>
                 Location
-                <select value={locationFilter} onChange={(event) => setLocationFilter(event.target.value)}>
+                <select
+                  value={locationFilter}
+                  onChange={(event) => {
+                    setLocationFilter(event.target.value);
+                    setFilterInteractions((current) => current + 1);
+                  }}
+                >
                   {locationFilters.map((filter) => (
                     <option key={filter} value={filter}>
                       {filter}
@@ -315,7 +377,10 @@ export default function RecruitersPage() {
                   min={0}
                   max={100}
                   value={minimumScore}
-                  onChange={(event) => setMinimumScore(Math.max(0, Math.min(100, Number(event.target.value) || 0)))}
+                  onChange={(event) => {
+                    setMinimumScore(Math.max(0, Math.min(100, Number(event.target.value) || 0)));
+                    setFilterInteractions((current) => current + 1);
+                  }}
                 />
               </label>
             </div>
@@ -357,16 +422,33 @@ export default function RecruitersPage() {
                   </ul>
 
                   <div className="fc-action-row">
-                    <button className="fc-button" type="button" onClick={() => router.push(`/recruiters/candidates/${candidate.id}`)}>
+                    <button
+                      className="fc-button"
+                      type="button"
+                      onClick={() => {
+                        setPortfolioViews((current) => current + 1);
+                        router.push(`/recruiters/candidates/${candidate.id}`);
+                      }}
+                    >
                       View Portfolio
                     </button>
-                    <button className="fc-button" type="button" onClick={() => router.push(`/recruiters/candidates/${candidate.id}?tab=resume`)}>
+                    <button
+                      className="fc-button"
+                      type="button"
+                      onClick={() => {
+                        setResumeViews((current) => current + 1);
+                        router.push(`/recruiters/candidates/${candidate.id}?tab=resume`);
+                      }}
+                    >
                       View Resume
                     </button>
                     <button
                       className="fc-button"
                       type="button"
-                      onClick={() => router.push(`/messages?candidateId=${encodeURIComponent(candidate.id)}&candidateName=${encodeURIComponent(candidate.name)}`)}
+                      onClick={() => {
+                        setContactActions((current) => current + 1);
+                        router.push(`/messages?candidateId=${encodeURIComponent(candidate.id)}&candidateName=${encodeURIComponent(candidate.name)}`);
+                      }}
                     >
                       Contact Candidate
                     </button>
@@ -381,7 +463,7 @@ export default function RecruitersPage() {
           <article className="fc-card fc-side-card">
             <p className="fc-eyebrow">Recruiter Scorecard</p>
             <h2>{recruiterOverallScore}% Recruiter Strength</h2>
-            <p className="fc-muted">Scored on the same six attributes as candidate portfolios.</p>
+            <p className="fc-muted">Scored by policy adherence (60%) and platform play quality (40%).</p>
             <ul className="fc-recruiter-attribute-bars">
               {sixAttributes.map((attribute) => (
                 <li key={`score-${attribute.key}`}>
@@ -395,9 +477,9 @@ export default function RecruitersPage() {
           <article className="fc-card fc-side-card">
             <p className="fc-eyebrow">Recruiter Workflow</p>
             <ul className="fc-guidance-list">
-              <li>Review verified portfolio evidence before outreach.</li>
-              <li>Send first contact with role context and timeline.</li>
-              <li>Score recruiter quality each week for consistency.</li>
+              <li>Policy adherence score: {policyAdherenceScore}%</li>
+              <li>Platform workflow actions: {filterInteractions + portfolioViews + resumeViews + contactActions}</li>
+              <li>Community and employee focus score: {communityFocusScore}%</li>
             </ul>
           </article>
         </aside>
