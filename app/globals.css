@@ -771,6 +771,11 @@ button { cursor: pointer; }
   font-size: .82rem;
 }
 
+.fc-fire-role {
+  color: #96aecf;
+  font-size: .78rem;
+}
+
 .fc-group-grid {
   display: grid;
   gap: .58rem;

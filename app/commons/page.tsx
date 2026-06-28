@@ -1,37 +1,5 @@
-type FireRoom = {
-  name: string;
-  description: string;
-  travelers: number;
-  keeperPresent: boolean;
-  mentorPresent: boolean;
-};
-
-const fires: FireRoom[] = [
-  { name: "Great Hall", description: "Daily guild chatter, introductions, and cross-path support.", travelers: 34, keeperPresent: true, mentorPresent: true },
-  { name: "HR Fire", description: "Hiring rituals, interview prep, and workplace policy navigation.", travelers: 22, keeperPresent: true, mentorPresent: false },
-  { name: "Technology Fire", description: "Tech careers, portfolio builds, and practical implementation tips.", travelers: 29, keeperPresent: false, mentorPresent: true },
-  { name: "Hospitality Fire", description: "Service leadership, guest recovery, and frontline growth stories.", travelers: 18, keeperPresent: true, mentorPresent: false },
-  { name: "Education Fire", description: "Learning pathways, certification planning, and training strategy.", travelers: 16, keeperPresent: false, mentorPresent: true },
-  { name: "Career Changers", description: "Role pivots, transferable skills, and transition support.", travelers: 27, keeperPresent: true, mentorPresent: true },
-  { name: "Student Commons", description: "Early-career guidance, internships, and starter portfolio help.", travelers: 20, keeperPresent: false, mentorPresent: true },
-  { name: "Mentor Pavilion", description: "High-signal coaching office hours and evidence-first feedback.", travelers: 12, keeperPresent: true, mentorPresent: true }
-];
-
-const principles = [
-  "Be respectful.",
-  "Share knowledge freely.",
-  "Support evidence-based advice.",
-  "Help Travelers grow.",
-  "Leave the Commons better than you found it."
-];
-
-const comingLater = [
-  "Live text chat",
-  "Temporary Campfires",
-  "Guild Halls",
-  "Mentor Q&A",
-  "Library summaries"
-];
+import Link from "next/link";
+import { commonsComingLater, commonsPrinciples, fires } from "../../lib/commons";
 
 export default function CommonsPage() {
   return (
@@ -64,7 +32,7 @@ export default function CommonsPage() {
                   <span>{fire.mentorPresent ? "Mentor present" : "Mentor away"}</span>
                 </div>
                 <div className="fc-action-row">
-                  <button className="fc-button" type="button">Enter Fire</button>
+                  <Link className="fc-button" href={`/commons/${fire.slug}`}>Enter Fire</Link>
                 </div>
               </article>
             ))}
@@ -75,7 +43,7 @@ export default function CommonsPage() {
           <article className="fc-card fc-side-card">
             <p className="fc-eyebrow">Community Principles</p>
             <ul className="fc-guidance-list">
-              {principles.map((item) => (
+              {commonsPrinciples.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
@@ -89,7 +57,7 @@ export default function CommonsPage() {
           <article className="fc-card fc-side-card">
             <p className="fc-eyebrow">Coming Later</p>
             <ul className="fc-guidance-list">
-              {comingLater.map((item) => (
+              {commonsComingLater.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
