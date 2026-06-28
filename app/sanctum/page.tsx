@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AtlasButton } from "../../components/atlas";
 import {
   characterRoles,
@@ -15,6 +16,7 @@ import {
   type SanctumRole,
   type SocialStanding
 } from "../../lib/wayfinder";
+import { createClient } from "../../utils/supabase/client";
 
 const MAX_CHARACTER_SLOTS = 3;
 const ACCOUNT_PLAYER_NAME = "Atlas Professional";
@@ -97,10 +99,26 @@ function createNewCharacter(): PlayableCharacter {
 }
 
 export default function SanctuumPage() {
+  const router = useRouter();
   const [characters, setCharacters] = useState<PlayableCharacter[]>([]);
   const [activeCharacterId, setActiveCharacterId] = useState<string | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const activeCharacter = characters.find((c) => c.id === activeCharacterId);
   const canCreateCharacter = characters.length < MAX_CHARACTER_SLOTS;
+
+  useEffect(() => {
+    async function loadAuth() {
+      const supabase = createClient();
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) {
+        router.replace("/login?next=/sanctum");
+        return;
+      }
+      setAuthLoading(false);
+    }
+
+    loadAuth();
+  }, [router]);
 
   function handleCreateCharacter() {
     if (!canCreateCharacter) {
@@ -158,6 +176,13 @@ export default function SanctuumPage() {
 
   return (
     <div className="fc-page-stack fc-compact-sheet">
+      {authLoading ? (
+        <section className="fc-section fc-empty-state">
+          <h2>Loading Sanctum</h2>
+          <p>Checking account access...</p>
+        </section>
+      ) : (
+        <>
       <section className="fc-sanctum-toolbar">
         <div>
           <p className="fc-eyebrow">The Sanctum • Earth, 1500s</p>
@@ -504,6 +529,8 @@ export default function SanctuumPage() {
               </div>
             </details>
           </section>
+        </>
+      )}
         </>
       )}
     </div>

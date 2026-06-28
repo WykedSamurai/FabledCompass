@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../utils/supabase/client";
+import { normalizeAccountType, normalizeProfileVisibility } from "../../../utils/account/types";
 
 export default function ConfirmPage() {
   const router = useRouter();
@@ -21,6 +22,20 @@ export default function ConfirmPage() {
       }
 
       if (data.session) {
+        const user = data.session.user;
+        const hasAccountType = typeof user.user_metadata.account_type === "string";
+        const hasVisibility = typeof user.user_metadata.profile_visibility === "string";
+
+        if (!hasAccountType || !hasVisibility) {
+          await supabase.auth.updateUser({
+            data: {
+              ...user.user_metadata,
+              account_type: normalizeAccountType(user.user_metadata.account_type),
+              profile_visibility: normalizeProfileVisibility(user.user_metadata.profile_visibility)
+            }
+          });
+        }
+
         router.replace(next);
         router.refresh();
         return;
