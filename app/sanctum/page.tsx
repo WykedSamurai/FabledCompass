@@ -13,7 +13,7 @@ import {
   type CharacterClass,
   type CharacterRace,
   type AbilityScores
-} from "../../lib/pathfinder";
+} from "../../lib/wayfinder";
 
 const abilityLabels: Record<keyof AbilityScores, string> = {
   strength: "Strength",
@@ -128,10 +128,10 @@ export default function SanctuumPage() {
       <div className="fc-page-stack">
         <div className="fc-page-header">
           <h1>The Sanctum</h1>
-          <p className="fc-eyebrow">Your Private Pathfinder Campaign</p>
+          <p className="fc-eyebrow">Your Private Wayfinder Campaign</p>
         </div>
         <div className="fc-section">
-          <p>No characters yet. Create your first Pathfinder to begin.</p>
+          <p>No characters yet. Create your first wayfinder to begin.</p>
           <AtlasButton onClick={handleCreateCharacter} variant="primary">
             Create Character
           </AtlasButton>
@@ -150,7 +150,7 @@ export default function SanctuumPage() {
           </div>
           <div>
             <p className="fc-eyebrow">The Sanctum</p>
-            <h1>Pathfinder's Chamber</h1>
+            <h1>Wayfinder's Chamber</h1>
             <p className="fc-identity-name">{activeCharacter.name}</p>
             <p className="fc-identity-title">
               Level {activeCharacter.level} {characterClasses[activeCharacter.class]?.name || "Adventurer"} •{" "}
@@ -263,7 +263,7 @@ export default function SanctuumPage() {
 
       {/* Character Selector & Actions */}
       <section className="fc-section">
-        <h3>Your Pathfinders</h3>
+        <h3>Your Wayfinders</h3>
         <div className="fc-character-list">
           {characters.map((char) => (
             <div

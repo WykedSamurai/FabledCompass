@@ -62,7 +62,7 @@ export default function DashboardPage() {
         </div>
         <div className="fc-character-summary">
           <span><small>Level</small><strong>7</strong></span>
-          <span><small>Career Path</small><strong>Pathfinder</strong></span>
+          <span><small>Career Path</small><strong>Wayfinder</strong></span>
           <span><small>Portfolio Strength</small><strong>{compass.overall}%</strong></span>
         </div>
       </section>
