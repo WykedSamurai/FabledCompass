@@ -7,6 +7,7 @@ type AtlasButtonProps = {
   children: ReactNode;
   className?: string;
   href?: string;
+  onClick?: () => void;
   type?: "button" | "submit" | "reset";
   variant?: Variant;
 };
@@ -19,6 +20,7 @@ export default function AtlasButton({
   children,
   className,
   href,
+  onClick,
   type = "button",
   variant = "primary"
 }: AtlasButtonProps) {
@@ -28,5 +30,5 @@ export default function AtlasButton({
     return <a className={classes} href={href}>{children}</a>;
   }
 
-  return <button className={classes} type={type}>{children}</button>;
+  return <button className={classes} type={type} onClick={onClick}>{children}</button>;
 }

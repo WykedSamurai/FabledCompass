@@ -7,7 +7,7 @@ import AtlasSky from "../atlas/AtlasSky";
 import CommunicationHub from "./CommunicationHub";
 import SiteFooter from "./SiteFooter";
 
-type NavIcon = "compass" | "folio" | "jobs" | "applications" | "recruiters" | "commons" | "network" | "groups" | "messages" | "challenges" | "assessments" | "competencies";
+type NavIcon = "compass" | "folio" | "jobs" | "applications" | "recruiters" | "commons" | "network" | "groups" | "messages" | "challenges" | "assessments" | "competencies" | "sanctum";
 type NavItem = { href: string; label: string; icon: NavIcon };
 type NavGroup = { label: string; accent: "career" | "community" | "adventure"; items: NavItem[] };
 
@@ -40,6 +40,13 @@ const navigation = [
       { href: "/adventures", label: "Questline", icon: "challenges" },
       { href: "/assessments", label: "Trial Grounds", icon: "assessments" },
       { href: "/competencies", label: "Skill Tree", icon: "competencies" }
+    ]
+  },
+  {
+    label: "Sanctum",
+    accent: "adventure",
+    items: [
+      { href: "/sanctum", label: "Private Realm", icon: "sanctum" }
     ]
   }
 ] satisfies NavGroup[];
@@ -125,6 +132,13 @@ function NavGlyph({ icon }: { icon: NavIcon }) {
     competencies: (
       <>
         <path d="m12 4.8 2 4.1 4.5.6-3.2 3.1.8 4.6-4.1-2.2-4.1 2.2.8-4.6-3.2-3.1 4.5-.6z" />
+      </>
+    ),
+    sanctum: (
+      <>
+        <path d="M4 10h16v9H4z" />
+        <path d="M8 10 12 5l4 5" />
+        <circle cx="12" cy="14.5" r="1.5" />
       </>
     )
   };
