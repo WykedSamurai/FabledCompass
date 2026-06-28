@@ -1,4 +1,10 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
+import { createClient } from "../../utils/supabase/client";
+import { canAccessRecruiterWorkspace, normalizeAccountType, type AccountType } from "../../utils/account/types";
 
 const sixAttributes = [
   "Leadership",
@@ -45,6 +51,52 @@ const comingLater = [
 ];
 
 export default function RecruitersPage() {
+  const router = useRouter();
+  const [accountType, setAccountType] = useState<AccountType>("job_seeker");
+  const [authLoading, setAuthLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadAccess() {
+      const supabase = createClient();
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) {
+        router.replace("/login?next=/recruiters");
+        return;
+      }
+
+      setAccountType(normalizeAccountType(data.user.user_metadata.account_type));
+      setAuthLoading(false);
+    }
+
+    loadAccess();
+  }, [router]);
+
+  if (authLoading) {
+    return (
+      <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
+        <PrototypeWatermark />
+        <section className="fc-workspace-hero">
+          <p className="fc-eyebrow">Recruiters Guild</p>
+          <h1>Recruiters</h1>
+          <p>Checking account access...</p>
+        </section>
+      </div>
+    );
+  }
+
+  if (!canAccessRecruiterWorkspace(accountType)) {
+    return (
+      <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
+        <PrototypeWatermark />
+        <section className="fc-workspace-hero">
+          <p className="fc-eyebrow">Recruiters Guild</p>
+          <h1>Recruiters</h1>
+          <p>This workspace is for recruiter and company accounts.</p>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
       <PrototypeWatermark />

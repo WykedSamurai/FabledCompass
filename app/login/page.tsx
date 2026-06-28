@@ -12,6 +12,7 @@ export default function LoginPage() {
   const [message, setMessage] = useState("");
 
   async function signInWithGoogle() {
+    const nextPath = new URLSearchParams(window.location.search).get("next") || "/account";
     setGoogleLoading(true);
     setMessage("");
     const supabase = createClient();
@@ -19,7 +20,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/account`
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`
       }
     });
 
@@ -29,11 +30,12 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/auth/callback?next=/account");
+    router.push(`/auth/callback?next=${encodeURIComponent(nextPath)}`);
     router.refresh();
   }
 
   async function sendMagicLink() {
+    const nextPath = new URLSearchParams(window.location.search).get("next") || "/account";
     const normalizedEmail = email.trim();
     if (!normalizedEmail) {
       setMessage("Enter your email to receive a magic sign-in link.");
@@ -46,7 +48,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithOtp({
       email: normalizedEmail,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/confirm?next=/account`
+        emailRedirectTo: `${window.location.origin}/auth/confirm?next=${encodeURIComponent(nextPath)}`
       }
     });
 
