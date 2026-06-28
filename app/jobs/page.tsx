@@ -1,3 +1,5 @@
+import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
+
 const jobs = [
   {
     title: "Customer Experience Team Lead",
@@ -24,7 +26,8 @@ const jobs = [
 
 export default function JobsPage() {
   return (
-    <div className="fc-page-stack fc-workspace-page">
+    <div className="fc-page-stack fc-workspace-page fc-prototype-frame">
+      <PrototypeWatermark />
       <section className="fc-workspace-hero">
         <p className="fc-eyebrow">Career Board</p>
         <h1>Open Opportunities</h1>
