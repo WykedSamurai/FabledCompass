@@ -1,5 +1,10 @@
 import Link from "next/link";
 import { createClient } from "../../../../utils/supabase/server";
+import {
+  normalizeAccountType,
+  normalizeCompanyNarrative,
+  normalizeRecruiterSeatEmails
+} from "../../../../utils/account/types";
 
 type CandidateProfile = {
   id: string;
@@ -30,6 +35,18 @@ type CandidateAttempt = {
 };
 
 export const dynamic = "force-dynamic";
+
+function clampPercentage(value: number): number {
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+function completionScore(values: string[]): number {
+  if (values.length === 0) {
+    return 0;
+  }
+  const completeCount = values.filter((value) => value.trim().length > 0).length;
+  return clampPercentage((completeCount / values.length) * 100);
+}
 
 export default async function RecruiterCandidatePage({
   params,
@@ -92,6 +109,36 @@ export default async function RecruiterCandidatePage({
       </div>
     );
   }
+
+  const accountType = normalizeAccountType(authData.user.user_metadata.account_type);
+  const companyNarrative = normalizeCompanyNarrative(authData.user.user_metadata.company_narrative);
+  const recruiterSeats = normalizeRecruiterSeatEmails(authData.user.user_metadata.company_recruiter_accounts);
+  const narrativeCompletion = completionScore([
+    companyNarrative.who,
+    companyNarrative.what,
+    companyNarrative.why,
+    companyNarrative.where,
+    companyNarrative.how_future_focus
+  ]);
+  const seatsConfigured = recruiterSeats.filter((entry) => entry.length > 0).length;
+  const seatsCompletion = clampPercentage((seatsConfigured / recruiterSeats.length) * 100);
+  const baselinePolicy = accountType === "company_admin" ? 55 : 70;
+  const recruiterReadinessScore = clampPercentage(
+    baselinePolicy * 0.55 + narrativeCompletion * 0.3 + seatsCompletion * 0.15
+  );
+
+  const averageAttempt =
+    attempts.length > 0
+      ? attempts.reduce((sum, attempt) => sum + attempt.overall_score, 0) / attempts.length
+      : 0;
+  const passCount = attempts.filter((attempt) => attempt.passed).length;
+  const passRate = attempts.length > 0 ? (passCount / attempts.length) * 100 : 0;
+  const candidateStrength = clampPercentage(
+    averageAttempt * 0.7 + badges.length * 6 + (resumeAvailable ? 10 : 0) + passRate * 0.1
+  );
+  const recruiterCandidateMatchScore = clampPercentage(
+    candidateStrength * 0.65 + recruiterReadinessScore * 0.35
+  );
 
   return (
     <div className="fc-page-stack fc-workspace-page">
@@ -159,6 +206,15 @@ export default async function RecruiterCandidatePage({
         </div>
 
         <aside className="fc-page-stack">
+          <article className="fc-card fc-side-card">
+            <p className="fc-eyebrow">Recruiter Match Score</p>
+            <h2>{recruiterCandidateMatchScore}% Match</h2>
+            <ul className="fc-guidance-list">
+              <li>Candidate strength signal: {candidateStrength}%</li>
+              <li>Recruiter policy readiness: {recruiterReadinessScore}%</li>
+            </ul>
+          </article>
+
           <article className="fc-card fc-side-card">
             <p className="fc-eyebrow">Evidence Snapshot</p>
             <ul className="fc-guidance-list">

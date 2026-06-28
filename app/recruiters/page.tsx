@@ -95,6 +95,20 @@ function buildAttributes(portfolioStrength: number, passRate: number): Record<At
   };
 }
 
+function computeRecruiterCandidateMatch(
+  candidate: Candidate,
+  recruiterScorecard: Record<AttributeKey, number>
+): number {
+  const compatibilityAcrossAttributes =
+    sixAttributes.reduce((sum, attribute) => {
+      const recruiterValue = recruiterScorecard[attribute.key];
+      const candidateValue = candidate.attributes[attribute.key];
+      return sum + (100 - Math.abs(recruiterValue - candidateValue));
+    }, 0) / sixAttributes.length;
+
+  return clampPercentage(compatibilityAcrossAttributes * 0.7 + candidate.portfolioStrength * 0.3);
+}
+
 export default function RecruitersPage() {
   const router = useRouter();
   const [accountType, setAccountType] = useState<AccountType>("job_seeker");
@@ -264,6 +278,13 @@ export default function RecruitersPage() {
     return ["All", ...unique];
   }, [candidates]);
 
+  const candidateMatchScores = useMemo(() => {
+    return candidates.reduce<Record<string, number>>((scores, candidate) => {
+      scores[candidate.id] = computeRecruiterCandidateMatch(candidate, recruiterScorecard);
+      return scores;
+    }, {});
+  }, [candidates, recruiterScorecard]);
+
   const filteredCandidates = useMemo(() => {
     const query = searchText.trim().toLowerCase();
     return candidates.filter((candidate) => {
@@ -397,13 +418,14 @@ export default function RecruitersPage() {
                         {candidate.title} • {candidate.location}
                       </p>
                     </div>
-                    <span className="fc-status-pill">{candidate.portfolioStrength}% strength</span>
+                    <span className="fc-status-pill">{candidateMatchScores[candidate.id] ?? 0}% match</span>
                   </div>
 
                   <div className="fc-inline-tags">
                     <span>{candidate.roleFit}</span>
                     <span>{candidate.profileVisibility === "public" ? "Public Profile" : "Recruiters Only"}</span>
                     <span>{candidate.resumeStatus}</span>
+                    <span>{candidate.portfolioStrength}% strength</span>
                   </div>
 
                   <ul className="fc-recruiter-attribute-bars">
