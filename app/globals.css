@@ -694,7 +694,8 @@ button { cursor: pointer; }
   overflow: hidden;
   border: 1px solid rgba(45, 212, 243, .24);
   border-radius: 16px;
-  min-height: 680px;
+  min-height: calc(100dvh - 68px - 4rem);
+  max-height: calc(100dvh - 68px - 4rem);
   display: grid;
   align-items: end;
   padding: 1.2rem;
@@ -1485,7 +1486,8 @@ button { cursor: pointer; }
   }
 
   .fc-home-landing {
-    min-height: 520px;
+    min-height: calc(100dvh - 68px - 4rem);
+    max-height: calc(100dvh - 68px - 4rem);
     padding: .8rem;
     background-position: center top;
   }

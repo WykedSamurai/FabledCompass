@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import AtlasSky from "../atlas/AtlasSky";
 import CommunicationHub from "./CommunicationHub";
 import SiteFooter from "./SiteFooter";
@@ -152,6 +153,8 @@ function NavGlyph({ icon }: { icon: NavIcon }) {
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
+  const pathname = usePathname();
+  const hideFooter = pathname === "/";
 
   return (
     <div className={`fc-shell ${collapsed ? "is-sidebar-collapsed" : ""}`} data-journey="career">
@@ -204,7 +207,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </header>
 
         <main className="fc-content">{children}</main>
-        <SiteFooter />
+        {!hideFooter && <SiteFooter />}
       </div>
 
       <CommunicationHub />
