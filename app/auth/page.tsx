@@ -12,7 +12,7 @@ export default function AuthPage() {
   const [message, setMessage] = useState("");
 
   async function signInWithGoogle() {
-    const nextPath = new URLSearchParams(window.location.search).get("next") || "/profile";
+    const nextPath = new URLSearchParams(window.location.search).get("next") || "/dashboard";
     setGoogleLoading(true);
     setMessage("");
     const supabase = createClient();
@@ -35,7 +35,7 @@ export default function AuthPage() {
   }
 
   async function sendMagicLink() {
-    const nextPath = new URLSearchParams(window.location.search).get("next") || "/profile";
+    const nextPath = new URLSearchParams(window.location.search).get("next") || "/dashboard";
     const normalizedEmail = email.trim();
     if (!normalizedEmail) {
       setMessage("Enter your email to receive a magic sign-in link.");
