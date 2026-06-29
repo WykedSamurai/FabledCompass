@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
 import { createClient } from "../../utils/supabase/client";
 import { isHumanVerified } from "../../utils/account/types";
+import { formatCommunityGuardrail } from "../../utils/community/guardrails";
 
 type RoomMessage = {
   id: string;
@@ -105,7 +106,7 @@ export default function GroupsPage() {
       return;
     }
     if (!isHumanVerified(user.user_metadata.human_verification_status)) {
-      setWorkspaceMessage("Only verified people can access chatrooms. Verify your account in Navigator Center.");
+      setWorkspaceMessage("Only verified people can access chatrooms. Verify your account in Navigator Center first.");
       setRooms([]);
       setAuthLoading(false);
       return;
@@ -122,7 +123,7 @@ export default function GroupsPage() {
       .limit(100);
 
     if (roomError) {
-      setWorkspaceMessage(`Chat backend is not ready yet: ${roomError.message}`);
+      setWorkspaceMessage(`Chat backend is not ready yet: ${formatCommunityGuardrail(roomError.message)}`);
       setRooms([]);
       setAuthLoading(false);
       return;
@@ -149,14 +150,14 @@ export default function GroupsPage() {
     ]);
 
     if (membershipResult.error) {
-      setWorkspaceMessage(`Failed to load room memberships: ${membershipResult.error.message}`);
+      setWorkspaceMessage(`Failed to load room memberships: ${formatCommunityGuardrail(membershipResult.error.message)}`);
       setRooms([]);
       setAuthLoading(false);
       return;
     }
 
     if (messageResult.error) {
-      setWorkspaceMessage(`Failed to load room messages: ${messageResult.error.message}`);
+      setWorkspaceMessage(`Failed to load room messages: ${formatCommunityGuardrail(messageResult.error.message)}`);
       setRooms([]);
       setAuthLoading(false);
       return;
@@ -237,7 +238,7 @@ export default function GroupsPage() {
       .upsert({ room_id: roomId, user_id: userId }, { onConflict: "room_id,user_id" });
 
     if (error) {
-      setWorkspaceMessage(`Could not join room: ${error.message}`);
+      setWorkspaceMessage(`Could not join room: ${formatCommunityGuardrail(error.message)}`);
       return;
     }
 
@@ -274,7 +275,7 @@ export default function GroupsPage() {
       .single();
 
     if (roomError || !roomInsert) {
-      setWorkspaceMessage(`Could not create room: ${roomError?.message || "Unknown error"}`);
+      setWorkspaceMessage(`Could not create room: ${formatCommunityGuardrail(roomError?.message || "Unknown error")}`);
       return;
     }
 
@@ -283,7 +284,7 @@ export default function GroupsPage() {
       .upsert({ room_id: roomInsert.id, user_id: userId }, { onConflict: "room_id,user_id" });
 
     if (membershipError) {
-      setWorkspaceMessage(`Room created, but join failed: ${membershipError.message}`);
+      setWorkspaceMessage(`Room created, but join failed: ${formatCommunityGuardrail(membershipError.message)}`);
       return;
     }
 
@@ -322,7 +323,7 @@ export default function GroupsPage() {
       .single();
 
     if (error) {
-      setWorkspaceMessage(`Could not send message: ${error.message}`);
+      setWorkspaceMessage(`Could not send message: ${formatCommunityGuardrail(error.message)}`);
       return;
     }
 
