@@ -3,6 +3,38 @@
   color: #c6d2e6;
 }
 
+.fc-onboarding-notice {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: .75rem 1rem;
+  background: rgba(45, 180, 140, .1);
+  border: 1px solid rgba(45, 212, 160, .28);
+  border-radius: 12px;
+  font-size: .85rem;
+  color: #a8d8c0;
+}
+
+.fc-onboarding-notice span:first-child {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.fc-onboarding-notice div {
+  flex: 1;
+}
+
+.fc-onboarding-notice strong {
+  display: block;
+  color: #c6edda;
+  margin-bottom: .2rem;
+}
+
+.fc-onboarding-notice p {
+  margin: 0;
+  opacity: .85;
+}
+
 .fc-character-sheet-hero {
   display: grid;
   grid-template-columns: minmax(0, 1.3fr) minmax(280px, 1fr) minmax(220px, .8fr);
