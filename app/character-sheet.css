@@ -119,6 +119,101 @@
   line-height: 1.35;
 }
 
+/* ── Inline identity edit ──────────────────────────────── */
+.fc-btn-edit-identity {
+  margin-top: .5rem;
+  padding: .28rem .65rem;
+  border: 1px solid rgba(45, 212, 243, .28);
+  border-radius: 8px;
+  background: rgba(45, 212, 243, .07);
+  color: #7ec8da;
+  font-size: .78rem;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.fc-btn-edit-identity:hover {
+  background: rgba(45, 212, 243, .16);
+}
+
+.fc-save-confirm {
+  margin-left: .5rem;
+  color: #7edba6;
+  font-size: .8rem;
+}
+
+.fc-identity-edit-form {
+  display: grid;
+  gap: .45rem;
+}
+
+.fc-identity-field {
+  display: grid;
+  gap: .2rem;
+  font-size: .78rem;
+  color: #9baaca;
+}
+
+.fc-identity-field-full {
+  grid-column: 1 / -1;
+}
+
+.fc-identity-input {
+  border: 1px solid var(--fc-border-soft);
+  border-radius: 8px;
+  background: rgba(16, 22, 29, .45);
+  color: #d6e1f4;
+  padding: .35rem .5rem;
+  font: inherit;
+  font-size: .84rem;
+  width: 100%;
+  resize: vertical;
+}
+
+.fc-identity-input:focus {
+  outline: 2px solid rgba(45, 212, 243, .45);
+}
+
+.fc-identity-edit-actions {
+  display: flex;
+  gap: .5rem;
+  margin-top: .15rem;
+}
+
+.fc-btn-save {
+  padding: .3rem .8rem;
+  border: none;
+  border-radius: 8px;
+  background: rgba(45, 180, 130, .25);
+  color: #7edba6;
+  font-size: .8rem;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.fc-btn-save:hover:not(:disabled) {
+  background: rgba(45, 180, 130, .4);
+}
+
+.fc-btn-save:disabled {
+  opacity: .5;
+  cursor: default;
+}
+
+.fc-btn-cancel {
+  padding: .3rem .7rem;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 8px;
+  background: transparent;
+  color: #8899b8;
+  font-size: .8rem;
+  cursor: pointer;
+}
+
+.fc-btn-cancel:hover {
+  background: rgba(255,255,255,.05);
+}
+
 .fc-character-summary {
   display: grid;
   gap: .32rem;

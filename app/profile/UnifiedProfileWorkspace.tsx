@@ -8,8 +8,33 @@ import styles from "./profile-workspace.module.css";
 
 type ProfileVisibility = "private" | "employers" | "public";
 
+type ArchetypeId =
+  | "traveler" | "explorer" | "creator" | "leader" | "mentor"
+  | "guardian" | "scholar" | "builder" | "innovator" | "steward"
+  | "diplomat" | "strategist";
+
+const ARCHETYPES: { id: ArchetypeId; name: string; icon: string }[] = [
+  { id: "traveler",   name: "Traveler",   icon: "🌍" },
+  { id: "explorer",   name: "Explorer",   icon: "🧭" },
+  { id: "creator",    name: "Creator",    icon: "✨" },
+  { id: "leader",     name: "Leader",     icon: "🏛" },
+  { id: "mentor",     name: "Mentor",     icon: "🤝" },
+  { id: "guardian",   name: "Guardian",   icon: "🛡" },
+  { id: "scholar",    name: "Scholar",    icon: "🔬" },
+  { id: "builder",    name: "Builder",    icon: "⚒" },
+  { id: "innovator",  name: "Innovator",  icon: "💡" },
+  { id: "steward",    name: "Steward",    icon: "🌱" },
+  { id: "diplomat",   name: "Diplomat",   icon: "⚖" },
+  { id: "strategist", name: "Strategist", icon: "🎯" }
+];
+
 type ProfileForm = {
   display_name: string;
+  title: string;
+  archetype: ArchetypeId;
+  motto: string;
+  personal_legend: string;
+  career_path: string;
   headline: string;
   location: string;
   about: string;
@@ -47,6 +72,11 @@ type Attempt = {
 
 const emptyProfile: ProfileForm = {
   display_name: "",
+  title: "Compass Bearer",
+  archetype: "traveler",
+  motto: "",
+  personal_legend: "",
+  career_path: "Wayfinder",
   headline: "",
   location: "",
   about: "",
@@ -121,7 +151,7 @@ export default function UnifiedProfileWorkspace() {
 
       setUserId(user.id);
       const [profileResult, badgeResult, attemptResult] = await Promise.all([
-        supabase.from("profiles").select("display_name, headline, location, about, email_public, phone, website, linkedin_url, portfolio_url, skills, experience, education, resume_text, resume_file_path, profile_visibility, show_public_email, show_phone, show_location, show_resume").eq("id", user.id).maybeSingle(),
+        supabase.from("profiles").select("display_name, title, archetype, motto, personal_legend, career_path, headline, location, about, email_public, phone, website, linkedin_url, portfolio_url, skills, experience, education, resume_text, resume_file_path, profile_visibility, show_public_email, show_phone, show_location, show_resume").eq("id", user.id).maybeSingle(),
         supabase.from("user_badges").select("id, badge_name, source_scenario, badge_version, earned_at").eq("user_id", user.id).order("earned_at", { ascending: false }),
         supabase.from("scenario_attempts").select("id, overall_score, passed, completed_at").eq("user_id", user.id).order("completed_at", { ascending: false }).limit(5)
       ]);
@@ -234,6 +264,32 @@ export default function UnifiedProfileWorkspace() {
 
         <div className={styles.grid}>
           <form className={`${styles.card} ${styles.profileForm}`} onSubmit={save}>
+            <details className={styles.collapseSection} open>
+              <summary><span><small>00</small>Character Identity</span></summary>
+              <div className={styles.sectionIntro}>Your Fabled Compass archetype and career identity.</div>
+              <div className={styles.sectionGrid}>
+                <label className={styles.field}>Archetype
+                  <select className={styles.input} value={profile.archetype} onChange={(event) => update("archetype", event.target.value as ArchetypeId)}>
+                    {ARCHETYPES.map((a) => (
+                      <option key={a.id} value={a.id}>{a.icon} {a.name}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className={styles.field}>Title
+                  <input className={styles.input} value={profile.title} placeholder="e.g. Compass Bearer, Shift Leader" onChange={(event) => update("title", event.target.value)} />
+                </label>
+                <label className={styles.field}>Career Path
+                  <input className={styles.input} value={profile.career_path} placeholder="e.g. Wayfinder, Operations" onChange={(event) => update("career_path", event.target.value)} />
+                </label>
+                <label className={styles.field}>Motto
+                  <input className={styles.input} value={profile.motto} placeholder="A personal guiding phrase" onChange={(event) => update("motto", event.target.value)} />
+                </label>
+                <label className={`${styles.field} ${styles.fieldFull}`}>Personal Legend
+                  <textarea className={styles.textarea} placeholder="What career story are you building? What drives your professional journey?" value={profile.personal_legend} onChange={(event) => update("personal_legend", event.target.value)} />
+                </label>
+              </div>
+            </details>
+
             <details className={styles.collapseSection} open>
               <summary><span><small>01</small>Identity</span></summary>
               <div className={styles.sectionIntro}>Who is this professional?</div>
