@@ -6,6 +6,8 @@ import {
   calculateProfessionalCompass,
   sampleEvidence
 } from "../../lib/evidence";
+import { createClient } from "../../utils/supabase/server";
+import { getProfile, getUserEvidence } from "../../lib/profile";
 
 const primaryAttributes = [
   { label: "Leadership", key: "leadership" },
@@ -16,12 +18,25 @@ const primaryAttributes = [
   { label: "Collaboration", key: "collaboration" }
 ] as const;
 
-export default function DashboardPage() {
-  const archetype = getArchetype("traveler");
+export default async function DashboardPage() {
+  const supabase = await createClient();
+  const { data: authData } = await supabase.auth.getUser();
+  const userId = authData.user?.id;
+
+  const [profile, userEvidence] = userId
+    ? await Promise.all([getProfile(supabase, userId), getUserEvidence(supabase, userId)])
+    : [null, []];
+
+  const hasEvidence = userEvidence.length > 0;
+  const evidence = hasEvidence ? userEvidence : sampleEvidence;
+
+  const archetypeId: ArchetypeId = profile?.archetype ?? "traveler";
+  const archetype = getArchetype(archetypeId);
   const archetypeIds = Object.keys(archetypes) as ArchetypeId[];
-  const competencies = calculateAllCompetencies(sampleEvidence);
+
+  const competencies = calculateAllCompetencies(evidence);
   const compass = calculateProfessionalCompass(competencies);
-  const leadershipConstellation = buildConstellation("leadership", sampleEvidence);
+  const leadershipConstellation = buildConstellation("leadership", evidence);
   const topCompetencies = [...competencies].sort((first, second) => second.progress - first.progress).slice(0, 4);
   const attributeScores = {
     leadership: compass.leadership,
@@ -32,37 +47,54 @@ export default function DashboardPage() {
     collaboration: competencies.find((competency) => competency.id === "teamwork")?.progress ?? 0
   };
 
+  const displayName = profile?.displayName ?? authData.user?.email?.split("@")[0] ?? "Traveler";
+  const title = profile?.title ?? "Compass Bearer";
+  const careerPath = profile?.careerPath ?? "Wayfinder";
+  const level = profile?.level ?? 1;
+  const personalLegend = profile?.personalLegend ?? "Build a career story through evidence, reflection, and growth.";
+
   return (
     <div className="fc-page-stack fc-compact-sheet">
+      {!hasEvidence && userId && (
+        <div className="fc-onboarding-notice">
+          <span>⭐</span>
+          <div>
+            <strong>Welcome to your Character Sheet</strong>
+            <p>Complete your first Adventure or add a Portfolio entry to start building real evidence. Scores shown are sample data.</p>
+          </div>
+          <AtlasButton href="/assessments/service-recovery-constellation">Start First Challenge</AtlasButton>
+        </div>
+      )}
+
       <section className="fc-character-sheet-hero">
         <div className="fc-identity-core">
           <div className="fc-archetype-portrait" aria-hidden="true">{archetype.icon}</div>
           <div>
             <p className="fc-eyebrow">Professional Character</p>
             <h1>Career Compass</h1>
-            <p className="fc-identity-name">Atlas Professional</p>
-            <p className="fc-identity-title">Compass Bearer</p>
+            <p className="fc-identity-name">{displayName}</p>
+            <p className="fc-identity-title">{title}</p>
           </div>
         </div>
         <div className="fc-identity-details">
           <label className="fc-archetype-picker">
             <span>Archetype</span>
-            <select aria-label="Archetype" defaultValue={archetype.id}>
-              {archetypeIds.map((archetypeId) => (
-                <option key={archetypeId} value={archetypeId}>
-                  {archetypes[archetypeId].name}
+            <select aria-label="Archetype" defaultValue={archetypeId}>
+              {archetypeIds.map((id) => (
+                <option key={id} value={id}>
+                  {archetypes[id].name}
                 </option>
               ))}
             </select>
           </label>
           <p className="fc-archetype-motto">Motto: {archetype.motto}</p>
           <p className="fc-muted fc-personal-legend">
-            Personal Legend: Build a career story through evidence, reflection, and growth.
+            Personal Legend: {personalLegend}
           </p>
         </div>
         <div className="fc-character-summary">
-          <span><small>Level</small><strong>7</strong></span>
-          <span><small>Career Path</small><strong>Wayfinder</strong></span>
+          <span><small>Level</small><strong>{level}</strong></span>
+          <span><small>Career Path</small><strong>{careerPath}</strong></span>
           <span><small>Portfolio Strength</small><strong>{compass.overall}%</strong></span>
         </div>
       </section>
@@ -89,19 +121,19 @@ export default function DashboardPage() {
             {topCompetencies.map((competency) => (
               <li key={competency.id}>
                 <strong>{competency.label}</strong>
-                <span>{competency.progress}% - {competency.evidenceCount} evidence</span>
+                <span>{competency.progress}% · {competency.evidenceCount} evidence</span>
               </li>
             ))}
           </ul>
         </details>
 
         <details className="fc-sheet-section">
-          <summary>Evidence <span>{sampleEvidence.length} records</span></summary>
+          <summary>Evidence <span>{evidence.length} record{evidence.length !== 1 ? "s" : ""}</span></summary>
           <ul className="fc-evidence-list">
-            {sampleEvidence.map((evidence) => (
-              <li key={evidence.id}>
-                <strong>{evidence.title}</strong>
-                <span>{evidence.score}% - {evidence.verification}</span>
+            {evidence.map((ev) => (
+              <li key={ev.id}>
+                <strong>{ev.title}</strong>
+                <span>{ev.score}% · {ev.verification.replace("_", " ")}</span>
               </li>
             ))}
           </ul>
@@ -111,7 +143,7 @@ export default function DashboardPage() {
           <summary>Constellations <span>{leadershipConstellation.completion}% Leadership</span></summary>
           <div className="fc-constellation-list">
             {leadershipConstellation.stars.map((star) => (
-              <span className={star.active ? "is-active" : ""} key={star.id}>*</span>
+              <span className={star.active ? "is-active" : ""} key={star.id}>✦</span>
             ))}
           </div>
         </details>
