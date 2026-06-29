@@ -25,8 +25,8 @@ export async function createClient() {
             cookieStore.set(name, value, options);
           });
         } catch {
-          // Server Components cannot always write cookies. Session refresh will
-          // be handled later when authentication middleware is introduced.
+          // Server Components cannot always write cookies. Middleware refreshes
+          // sessions and persists updated auth cookies between requests.
         }
       }
     }
