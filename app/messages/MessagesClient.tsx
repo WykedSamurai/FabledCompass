@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import PrototypeWatermark from "../../components/layout/PrototypeWatermark";
 import { createClient } from "../../utils/supabase/client";
 import { isHumanVerified } from "../../utils/account/types";
+import { formatCommunityGuardrail } from "../../utils/community/guardrails";
 
 type ParticipantRow = {
   thread_id: string;
@@ -92,7 +93,7 @@ export default function MessagesClient({ initialQuery }: MessagesClientProps) {
       .eq("user_id", currentUserId);
 
     if (myParticipantsError) {
-      setStatus(myParticipantsError.message);
+      setStatus(formatCommunityGuardrail(myParticipantsError.message));
       setThreads([]);
       return;
     }
@@ -120,13 +121,13 @@ export default function MessagesClient({ initialQuery }: MessagesClientProps) {
     ]);
 
     if (allParticipantsResult.error) {
-      setStatus(allParticipantsResult.error.message);
+      setStatus(formatCommunityGuardrail(allParticipantsResult.error.message));
       setThreads([]);
       return;
     }
 
     if (messagesResult.error) {
-      setStatus(messagesResult.error.message);
+      setStatus(formatCommunityGuardrail(messagesResult.error.message));
       setThreads([]);
       return;
     }
@@ -213,7 +214,7 @@ export default function MessagesClient({ initialQuery }: MessagesClientProps) {
         });
 
         if (error) {
-          setStatus(error.message);
+          setStatus(formatCommunityGuardrail(error.message));
         } else if (typeof threadId === "string") {
           preferredThreadId = threadId;
         }
@@ -245,7 +246,7 @@ export default function MessagesClient({ initialQuery }: MessagesClientProps) {
       });
 
     if (error) {
-      setStatus(error.message);
+      setStatus(formatCommunityGuardrail(error.message));
       return;
     }
 

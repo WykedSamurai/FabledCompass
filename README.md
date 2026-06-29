@@ -40,6 +40,7 @@ AI-generated conversations are not part of the first scenario engine. The MVP wi
 - [User Flows](docs/USER-FLOWS.md)
 - [Badge Standards](docs/BADGE-STANDARDS.md)
 - [Scenario Standard](docs/SCENARIO-STANDARD.md)
+- [Community Backend Setup](docs/COMMUNITY-SETUP.md)
 
 ## Guiding Principle
 

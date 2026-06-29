@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { formatCommunityGuardrail } from "../../../utils/community/guardrails";
 import { createClient } from "../../../utils/supabase/client";
 
 export type FireRoomSummary = {
@@ -73,7 +74,7 @@ export default function FireRoomClient({ room, allRooms, members, messages, prin
       const supabase = createClient();
       const { data: authData } = await supabase.auth.getUser();
       if (!authData.user) {
-        setMessage("Sign in required.");
+        setMessage(formatCommunityGuardrail("Sign in required."));
         setCanPost(false);
         return;
       }
@@ -84,7 +85,7 @@ export default function FireRoomClient({ room, allRooms, members, messages, prin
         .upsert({ room_id: room.id, user_id: authData.user.id }, { onConflict: "room_id,user_id" });
 
       if (error) {
-        setMessage(error.message);
+        setMessage(formatCommunityGuardrail(error.message));
         setCanPost(false);
         return;
       }
@@ -114,7 +115,7 @@ export default function FireRoomClient({ room, allRooms, members, messages, prin
       .single();
 
     if (error || !inserted) {
-      setMessage(error?.message || "Could not send message.");
+      setMessage(formatCommunityGuardrail(error?.message || "Could not send message."));
       return;
     }
 

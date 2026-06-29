@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { commonsComingLater, commonsPrinciples } from "../../lib/commons";
 import { isHumanVerified } from "../../utils/account/types";
+import { formatCommunityGuardrail } from "../../utils/community/guardrails";
 import { createClient } from "../../utils/supabase/client";
 
 type CommonsRoom = {
@@ -65,7 +66,7 @@ export default function CommonsPage() {
         .limit(100);
 
       if (roomError) {
-        setMessage(`Could not load commons rooms: ${roomError.message}`);
+        setMessage(`Could not load commons rooms: ${formatCommunityGuardrail(roomError.message)}`);
         setRooms([]);
         setAuthChecked(true);
         return;
@@ -86,7 +87,7 @@ export default function CommonsPage() {
         .in("room_id", roomIds);
 
       if (membershipError) {
-        setMessage(`Could not load room populations: ${membershipError.message}`);
+        setMessage(`Could not load room populations: ${formatCommunityGuardrail(membershipError.message)}`);
         setRooms([]);
         setAuthChecked(true);
         return;
@@ -129,14 +130,15 @@ export default function CommonsPage() {
       return;
     }
     if (!canEnterCommons) {
-      window.alert("Only verified people can join rooms. Complete verification in Account settings first.");
+      setMessage("Only verified people can join rooms. Verify your account in Navigator Center first.");
       router.push("/account");
       return;
     }
     if (isRoomFull(selectedRoom)) {
-      window.alert("This room is full (20/20). Please choose another room or start a new one.");
+      setMessage("This room is full right now. Choose another room before entering.");
       return;
     }
+    setMessage("");
     router.push(`/commons/${selectedRoom.slug}`);
   }
 
@@ -188,12 +190,18 @@ export default function CommonsPage() {
             <button
               className="fc-button"
               type="button"
-              disabled={!selectedRoom || !authChecked}
+              disabled={!selectedRoom || !authChecked || !canEnterCommons || (selectedRoom ? isRoomFull(selectedRoom) : false)}
               onClick={enterSelectedRoom}
             >
               {selectedRoom ? `Enter ${selectedRoom.name}` : "Select a room to enter"}
             </button>
           </div>
+          {selectedRoom && !canEnterCommons && (
+            <p className="form-message">{formatCommunityGuardrail("Only verified people can join rooms.")}</p>
+          )}
+          {selectedRoom && canEnterCommons && isRoomFull(selectedRoom) && (
+            <p className="form-message">{formatCommunityGuardrail("Room is full.")}</p>
+          )}
         </article>
 
         <aside className="fc-page-stack">
