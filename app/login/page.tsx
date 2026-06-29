@@ -61,15 +61,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="fc-page-stack fc-workspace-page">
+    <div className="fc-page-stack fc-workspace-page fc-auth-atmosphere">
       <section className="fc-workspace-hero">
         <p className="fc-eyebrow">Navigator Access</p>
-        <h1>Sign in with Google.</h1>
-        <p>Use Google when available, or sign in with a free email magic link.</p>
+        <h1>Chart your legend.</h1>
+        <p>Enter Fabled Compass with Google, or use a free email magic link.</p>
       </section>
 
       <section>
-        <article className="fc-card fc-auth-panel">
+        <article className="fc-card fc-auth-panel fc-auth-card">
           <button className="fc-button" type="button" onClick={signInWithGoogle} disabled={googleLoading || emailLoading}>
             {googleLoading ? "Redirecting..." : "Continue with Google"}
           </button>
