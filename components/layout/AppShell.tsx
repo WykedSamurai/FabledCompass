@@ -154,7 +154,11 @@ function NavGlyph({ icon }: { icon: NavIcon }) {
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
-  const hideChrome = pathname === "/login" || pathname.startsWith("/auth");
+  const hideChrome =
+    pathname === "/login" ||
+    pathname === "/auth" ||
+    pathname.startsWith("/auth/callback") ||
+    pathname.startsWith("/auth/confirm");
   const hideFooter = pathname === "/";
 
   return (
