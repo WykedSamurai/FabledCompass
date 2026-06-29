@@ -1,18 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { createClient } from "../../utils/supabase/client";
 
+function getSafeNextPath() {
+  const next = new URLSearchParams(window.location.search).get("next") || "/dashboard";
+  return next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
+}
+
 export default function AuthPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
   const [emailLoading, setEmailLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    const error = new URLSearchParams(window.location.search).get("error");
+    if (error) {
+      setMessage(error);
+    }
+  }, []);
+
   async function signInWithGoogle() {
-    const nextPath = new URLSearchParams(window.location.search).get("next") || "/dashboard";
+    const nextPath = getSafeNextPath();
     setGoogleLoading(true);
     setMessage("");
     const supabase = createClient();
@@ -27,15 +37,11 @@ export default function AuthPage() {
     if (error) {
       setMessage(error.message);
       setGoogleLoading(false);
-      return;
     }
-
-    router.push(`/auth/callback?next=${encodeURIComponent(nextPath)}`);
-    router.refresh();
   }
 
   async function sendMagicLink() {
-    const nextPath = new URLSearchParams(window.location.search).get("next") || "/dashboard";
+    const nextPath = getSafeNextPath();
     const normalizedEmail = email.trim();
     if (!normalizedEmail) {
       setMessage("Enter your email to receive a magic sign-in link.");
@@ -48,7 +54,7 @@ export default function AuthPage() {
     const { error } = await supabase.auth.signInWithOtp({
       email: normalizedEmail,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/confirm?next=${encodeURIComponent(nextPath)}`
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`
       }
     });
 

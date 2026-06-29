@@ -1,18 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { createClient } from "../../utils/supabase/client";
 
+function getSafeNextPath() {
+  const next = new URLSearchParams(window.location.search).get("next") || "/dashboard";
+  return next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
+}
+
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [googleLoading, setGoogleLoading] = useState(false);
   const [emailLoading, setEmailLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    const error = new URLSearchParams(window.location.search).get("error");
+    if (error) {
+      setMessage(error);
+    }
+  }, []);
+
   async function signInWithGoogle() {
-    const nextPath = new URLSearchParams(window.location.search).get("next") || "/dashboard";
+    const nextPath = getSafeNextPath();
     setGoogleLoading(true);
     setMessage("");
     const supabase = createClient();
@@ -27,15 +37,11 @@ export default function LoginPage() {
     if (error) {
       setMessage(error.message);
       setGoogleLoading(false);
-      return;
     }
-
-    router.push(`/auth/callback?next=${encodeURIComponent(nextPath)}`);
-    router.refresh();
   }
 
   async function sendMagicLink() {
-    const nextPath = new URLSearchParams(window.location.search).get("next") || "/dashboard";
+    const nextPath = getSafeNextPath();
     const normalizedEmail = email.trim();
     if (!normalizedEmail) {
       setMessage("Enter your email to receive a magic sign-in link.");
@@ -48,7 +54,7 @@ export default function LoginPage() {
     const { error } = await supabase.auth.signInWithOtp({
       email: normalizedEmail,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/confirm?next=${encodeURIComponent(nextPath)}`
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`
       }
     });
 
@@ -70,10 +76,10 @@ export default function LoginPage() {
 
       <section>
         <article className="fc-card fc-auth-panel fc-auth-card">
-          <button className="fc-button" type="button" onClick={signInWithGoogle} disabled={googleLoading || emailLoading}>
+          <button className="fc-button" disabled={googleLoading || emailLoading} onClick={signInWithGoogle} type="button">
             {googleLoading ? "Redirecting..." : "Continue with Google"}
           </button>
-          <p className="fc-muted">Google sign-in requires the Google provider to be enabled in Supabase Auth.</p>
+          <p className="fc-muted">Google sign-in must be enabled in Supabase Auth provider settings.</p>
 
           <label>
             Email for magic link
