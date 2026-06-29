@@ -10,15 +10,20 @@ import {
   normalizeProfileVisibility
 } from "../../../utils/account/types";
 
+function getSafeNextPath() {
+  const next = new URLSearchParams(window.location.search).get("next") || "/dashboard";
+  return next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
+}
+
 export default function ConfirmPage() {
   const router = useRouter();
-  const [message, setMessage] = useState("Confirming your email...");
+  const [message, setMessage] = useState("Finishing sign in...");
 
   useEffect(() => {
     async function confirm() {
       const supabase = createClient();
       const { data, error } = await supabase.auth.getSession();
-      const next = new URLSearchParams(window.location.search).get("next") || "/dashboard";
+      const next = getSafeNextPath();
 
       if (error) {
         setMessage(error.message);
@@ -53,7 +58,7 @@ export default function ConfirmPage() {
         return;
       }
 
-      setMessage("Your email has been confirmed. Return to Sign In to continue.");
+      setMessage("We could not finish the sign-in session. Return to Sign In to continue.");
     }
 
     confirm();
@@ -62,7 +67,7 @@ export default function ConfirmPage() {
   return (
     <div className="fc-page-stack fc-workspace-page">
       <section className="fc-workspace-hero">
-        <p className="fc-eyebrow">Email Confirmation</p>
+        <p className="fc-eyebrow">Navigator Access</p>
         <h1>Returning to Fabled Compass.</h1>
       </section>
       <section>
