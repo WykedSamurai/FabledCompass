@@ -54,6 +54,7 @@ button { cursor: pointer; }
   transition: grid-template-columns 180ms ease;
 }
 .fc-shell.is-sidebar-collapsed { grid-template-columns: 76px minmax(0, 1fr); }
+.fc-shell.is-auth-chrome-hidden { grid-template-columns: minmax(0, 1fr); }
 
 .fc-sidebar {
   position: sticky;
@@ -228,6 +229,7 @@ button { cursor: pointer; }
 .fc-top-actions a { color: var(--fc-muted); font-size: .9rem; }
 .fc-top-actions a:hover { color: var(--fc-accent-hover); }
 .fc-content { padding: 2rem; }
+.fc-content-auth { padding: 1.25rem; }
 .fc-page-stack { display: grid; gap: 1.25rem; }
 
 .fc-page-header h1 {

@@ -154,63 +154,68 @@ function NavGlyph({ icon }: { icon: NavIcon }) {
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
+  const hideChrome = pathname === "/login" || pathname.startsWith("/auth");
   const hideFooter = pathname === "/";
 
   return (
-    <div className={`fc-shell ${collapsed ? "is-sidebar-collapsed" : ""}`} data-journey="career">
+    <div className={`fc-shell ${collapsed ? "is-sidebar-collapsed" : ""} ${hideChrome ? "is-auth-chrome-hidden" : ""}`} data-journey="career">
       <AtlasSky />
 
-      <aside className="fc-sidebar" aria-label="Fabled Compass navigation">
-        <div className="fc-sidebar-top">
-          <Link className="fc-brand" href="/dashboard">
-            <span className="fc-brand-mark" aria-hidden="true">◈</span>
-            <span className="fc-brand-text">
-              <strong>Fabled Compass</strong>
-              <small>Chart your path • Gather proof • Become legend</small>
-            </span>
-          </Link>
+      {!hideChrome && (
+        <aside className="fc-sidebar" aria-label="Fabled Compass navigation">
+          <div className="fc-sidebar-top">
+            <Link className="fc-brand" href="/dashboard">
+              <span className="fc-brand-mark" aria-hidden="true">◈</span>
+              <span className="fc-brand-text">
+                <strong>Fabled Compass</strong>
+                <small>Chart your path • Gather proof • Become legend</small>
+              </span>
+            </Link>
 
-          <button
-            className="fc-sidebar-toggle"
-            type="button"
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            onClick={() => setCollapsed((current) => !current)}
-          >
-            {collapsed ? "›" : "‹"}
-          </button>
-        </div>
+            <button
+              className="fc-sidebar-toggle"
+              type="button"
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              onClick={() => setCollapsed((current) => !current)}
+            >
+              {collapsed ? "›" : "‹"}
+            </button>
+          </div>
 
-        <nav className="fc-nav" aria-label="Main navigation">
-          {navigation.map((group) => (
-            <section className="fc-nav-group" data-accent={group.accent} key={group.label}>
-              <p>{group.label}</p>
-              {group.items.map((item) => (
-                <Link className="fc-nav-link" href={item.href} key={item.href} title={item.label}>
-                  <span className="fc-nav-icon" aria-hidden="true"><NavGlyph icon={item.icon} /></span>
-                  <span className="fc-nav-label">{item.label}</span>
-                </Link>
-              ))}
-            </section>
-          ))}
-        </nav>
-      </aside>
+          <nav className="fc-nav" aria-label="Main navigation">
+            {navigation.map((group) => (
+              <section className="fc-nav-group" data-accent={group.accent} key={group.label}>
+                <p>{group.label}</p>
+                {group.items.map((item) => (
+                  <Link className="fc-nav-link" href={item.href} key={item.href} title={item.label}>
+                    <span className="fc-nav-icon" aria-hidden="true"><NavGlyph icon={item.icon} /></span>
+                    <span className="fc-nav-label">{item.label}</span>
+                  </Link>
+                ))}
+              </section>
+            ))}
+          </nav>
+        </aside>
+      )}
 
       <div className="fc-workspace">
-        <header className="fc-topbar">
-          <label className="fc-search">
-            <span>Search</span>
-            <input placeholder="Search the realm" />
-          </label>
-          <div className="fc-top-actions">
-            <Link href="/account">Guild Hall</Link>
-          </div>
-        </header>
+        {!hideChrome && (
+          <header className="fc-topbar">
+            <label className="fc-search">
+              <span>Search</span>
+              <input placeholder="Search the realm" />
+            </label>
+            <div className="fc-top-actions">
+              <Link href="/account">Guild Hall</Link>
+            </div>
+          </header>
+        )}
 
-        <main className="fc-content">{children}</main>
-        {!hideFooter && <SiteFooter />}
+        <main className={`fc-content ${hideChrome ? "fc-content-auth" : ""}`}>{children}</main>
+        {!hideFooter && !hideChrome && <SiteFooter />}
       </div>
 
-      <CommunicationHub />
+      {!hideChrome && <CommunicationHub />}
     </div>
   );
 }
