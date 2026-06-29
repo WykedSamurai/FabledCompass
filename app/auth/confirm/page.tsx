@@ -18,7 +18,7 @@ export default function ConfirmPage() {
     async function confirm() {
       const supabase = createClient();
       const { data, error } = await supabase.auth.getSession();
-      const next = new URLSearchParams(window.location.search).get("next") || "/account";
+      const next = new URLSearchParams(window.location.search).get("next") || "/dashboard";
 
       if (error) {
         setMessage(error.message);
