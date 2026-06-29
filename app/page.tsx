@@ -1,6 +1,33 @@
 import Link from "next/link";
+import { createClient } from "../utils/supabase/server";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient();
+  const { data: authData } = await supabase.auth.getUser();
+  const isSignedIn = Boolean(authData.user);
+
+  if (!isSignedIn) {
+    return (
+      <div className="fc-page-stack fc-workspace-page fc-auth-atmosphere">
+        <section className="fc-workspace-hero">
+          <p className="fc-eyebrow">Navigator Access</p>
+          <h1>Chart your legend.</h1>
+          <p>Sign in to enter the Guild Hall, join the Commons, and build career proof across your journey.</p>
+        </section>
+
+        <section>
+          <article className="fc-card fc-auth-panel fc-auth-card">
+            <div className="fc-action-row">
+              <Link className="fc-button" href="/login">Sign In</Link>
+              <Link className="fc-ghost-button" href="/jobs">Browse Jobs First</Link>
+            </div>
+            <p className="fc-muted">Use Google sign-in or a free email magic link.</p>
+          </article>
+        </section>
+      </div>
+    );
+  }
+
   return (
     <>
       <section className="hero">
