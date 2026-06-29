@@ -1,5 +1,5 @@
 import { AtlasButton } from "../../components/atlas";
-import { archetypes, getArchetype, type ArchetypeId } from "../../lib/archetypes";
+import { archetypes, type ArchetypeId } from "../../lib/archetypes";
 import {
   buildConstellation,
   calculateAllCompetencies,
@@ -8,6 +8,7 @@ import {
 } from "../../lib/evidence";
 import { createClient } from "../../utils/supabase/server";
 import { getProfile, getUserEvidence } from "../../lib/profile";
+import IdentityPanel from "./IdentityPanel";
 
 const primaryAttributes = [
   { label: "Leadership", key: "leadership" },
@@ -31,8 +32,7 @@ export default async function DashboardPage() {
   const evidence = hasEvidence ? userEvidence : sampleEvidence;
 
   const archetypeId: ArchetypeId = profile?.archetype ?? "traveler";
-  const archetype = getArchetype(archetypeId);
-  const archetypeIds = Object.keys(archetypes) as ArchetypeId[];
+  const archetype = archetypes[archetypeId];
 
   const competencies = calculateAllCompetencies(evidence);
   const compass = calculateProfessionalCompass(competencies);
@@ -67,36 +67,40 @@ export default async function DashboardPage() {
       )}
 
       <section className="fc-character-sheet-hero">
-        <div className="fc-identity-core">
-          <div className="fc-archetype-portrait" aria-hidden="true">{archetype.icon}</div>
-          <div>
-            <p className="fc-eyebrow">Professional Character</p>
-            <h1>Career Compass</h1>
-            <p className="fc-identity-name">{displayName}</p>
-            <p className="fc-identity-title">{title}</p>
-          </div>
-        </div>
-        <div className="fc-identity-details">
-          <label className="fc-archetype-picker">
-            <span>Archetype</span>
-            <select aria-label="Archetype" defaultValue={archetypeId}>
-              {archetypeIds.map((id) => (
-                <option key={id} value={id}>
-                  {archetypes[id].name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <p className="fc-archetype-motto">Motto: {archetype.motto}</p>
-          <p className="fc-muted fc-personal-legend">
-            Personal Legend: {personalLegend}
-          </p>
-        </div>
-        <div className="fc-character-summary">
-          <span><small>Level</small><strong>{level}</strong></span>
-          <span><small>Career Path</small><strong>{careerPath}</strong></span>
-          <span><small>Portfolio Strength</small><strong>{compass.overall}%</strong></span>
-        </div>
+        {userId ? (
+          <IdentityPanel
+            userId={userId}
+            archetypeId={archetypeId}
+            displayName={displayName}
+            title={title}
+            motto={profile?.motto ?? ""}
+            personalLegend={personalLegend}
+            careerPath={careerPath}
+            level={level}
+            overallScore={compass.overall}
+          />
+        ) : (
+          <>
+            <div className="fc-identity-core">
+              <div className="fc-archetype-portrait" aria-hidden="true">{archetype.icon}</div>
+              <div>
+                <p className="fc-eyebrow">Professional Character</p>
+                <h1>Career Compass</h1>
+                <p className="fc-identity-name">{displayName}</p>
+                <p className="fc-identity-title">{title}</p>
+              </div>
+            </div>
+            <div className="fc-identity-details">
+              <p className="fc-archetype-motto">Motto: {archetype.motto}</p>
+              <p className="fc-muted fc-personal-legend">Personal Legend: {personalLegend}</p>
+            </div>
+            <div className="fc-character-summary">
+              <span><small>Level</small><strong>{level}</strong></span>
+              <span><small>Career Path</small><strong>{careerPath}</strong></span>
+              <span><small>Portfolio Strength</small><strong>{compass.overall}%</strong></span>
+            </div>
+          </>
+        )}
       </section>
 
       <section className="fc-character-sheet-grid">
