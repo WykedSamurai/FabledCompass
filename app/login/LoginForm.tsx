@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "../../utils/supabase/client";
 
 function getSafeNextPath() {
@@ -9,8 +10,11 @@ function getSafeNextPath() {
 }
 
 export default function LoginForm() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
-  const [emailLoading, setEmailLoading] = useState(false);
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [creatingAccount, setCreatingAccount] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -20,30 +24,62 @@ export default function LoginForm() {
     }
   }, []);
 
-  async function sendMagicLink() {
-    const nextPath = getSafeNextPath();
+  async function signIn(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
     const normalizedEmail = email.trim();
-    if (!normalizedEmail) {
-      setMessage("Enter your email to receive a magic sign-in link.");
+    if (!normalizedEmail || !password) {
+      setMessage("Enter your email and password to sign in.");
       return;
     }
 
-    setEmailLoading(true);
+    setLoading(true);
     setMessage("");
+
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithPassword({
       email: normalizedEmail,
+      password
+    });
+
+    setLoading(false);
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    router.replace(getSafeNextPath());
+    router.refresh();
+  }
+
+  async function createAccount() {
+    const normalizedEmail = email.trim();
+    if (!normalizedEmail || !password) {
+      setMessage("Enter an email and password to create an account.");
+      return;
+    }
+
+    setCreatingAccount(true);
+    setMessage("");
+
+    const supabase = createClient();
+    const { error } = await supabase.auth.signUp({
+      email: normalizedEmail,
+      password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(getSafeNextPath())}`
       }
     });
 
-    setEmailLoading(false);
-    setMessage(
-      error
-        ? error.message
-        : "Magic link sent. Check your email and open the link to finish signing in."
-    );
+    setCreatingAccount(false);
+
+    if (error) {
+      setMessage(error.message);
+      return;
+    }
+
+    setMessage("Account created. Check your email to confirm your account, then sign in.");
   }
 
   return (
@@ -51,24 +87,43 @@ export default function LoginForm() {
       <section className="fc-workspace-hero">
         <p className="fc-eyebrow">Navigator Access</p>
         <h1>Chart your legend.</h1>
-        <p>Enter Fabled Compass with a secure email magic link.</p>
+        <p>Sign in to Fabled Compass with your email and password.</p>
       </section>
 
       <section>
         <article className="fc-card fc-auth-panel fc-auth-card">
-          <label>
-            Email address
-            <input
-              name="email"
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-            />
-          </label>
-          <button className="fc-button" type="button" onClick={sendMagicLink} disabled={emailLoading}>
-            {emailLoading ? "Sending..." : "Send Magic Link"}
+          <form onSubmit={signIn}>
+            <label>
+              Email address
+              <input
+                name="email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+              />
+            </label>
+
+            <label>
+              Password
+              <input
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+              />
+            </label>
+
+            <button className="fc-button" type="submit" disabled={loading || creatingAccount}>
+              {loading ? "Signing in..." : "Sign In"}
+            </button>
+          </form>
+
+          <button className="fc-ghost-button" type="button" onClick={createAccount} disabled={loading || creatingAccount}>
+            {creatingAccount ? "Creating account..." : "Create Account"}
           </button>
 
           {message && <p className="form-message" role="status">{message}</p>}
