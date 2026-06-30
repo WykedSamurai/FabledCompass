@@ -10,7 +10,6 @@ function getSafeNextPath() {
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
-  const [googleLoading, setGoogleLoading] = useState(false);
   const [emailLoading, setEmailLoading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -20,25 +19,6 @@ export default function LoginForm() {
       setMessage(error);
     }
   }, []);
-
-  async function signInWithGoogle() {
-    const nextPath = getSafeNextPath();
-    setGoogleLoading(true);
-    setMessage("");
-    const supabase = createClient();
-
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextPath)}`
-      }
-    });
-
-    if (error) {
-      setMessage(error.message);
-      setGoogleLoading(false);
-    }
-  }
 
   async function sendMagicLink() {
     const nextPath = getSafeNextPath();
@@ -71,18 +51,13 @@ export default function LoginForm() {
       <section className="fc-workspace-hero">
         <p className="fc-eyebrow">Navigator Access</p>
         <h1>Chart your legend.</h1>
-        <p>Enter Fabled Compass with Google, or use a free email magic link.</p>
+        <p>Enter Fabled Compass with a secure email magic link.</p>
       </section>
 
       <section>
         <article className="fc-card fc-auth-panel fc-auth-card">
-          <button className="fc-button" disabled={googleLoading || emailLoading} onClick={signInWithGoogle} type="button">
-            {googleLoading ? "Redirecting..." : "Continue with Google"}
-          </button>
-          <p className="fc-muted">Google sign-in must be enabled in Supabase Auth provider settings.</p>
-
           <label>
-            Email for magic link
+            Email address
             <input
               name="email"
               type="email"
@@ -92,7 +67,7 @@ export default function LoginForm() {
               required
             />
           </label>
-          <button className="fc-ghost-button" type="button" onClick={sendMagicLink} disabled={googleLoading || emailLoading}>
+          <button className="fc-button" type="button" onClick={sendMagicLink} disabled={emailLoading}>
             {emailLoading ? "Sending..." : "Send Magic Link"}
           </button>
 
